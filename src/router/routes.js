@@ -27,6 +27,17 @@ const routes = [
     ]
   },
 
+  {
+    path: '/Details',
+    component: () => import('layouts/PostDetailsLayout.vue'),
+    children: [
+      {
+        path: '/Details/:id',component: () => import('pages/Details.vue')
+        
+      },
+    ]
+  },
+
   // Always leave this as last one,
   // but you can also remove it
   {

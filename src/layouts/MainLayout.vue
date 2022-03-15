@@ -1,43 +1,62 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          @click="toggleLeftDrawer"
-          icon="menu"
-          aria-label="Menu"
-        />
-        <q-toolbar-title>
-          Quasar App
-        </q-toolbar-title>
+    <q-header elevated >
+      <q-toolbar class="glossy">
+      <div class="q-gutter-sm row items-center no-wrap ">
         <q-space/>
-        <div class="q-gutter-sm row items-center no-wrap">
-          <q-btn round dense flat color="white" :icon="$q.fullscreen.isActive ? 'fullscreen_exit' : 'fullscreen'"
-                 @click="$q.fullscreen.toggle()"
-                 v-if="$q.screen.gt.sm">
-          </q-btn>
-          <q-btn round dense flat color="white" icon="fab fa-github" type="a" href="https://github.com/pratik227/quasar-admin" target="_blank">
-          </q-btn>
-          <q-btn round dense flat icon="fas fa-heart" style="color:#9d4182 !important;" type="a" href="https://github.com/sponsors/pratik227" target="_blank">
-          </q-btn>
-          <q-btn round dense flat color="white" icon="notifications">
-            <q-badge color="red" text-color="white" floating>
-              5
-            </q-badge>
-            <q-menu
+          <div  style="max-width: 600px">
+              <q-tabs
+              v-model="tab"
+              inline-label
+              outside-arrows
+              mobile-arrows
+              class="text-white shadow-2"
+              dense
+              indicator-color="transparent"
+              active-color="white"
             >
-              <q-list style="min-width: 100px">
-                <messages></messages>
-                <q-card class="text-center no-shadow no-border">
-                  <q-btn label="View All" style="max-width: 120px !important;" flat dense
-                         class="text-indigo-8"></q-btn>
-                </q-card>
-              </q-list>
-            </q-menu>
-          </q-btn>
+              <q-tab name="all" label="ALL TOPICS" />
+              <q-tab v-for="topic in tops" :key="topic.id" :label="topic.text" />
+                
+            </q-tabs>
+            
+          </div>
+
+        <!--
+        <q-tabs
+            v-model="topic_tab"
+            dense
+            style="max-width: 900px"
+            no-caps
+            outside-arrows
+            mobile-arrows
+            inline-label
+            class="bg-primary text-white shadow-2">
+          <q-tab name="all" label="ALL TOPICS" />
+          <q-tab name="flood" icon="fas fa-water" label="FLOOD" />
+          <q-tab name="fire" icon="fas fa-fire" label="FIRE" />
+          <q-tab name="hurricane" icon="fas fa-cloud-showers-heavy" label="HURRICANE" />
+          <q-tab name="volcanic" icon="fas fa-exclamation" label="VOLCANIC" />
+          <q-tab name="eathquake" icon="fas fa-globe-americas" label="EARTHQUAKE" />
+        </q-tabs>
+        <q-space/>
+
+        <q-btn flat round color="white" icon="fas fa-filter" />
+        <q-space/>
+        <q-btn flat round color="white" icon="fas fa-sync-alt" />
+        <q-space/>
+        -->
+        <q-btn flat round color="white" icon="fas fa-plus"  @click="create= true" dense/>
+        <q-space/>
+        <q-btn flat round color="white" icon="fas fa-trash"  @click="triggerPositive()" dense/>
+    
+     </div>
+     <div class="board">
+ </div>
+    
+     <q-space/>
+
+      <div class="q-gutter-sm row items-center no-wrap ">
           <q-btn round flat>
             <q-avatar size="26px">
               <img src="https://cdn.quasar.dev/img/boy-avatar.png">
@@ -52,297 +71,284 @@
       show-if-above
       bordered
       class="bg-primary text-white"
+      :mini="miniState"
+      @mouseover="miniState = false"
+      @mouseout="miniState = true"
+      :width="200"
+      :breakpoint="500"
     >
-      <q-list>
-        <q-item to="/" active-class="q-item-no-link-highlighting">
+    <q-list>
+         <q-item to="/" active-class="q-item-no-link-highlighting" >
           <q-item-section avatar>
-            <q-icon name="dashboard"/>
+          <span v-if="$q.platform.is.desktop" ><q-btn
+          flat
+          dense
+          round
+          icon="menu"
+          aria-label="Menu"
+        /> </span> 
           </q-item-section>
           <q-item-section>
-            <q-item-label>Dashboard</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item to="/Dashboard2" active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon name="dashboard"/>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>CRM Dashboard</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-expansion-item
-          icon="pages"
-          label="Pages"
-        >
-          <q-list class="q-pl-lg">
-            <q-item to="/Login-1" active-class="q-item-no-link-highlighting">
-              <q-item-section avatar>
-                <q-icon name="email"/>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>Login-1</q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item to="/Lock" active-class="q-item-no-link-highlighting">
-              <q-item-section avatar>
-                <q-icon name="lock"/>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>Lock Screen</q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item to="/Lock-2" active-class="q-item-no-link-highlighting">
-              <q-item-section avatar>
-                <q-icon name="lock"/>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>Lock Screen - 2</q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item to="/Pricing" active-class="q-item-no-link-highlighting">
-              <q-item-section avatar>
-                <q-icon name="list"/>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>Pricing</q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item-label header class="text-weight-bolder text-white">Generic</q-item-label>
-            <q-item to="/Profile" active-class="q-item-no-link-highlighting">
-              <q-item-section avatar>
-                <q-icon name="person"/>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>User Profile</q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item to="/Maintenance" active-class="q-item-no-link-highlighting">
-              <q-item-section avatar>
-                <q-icon name="settings"/>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>Maintenance</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-expansion-item>
-        <q-expansion-item
-          icon="map"
-          label="Maps"
-        >
-          <q-list class="q-pl-lg">
-            <q-item to="/Map" active-class="q-item-no-link-highlighting">
-              <q-item-section avatar>
-                <q-icon name="map"/>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>Map</q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item to="/MapMarker" active-class="q-item-no-link-highlighting">
-              <q-item-section avatar>
-                <q-icon name="location_on"/>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>Map Marker</q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item to="/StreetView" active-class="q-item-no-link-highlighting">
-              <q-item-section avatar>
-                <q-icon name="streetview"/>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>Street View</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-expansion-item>
-
-        <q-item to="/Mail" active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon name="email"/>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Mail</q-item-label>
+            <q-item-label><strong>SWARMNET</strong></q-item-label>
           </q-item-section>
         </q-item>
 
-        <q-item to="/directory" active-class="q-item-no-link-highlighting">
+        <q-separator color="orange" inset />
+                    
+  <!--   
+      <q-input 
+        filled bottom-slots 
+        v-model="text" 
+        label="Search Board" 
+       
+        color="white">
+        <template v-slot:prepend>
+          <q-icon name="search" />
+        </template>
+        <template v-slot:append>
+          <q-icon name="close" @click="text = ''" class="cursor-pointer" />
+        </template>
+      </q-input>
+  -->
+
+         <!--
+          <q-btn round dense flat color="white" icon="notifications">
+            <q-badge color="red" text-color="white" floating>
+              5
+            </q-badge>
+            <q-menu
+            >
+              <q-list style="min-width: 100px">
+                <q-card class="text-center no-shadow no-border">
+                  <q-btn label="View All" style="max-width: 120px !important;" flat dense
+                         class="text-indigo-8"></q-btn>
+                </q-card>
+              </q-list>
+            </q-menu>
+
+          </q-btn>
+          -->
+        <q-item to="/" active-class="q-item-no-link-highlighting v-ripple">
           <q-item-section avatar>
-            <q-icon name="card_giftcard"/>
+            <q-icon name="fas fa-home"/>
           </q-item-section>
           <q-item-section>
-            <q-item-label>Directory</q-item-label>
+            <q-item-label>Post Board</q-item-label>
           </q-item-section>
         </q-item>
 
-        <q-item to="/TreeTable" active-class="q-item-no-link-highlighting">
+        <q-item to="/AlertMap" active-class="q-item-no-link-highlighting">
           <q-item-section avatar>
-            <q-icon name="list"/>
+            <q-icon name="fas fa-exclamation-triangle"/>
           </q-item-section>
           <q-item-section>
-            <q-item-label>TreeTable</q-item-label>
+            <q-item-label>Alerts</q-item-label>
           </q-item-section>
         </q-item>
+
+         <q-item to="/Note" active-class="q-item-no-link-highlighting">
+          <q-item-section avatar>
+            <q-icon name="fas fa-bell"/>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Notifications</q-item-label>
+          </q-item-section>
+        </q-item>
+      
         <q-item to="/Charts" active-class="q-item-no-link-highlighting">
           <q-item-section avatar>
-            <q-icon name="insert_chart"/>
+            <q-icon name="fas fa-chart-line"/>
           </q-item-section>
           <q-item-section>
-            <q-item-label>Charts</q-item-label>
+            <q-item-label>Post Analytics</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item to="/Footer" active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon name="info"/>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Footer</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item to="/CardHeader" active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon name="card_giftcard"/>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Card Header</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item to="/Cards" active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon name="card_giftcard"/>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Cards</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item to="/Tables" active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon name="table_chart"/>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Tables</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item to="/Contact" active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon name="person"/>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Contact</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item to="/Checkout" active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon name="check_circle_outline"/>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Checkout</q-item-label>
-          </q-item-section>
-        </q-item>
-
-        <!--        not completed-->
-        <q-item to="/Calendar" active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon name="date_range"/>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Calendar</q-item-label>
-          </q-item-section>
-        </q-item>
-
-<!--        not completed-->
-<!--        <q-item to="/Taskboard" active-class="q-item-no-link-highlighting">-->
-<!--          <q-item-section avatar>-->
-<!--            <q-icon name="done"/>-->
-<!--          </q-item-section>-->
-<!--          <q-item-section>-->
-<!--            <q-item-label>Taskboard</q-item-label>-->
-<!--          </q-item-section>-->
-<!--        </q-item>-->
-
-        <q-item to="/Pagination" active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon name="date_range"/>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Pagination</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item to="/Ecommerce" active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon name="shopping_cart"/>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Product Catalogues</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-expansion-item
-          icon="menu_open"
-          label="Menu Levels"
-        >
-          <q-item class="q-ml-xl" active-class="q-item-no-link-highlighting">
-            <q-item-section>
-              <q-item-label>Level 1</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-expansion-item
-            :header-inset-level="0.85"
-            label="Level 2"
-          >
-            <q-item class="q-ml-xl" style="margin-left: 55px  !important;" active-class="q-item-no-link-highlighting">
-              <q-item-section>
-                <q-item-label>Level 2.1</q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-expansion-item
-              :header-inset-level="1"
-              label="Level 2.2"
-            >
-              <q-item style="margin-left: 65px  !important;" active-class="q-item-no-link-highlighting">
-                <q-item-section>
-                  <q-item-label>Level 2.2.1</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item style="margin-left: 65px  !important;" active-class="q-item-no-link-highlighting">
-                <q-item-section>
-                  <q-item-label>Level 2.2.2</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-expansion-item>
-          </q-expansion-item>
-        </q-expansion-item>
       </q-list>
     </q-drawer>
 
     <q-page-container class="bg-grey-2">
       <router-view />
     </q-page-container>
+
+    <q-dialog v-model="create">
+      <q-card style="width: 600px; height: 400px; background-color: powderblue;">
+        <q-card-section>
+          <div class="text-h6">New Topic</div>
+        </q-card-section>
+        
+        <q-card-section>
+          <q-input filled  v-model="ph" placeholder="Enter Title of Topic"  />
+        </q-card-section>
+
+        <q-card-section>
+          <div class="text-h6">Topic Level</div>
+        </q-card-section>
+        
+        <q-card-section>
+          <q-input filled  v-model="lev" placeholder="Enter Level of Topic"  />
+        </q-card-section>
+      
+        <q-card-actions align="right">
+          <q-btn flat label="Discard" color="primary" @click="ph = '', lev=''" v-close-popup />
+          <q-btn flat label="Post" color="primary" v-close-popup @click="addTopic(ph,lev), ph = '', lev='';"/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
   </q-layout>
 </template>
 
 <script>
 import EssentialLink from 'components/EssentialLink.vue'
-import Messages from "./Messages";
-
+import PostBoard from 'components/PostBoard.vue';
 import { defineComponent, ref } from 'vue'
+import { useQuasar } from 'quasar'
+import { onMounted, onUpdated} from 'vue'
+import { api } from 'boot/axios'
+
 
 export default defineComponent({
   name: 'MainLayout',
 
+  props:['lorem'],
+
   components: {
-    EssentialLink
+    EssentialLink,
+    PostBoard
+  },
+
+  data () {
+    return {
+      text: '',
+      tag: '',
+      dialogVis: false,
+      dialogPos: {
+        x: 0,
+        y: 0,
+      },
+      search: ''
+    }
+  },
+  
+  computed: {
+    dialogStyle() {
+      return {
+        transform: `translate(${this.dialogPos.x}px, ${this.dialogPos.y}px)`
+      }
+    }
+  },
+  
+  methods: {
+    onPan(evt) {
+      this.dialogPos = {
+        x: this.dialogPos.x + evt.delta.x,
+        y: this.dialogPos.y + evt.delta.y
+      }
+    }
   },
 
   setup () {
     const leftDrawerOpen = ref(false)
+    const lorem = ref('')
+    const $q = useQuasar()
+    const tops = ref([])
+    const data = ref(null)
+
+     function loadData () {
+       tops.value.splice[0]
+    api.get('https://swarmnet-staging.herokuapp.com/topics',{
+  method: 'GET',
+  
+  headers: {
+          'Access-Control-Allow-Origin': '*'
+        }
+    })
+      .then((response) => { 
+        data.value = response.data
+        for (let i of data.value) { 
+          tops.value.push(i)
+        }
+        console.log(tops.value)
+      })
+      .catch(() => {
+        $q.notify({
+          color: 'negative',
+          position: 'top',
+          message: 'Loading failed',
+          icon: 'report_problem'
+        })
+      })
+  }
+
+     function addTopic(newTopic, topLevel){
+       console.log(newTopic)
+       api.post("https://swarmnet-staging.herokuapp.com/topics",{        
+              text: newTopic,
+              level: parseInt(topLevel),
+              },
+              {
+                headers: {
+                  Authorization:'JWT '+ localStorage.getItem('token'),
+                  'Access-Control-Allow-Origin': '*'   
+                }
+              }
+              )
+            .then((response) => {
+              console.log(response.status)
+              if(response.status == 201){
+                triggerPositive ();
+            }
+          }
+        )
+            .catch(() => {
+              $q.notify({
+                color: 'negative',
+                position: 'top',
+                message: 'Loading failed',
+                icon: 'report_problem'
+              })
+            })
+     }
+
+  onMounted(() => {
+      loadData();
+    })
+ 
 
     return {
-      leftDrawerOpen,
-      toggleLeftDrawer () {
+      addTopic,
+      tops,
+      loadData,
+      leftDrawerOpen: ref(false),
+      /*toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
-      }
+      },*/
+      lorem,
+      miniState: ref(true),
+      topic_tab:ref('all'),
+      maximizedToggle: ref(false),
+      dense: ref(false),
+        topic_tab:ref('all'),
+        create: ref(false),
+        ph: ref(''),
+        lev: ref(''),
+
+        triggerPositive(){
+            $q.notify({
+              type: 'positive',
+              message: 'TOPIC CREATED'
+            })
+            // simulate delay
+            setTimeout(() => {
+              notif({
+                type: 'positive',
+                message: 'Found the results that you were looking for',
+                timeout: 1000
+              })
+            }, 4000)
+          },
     }
   }
 })
 </script>
+
