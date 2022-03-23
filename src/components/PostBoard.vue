@@ -13,6 +13,7 @@
         @filter="filterFn"
         @input-value="setModel"
         style="width: 350px; padding-bottom: 32px"
+        @click="searchByTags(options.values)"
       >
         <template v-slot:no-option>
           <q-item>
@@ -27,11 +28,30 @@
         </template>
 
       </q-select>
+    
       
+      
+
+
       <div class="q-pa-md" style="position: absolute; right: 0;">
-       <q-btn fab flat round icon="far fa-edit" color="accent" size="0xs" fab-mini @click="fixed = true"/>
+        <q-btn fab flat round icon="far fa-edit" color="accent" size="0xs" fab-mini @click="fixed = true"/>
+        
+        <q-btn icon="event" flat round color="accent">
+      <q-popup-proxy @before-show="updateProxy" cover transition-show="scale" transition-hide="scale">
+        <q-date v-model="proxyDate">
+          <div class="row items-center justify-end q-gutter-sm">
+            <q-btn label="Cancel" color="primary" flat v-close-popup />
+            <q-btn label="OK" color="primary" flat @click="save" v-close-popup />
+          </div>
+        </q-date>
+      </q-popup-proxy>
+    </q-btn>
+
        <q-radio keep-color v-model="shape" val="res" label="Restricted" color="teal" />
        <q-radio keep-color v-model="shape" val="line" label="Unrestricted" color="teal" />
+
+
+       
        </div>
     </div>
   
@@ -45,15 +65,14 @@
       />
       -->
 
-   
-  
+
 
      <q-dialog v-model="fixed" no-refocus>
       <q-card style="width: 600px; height: 400px; background-color: powderblue;">
         <q-card-actions>
           <q-btn-dropdown color="primary" label="TOPICS">
             <q-list v-for="topic in tops" :key="topic.id">
-              <q-item clickable v-close-popup >
+              <q-item clickable v-close-popup @click="ptabtext= topic.text , ptopid= topic.id">
                 <q-item-section>
                   <q-item-label>{{topic.text}}</q-item-label>
                 </q-item-section>
@@ -65,7 +84,7 @@
       
 
         <q-card-section>
-          <div class="text-h6">New Discusssion For {{ptabtext}} </div>
+          <div class="text-h6">New Discussion For {{ptabtext}} </div>
         </q-card-section>
         <q-separator />
 
@@ -134,12 +153,14 @@
           <div class="row justify-between q-mt-sm">
                 <q-btn @click.prevent flat round color="grey" icon="fas fa-comments" size="sm" />
                 <q-btn @click.prevent flat round icon="far fa-eye" size="sm"/>
+                <!--
                 <q-btn @click.prevent flat round  size="sm"
                    
                      icon="far fa-heart"
                     v-bind:class="{'white': !this.data.clicked, 'blue': this.data.clicked}"
                     v-on:click ="this.data.clicked = !this.data.clicked" 
-                     />
+                    />
+                    -->
                 
           </div> 
         </q-item-section>
@@ -152,6 +173,20 @@
       </q-item>
       
     </q-list>
+    
+        <q-dialog v-model="prompt" persistent>
+          <q-card style="min-width: 350px">
+            <q-input  placeholder="Add comment..." v-model="text" counter maxlength="260" autogrow :dense="dense">
+              <template v-slot:after>
+                <q-btn round dense flat icon="send" />
+              </template>
+            </q-input>
+            <q-card-actions align="right" class="text-primary">
+              <q-btn flat label="Cancel" v-close-popup />
+            </q-card-actions>
+          </q-card>
+        </q-dialog>
+
 
     <br>
     </div>
@@ -171,7 +206,7 @@
 import {defineComponent, defineAsyncComponent, ref} from 'vue';
 import { api } from 'boot/axios'
 import { useQuasar } from 'quasar'
-import { onMounted, onUpdated} from 'vue'
+import { onMounted, onUpdated, watchEffect} from 'vue'
 
 const stringOptions = [
   'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
@@ -214,12 +249,14 @@ export default defineComponent({
     const searchtags = ref([])
     const automodel = ref(null)
     const options = ref(searchtags)
+    const ptopid = ref('')
+    //sid.value = props.tabText
 
 
   function getDetails(topic){
       pos.value.splice(0)
 
-      let url = "https://swarmnet-staging.herokuapp.com/posts"
+      let url = "https://swarmnet-prod.herokuapp.com/posts"
       api.get(url,{
       method: 'GET',
       headers: {
@@ -259,8 +296,13 @@ export default defineComponent({
 
       }
 
+      function searchByTags(topicName){
+      console.log("function called")
+      console.log(topicName)
+    }
+
   function displayAllPost(){
-        let curl = "https://swarmnet-staging.herokuapp.com/replies"
+        let curl = "https://swarmnet-prod.herokuapp.com/replies"
           api.get(curl,{
           method: 'GET',
           
@@ -285,7 +327,7 @@ export default defineComponent({
           })
 
     
-         let url = "https://swarmnet-staging.herokuapp.com/posts"
+         let url = "https://swarmnet-prod.herokuapp.com/posts"
          
           api.get(url,{
           method: 'GET',
@@ -341,7 +383,7 @@ export default defineComponent({
        }
 
   function postPost(){
-    let url = "https://swarmnet-staging.herokuapp.com/posts"
+    let url = "https://swarmnet-prod.herokuapp.com/posts"
          
           api.get(url,{
           method: 'POST',
@@ -369,14 +411,105 @@ export default defineComponent({
           })
 
 
-  }     
+  }
+  
+   watchEffect(()=>{
+    console.log("hi")
+    console.log(props.tabText)
+
+
+    if(props.tabText == 0){
+      pos.value.splice(0)
+      
+      let url = "https://swarmnet-prod.herokuapp.com/posts"
+          
+            api.get(url,{
+            method: 'GET',
+            
+            headers: {
+                    'Access-Control-Allow-Origin': '*'
+                  }
+              })
+            .then((response) => {
+              data.value = response.data
+
+              for (let i of data.value) { 
+               
+            
+                pos.value.unshift(i)
+                 posTags.value.unshift(i.tags)
+              for (let j of comments.value){
+              if(i.id == j.id){
+                pos.value.shift()
+                 posTags.value.shift()
+              }
+            }
+            }
+            })
+            .catch(() => {
+              $q.notify({
+                color: 'negative',
+                position: 'top',
+                message: 'Loading failed',
+                icon: 'report_problem'
+              })
+            })
+    }
+    else{
+      pos.value.splice(0)
+      let url = "https://swarmnet-prod.herokuapp.com/posts"
+      api.get(url,{
+      method: 'GET',
+      headers: {
+              'Access-Control-Allow-Origin': '*'
+            }
+        })
+      .then((response) => {
+        console.log("request sent")
+        data.value = response.data
+
+        for (let i of data.value) { 
+          console.log("loop entered")
+          if(i.topicId == parseInt(props.tabText)){
+            
+            pos.value.unshift(i)
+            posTags.value.unshift(i.tags)
+          for(let j of comments.value){
+            if(i.id == j.id ){
+              pos.value.shift()
+              posTags.value.shift()
+            }
+            }
+          }
+        }
+
+        console.log(pos.value)
+
+        for(let j of tops.value){
+          if(j.id == parseInt(props.tabText)){
+            ptabtext.value = j.text
+          }     
+        }  
+           })
+      .catch(() => {
+        $q.notify({
+          color: 'negative',
+          position: 'top',
+          message: 'Loading failed',
+          icon: 'report_problem'
+        })
+      })
+    }
+   
+  });
+
 
   onMounted(() => {
       displayAllPost(); 
     })
   
   onUpdated(()=> {
-    getDetails(props.tabText);
+   console.log(props.tabText);
   })
  
 

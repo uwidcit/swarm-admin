@@ -24,12 +24,15 @@
 
           <div class="row justify-between q-mt-sm">
                 <q-btn flat round color="grey" icon="fas fa-comments" size="sm" />
+                
                 <q-btn flat round icon="far fa-eye" size="sm"/>
+                <!--
                 <q-btn flat round icon="far fa-heart" size="sm" />
+                -->
                 
           </div> 
         </q-item-section>
-
+        
         <q-item-section side top>
           <q-item-label caption>5 min ago</q-item-label>
         </q-item-section>
@@ -103,7 +106,7 @@ export default defineComponent({
 
       function loadPosts(){
          
-         let url = "https://swarmnet-staging.herokuapp.com/posts/" + route.params.id
+         let url = "https://swarmnet-prod.herokuapp.com/posts/" + route.params.id
          
           api.get(url,{
           method: 'GET',
@@ -132,7 +135,7 @@ export default defineComponent({
 
       function loadComments(){
          
-         let url = "https://swarmnet-staging.herokuapp.com/replies"
+         let url = "https://swarmnet-prod.herokuapp.com/replies"
          
           api.get(url,{
           method: 'GET',
@@ -170,7 +173,7 @@ export default defineComponent({
       function showComments(id){
         this.comments.slice(0);
 
-         let url = "https://swarmnet-staging.herokuapp.com/replies"
+         let url = "https://swarmnet-prod.herokuapp.com/replies"
          
           api.get(url,{
           method: 'GET',

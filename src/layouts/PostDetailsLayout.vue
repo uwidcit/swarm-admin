@@ -57,6 +57,7 @@
           </q-item-section>
         </q-item>
 
+        <!--
         <q-btn flat @click="inception = true" active-class="q-item-no-link-highlighting">
           <q-item-section avatar>
             <q-icon name="far fa-edit" />
@@ -65,35 +66,10 @@
             <q-item-label><strong>Create Subtopic</strong></q-item-label>
           </q-item-section>
         </q-btn>
+        -->
+
+        
         </q-list>
-
-        <q-dialog v-model="inception">
-          <q-card style="width: 600px; height: 400px; background-color: powderblue;">
-        <q-card-section>
-          <div class="text-h6">CREATE SUBTOPIC</div>
-        </q-card-section>
-        
-        <q-card-section>
-        <q-input filled  v-model="ph" placeholder="Enter Subtopic"  />
-        </q-card-section>
-      
-        <q-separator />
-
-        
-        <q-card-section style="height: 200px" class="scroll" counter maxlength="260">
-          <q-input type="textarea" v-model="text" counter maxlength="260"  autogrow>
-          </q-input>
-        </q-card-section>
-
-        <q-separator />
-
-        <q-card-actions align="right">
-          <q-btn flat label="Discard" color="primary" @click="text = ''" v-close-popup />
-          <q-btn flat label="Post" color="primary" v-close-popup @click="triggerPositive(); text = '';"/>
-        </q-card-actions>
-      </q-card>
-        </q-dialog>
-        
 
     </q-drawer>
 

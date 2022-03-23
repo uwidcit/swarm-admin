@@ -4,7 +4,7 @@
       <q-toolbar class="glossy">
       <div class="q-gutter-sm row items-center no-wrap ">
         <q-space/>
-          <div  style="max-width: 600px">
+          <div  style="max-width: 1000px">
               <q-tabs
               v-model="tab"
               inline-label
@@ -12,43 +12,18 @@
               mobile-arrows
               class="text-white shadow-2"
               dense
-              indicator-color="transparent"
+              indicator-color="purple"
               active-color="white"
             >
-              <q-tab name="all" label="ALL TOPICS" />
-              <q-tab v-for="topic in tops" :key="topic.id" :label="topic.text" />
+              <q-tab name="all" label="ALL TOPICS" @click="tagText='0'" />
+              <q-tab v-for="topic in tops" :key="topic.id" :label="topic.text" @click="tagText=topic.id"/>
                 
             </q-tabs>
             
           </div>
-
-        <!--
-        <q-tabs
-            v-model="topic_tab"
-            dense
-            style="max-width: 900px"
-            no-caps
-            outside-arrows
-            mobile-arrows
-            inline-label
-            class="bg-primary text-white shadow-2">
-          <q-tab name="all" label="ALL TOPICS" />
-          <q-tab name="flood" icon="fas fa-water" label="FLOOD" />
-          <q-tab name="fire" icon="fas fa-fire" label="FIRE" />
-          <q-tab name="hurricane" icon="fas fa-cloud-showers-heavy" label="HURRICANE" />
-          <q-tab name="volcanic" icon="fas fa-exclamation" label="VOLCANIC" />
-          <q-tab name="eathquake" icon="fas fa-globe-americas" label="EARTHQUAKE" />
-        </q-tabs>
+        <q-btn round color="primary" icon="fas fa-plus"  @click="create= true" dense/>
         <q-space/>
-
-        <q-btn flat round color="white" icon="fas fa-filter" />
-        <q-space/>
-        <q-btn flat round color="white" icon="fas fa-sync-alt" />
-        <q-space/>
-        -->
-        <q-btn flat round color="white" icon="fas fa-plus"  @click="create= true" dense/>
-        <q-space/>
-        <q-btn flat round color="white" icon="fas fa-trash"  @click="triggerPositive()" dense/>
+        <q-btn round color="primary" icon="fas fa-trash"  @click="triggerPositive()" dense/>
     
      </div>
      <div class="board">
@@ -94,40 +69,6 @@
         </q-item>
 
         <q-separator color="orange" inset />
-                    
-  <!--   
-      <q-input 
-        filled bottom-slots 
-        v-model="text" 
-        label="Search Board" 
-       
-        color="white">
-        <template v-slot:prepend>
-          <q-icon name="search" />
-        </template>
-        <template v-slot:append>
-          <q-icon name="close" @click="text = ''" class="cursor-pointer" />
-        </template>
-      </q-input>
-  -->
-
-         <!--
-          <q-btn round dense flat color="white" icon="notifications">
-            <q-badge color="red" text-color="white" floating>
-              5
-            </q-badge>
-            <q-menu
-            >
-              <q-list style="min-width: 100px">
-                <q-card class="text-center no-shadow no-border">
-                  <q-btn label="View All" style="max-width: 120px !important;" flat dense
-                         class="text-indigo-8"></q-btn>
-                </q-card>
-              </q-list>
-            </q-menu>
-
-          </q-btn>
-          -->
         <q-item to="/" active-class="q-item-no-link-highlighting v-ripple">
           <q-item-section avatar>
             <q-icon name="fas fa-home"/>
@@ -137,7 +78,7 @@
           </q-item-section>
         </q-item>
 
-        <q-item to="/AlertMap" active-class="q-item-no-link-highlighting">
+        <q-item to="/Alerts" active-class="q-item-no-link-highlighting">
           <q-item-section avatar>
             <q-icon name="fas fa-exclamation-triangle"/>
           </q-item-section>
@@ -167,6 +108,7 @@
     </q-drawer>
 
     <q-page-container class="bg-grey-2">
+      <!--<post-board :tabText="tagText" /> -->
       <router-view />
     </q-page-container>
 
@@ -198,6 +140,7 @@
   </q-layout>
 </template>
 
+
 <script>
 import EssentialLink from 'components/EssentialLink.vue'
 import PostBoard from 'components/PostBoard.vue';
@@ -205,18 +148,14 @@ import { defineComponent, ref } from 'vue'
 import { useQuasar } from 'quasar'
 import { onMounted, onUpdated} from 'vue'
 import { api } from 'boot/axios'
-
-
 export default defineComponent({
+
   name: 'MainLayout',
-
-  props:['lorem'],
-
+  //props:['lorem'],
   components: {
     EssentialLink,
     PostBoard
   },
-
   data () {
     return {
       text: '',
@@ -246,7 +185,6 @@ export default defineComponent({
       }
     }
   },
-
   setup () {
     const leftDrawerOpen = ref(false)
     const lorem = ref('')
@@ -254,9 +192,10 @@ export default defineComponent({
     const tops = ref([])
     const data = ref(null)
 
+
      function loadData () {
        tops.value.splice[0]
-    api.get('https://swarmnet-staging.herokuapp.com/topics',{
+    api.get('https://swarmnet-prod.herokuapp.com/topics',{
   method: 'GET',
   
   headers: {
@@ -279,10 +218,9 @@ export default defineComponent({
         })
       })
   }
-
      function addTopic(newTopic, topLevel){
        console.log(newTopic)
-       api.post("https://swarmnet-staging.herokuapp.com/topics",{        
+       api.post("https://swarmnet-prod.herokuapp.com/topics",{        
               text: newTopic,
               level: parseInt(topLevel),
               },
@@ -309,13 +247,12 @@ export default defineComponent({
               })
             })
      }
-
   onMounted(() => {
       loadData();
     })
  
-
     return {
+      tagText: '0',
       addTopic,
       tops,
       loadData,
@@ -323,7 +260,7 @@ export default defineComponent({
       /*toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
       },*/
-      lorem,
+      
       miniState: ref(true),
       topic_tab:ref('all'),
       maximizedToggle: ref(false),
@@ -333,10 +270,11 @@ export default defineComponent({
         ph: ref(''),
         lev: ref(''),
 
+
         triggerPositive(){
             $q.notify({
               type: 'positive',
-              message: 'TOPIC CREATED'
+              message: 'TOPIC DELETED'
             })
             // simulate delay
             setTimeout(() => {
@@ -351,4 +289,3 @@ export default defineComponent({
   }
 })
 </script>
-

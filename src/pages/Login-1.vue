@@ -51,6 +51,7 @@ import {defineComponent} from 'vue'
 import {ref} from 'vue'
 import { api } from 'boot/axios'
 import { useQuasar } from 'quasar'
+import { onMounted, onUpdated} from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 
@@ -64,7 +65,7 @@ export default defineComponent({
     function login(username, password){
       console.log("enter")
     
-      let urrl = "https://swarmnet-staging.herokuapp.com/auth"
+      let urrl = "https://swarmnet-prod.herokuapp.com/auth"
       api.post(urrl, {
         "username": username,
         "password": password
@@ -72,7 +73,7 @@ export default defineComponent({
 
         if(response.status == 200){
           localStorage.setItem('token', response.data.access_token)
-          const redirectPath = route.query.redirect || '/'
+          const redirectPath = route.query.redirect || '/home'
           router.push(redirectPath)
 
         }     
