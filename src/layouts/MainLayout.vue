@@ -10,7 +10,7 @@
               inline-label
               outside-arrows
               mobile-arrows
-              class="text-white shadow-2"
+              class="bg-primary text-white shadow-2"
               dense
               indicator-color="purple"
               active-color="white"
@@ -68,8 +68,8 @@
           </q-item-section>
         </q-item>
 
-        <q-separator color="orange" inset />
-        <q-item to="/" active-class="q-item-no-link-highlighting v-ripple">
+        <q-separator color="white" inset />
+        <q-item to="/home" active-class="q-item-no-link-highlighting v-ripple">
           <q-item-section avatar>
             <q-icon name="fas fa-home"/>
           </q-item-section>
@@ -107,11 +107,6 @@
       </q-list>
     </q-drawer>
 
-    <q-page-container class="bg-grey-2">
-      <!--<post-board :tabText="tagText" /> -->
-      <router-view />
-    </q-page-container>
-
     <q-dialog v-model="create">
       <q-card style="width: 600px; height: 400px; background-color: powderblue;">
         <q-card-section>
@@ -137,14 +132,18 @@
       </q-card>
     </q-dialog>
 
+      <q-page-container class="bg-grey-2">
+      <router-view />
+    </q-page-container>
+
   </q-layout>
 </template>
 
 
 <script>
-import EssentialLink from 'components/EssentialLink.vue'
+
 import PostBoard from 'components/PostBoard.vue';
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, provide  } from 'vue'
 import { useQuasar } from 'quasar'
 import { onMounted, onUpdated} from 'vue'
 import { api } from 'boot/axios'
@@ -153,7 +152,6 @@ export default defineComponent({
   name: 'MainLayout',
   //props:['lorem'],
   components: {
-    EssentialLink,
     PostBoard
   },
   data () {
@@ -186,15 +184,14 @@ export default defineComponent({
     }
   },
   setup () {
-    const leftDrawerOpen = ref(false)
-    const lorem = ref('')
     const $q = useQuasar()
     const tops = ref([])
     const data = ref(null)
+    const tagText = ref('0')
 
 
      function loadData () {
-       tops.value.splice[0]
+       tops.value.splice(0)
     api.get('https://swarmnet-prod.herokuapp.com/topics',{
   method: 'GET',
   
@@ -219,8 +216,9 @@ export default defineComponent({
       })
   }
      function addTopic(newTopic, topLevel){
-       console.log(newTopic)
-       api.post("https://swarmnet-prod.herokuapp.com/topics",{        
+       console.log(newTopic , topLevel)
+
+      api.post("https://swarmnet-prod.herokuapp.com/topics",{        
               text: newTopic,
               level: parseInt(topLevel),
               },
@@ -234,7 +232,13 @@ export default defineComponent({
             .then((response) => {
               console.log(response.status)
               if(response.status == 201){
-                triggerPositive ();
+                loadData ();
+                $q.notify({
+                  color: 'positive',
+                  type: 'positive',
+                  position: 'bottom',
+                  message: 'NEW TOPIC CREATED',
+                })
             }
           }
         )
@@ -245,14 +249,19 @@ export default defineComponent({
                 message: 'Loading failed',
                 icon: 'report_problem'
               })
-            })
+            }) 
+     }
+
+     function deleteTopic(postID){
+
      }
   onMounted(() => {
       loadData();
     })
+    provide('message', tagText)
  
-    return {
-      tagText: '0',
+    return { 
+      tagText,
       addTopic,
       tops,
       loadData,

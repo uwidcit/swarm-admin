@@ -29,14 +29,11 @@
 
       </q-select>
     
-      
-      
-
 
       <div class="q-pa-md" style="position: absolute; right: 0;">
         <q-btn fab flat round icon="far fa-edit" color="accent" size="0xs" fab-mini @click="fixed = true"/>
         
-        <q-btn icon="event" flat round color="accent">
+      <q-btn icon="event" flat round color="accent">
       <q-popup-proxy @before-show="updateProxy" cover transition-show="scale" transition-hide="scale">
         <q-date v-model="proxyDate">
           <div class="row items-center justify-end q-gutter-sm">
@@ -50,22 +47,9 @@
        <q-radio keep-color v-model="shape" val="res" label="Restricted" color="teal" />
        <q-radio keep-color v-model="shape" val="line" label="Unrestricted" color="teal" />
 
-
-       
        </div>
     </div>
   
-      <!--
-      <q-toggle
-        v-model="subbed"
-        checked-icon="check"
-        color="red"
-        unchecked-icon="clear"
-        v-on:click="showNotif"
-      />
-      -->
-
-
 
      <q-dialog v-model="fixed" no-refocus>
       <q-card style="width: 600px; height: 400px; background-color: powderblue;">
@@ -151,17 +135,9 @@
            </div>
 
           <div class="row justify-between q-mt-sm">
-                <q-btn @click.prevent flat round color="grey" icon="fas fa-comments" size="sm" />
-                <q-btn @click.prevent flat round icon="far fa-eye" size="sm"/>
-                <!--
-                <q-btn @click.prevent flat round  size="sm"
-                   
-                     icon="far fa-heart"
-                    v-bind:class="{'white': !this.data.clicked, 'blue': this.data.clicked}"
-                    v-on:click ="this.data.clicked = !this.data.clicked" 
-                    />
-                    -->
-                
+                <q-btn @click.prevent flat round color="grey" icon="fas fa-comments" size="sm" @click="prompt = true" />
+                <q-btn @click.prevent flat round icon="far fa-eye" size="sm" />
+
           </div> 
         </q-item-section>
 
@@ -190,14 +166,11 @@
 
     <br>
     </div>
-    
-    <!--
-    <div class="q-pa-md q-gutter-sm">
-      <q-btn color="teal" label="DELETE TOPIC"/>
-
-    </div>
-    -->
-
+  <!--
+  <p>
+    Message to grand child: {{ message }}
+  </p>
+  -->
 </template>
 
 
@@ -206,19 +179,8 @@
 import {defineComponent, defineAsyncComponent, ref} from 'vue';
 import { api } from 'boot/axios'
 import { useQuasar } from 'quasar'
-import { onMounted, onUpdated, watchEffect} from 'vue'
-
-const stringOptions = [
-  'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
-].reduce((acc, opt) => {
-  for (let i = 1; i <= 5; i++) {
-    acc.push(opt + ' ' + i)
-  }
-  return acc
-}, [])
-
-
-
+import { onMounted, onUpdated, watchEffect, inject} from 'vue'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   name: 'PostBoard',
@@ -227,9 +189,7 @@ export default defineComponent({
 
   data(){
         return {
-          topic: this.$route.params.props,
-         
-           
+          topic: this.$route.params.tabText,
           }
         
      },
@@ -237,6 +197,7 @@ export default defineComponent({
 
   setup (props) {
     const $q = useQuasar()
+    const route = useRoute()
     const data = ref(null)
     const tops = ref([])
     const pos = ref([])
@@ -250,6 +211,7 @@ export default defineComponent({
     const automodel = ref(null)
     const options = ref(searchtags)
     const ptopid = ref('')
+    const message = inject('message')
     //sid.value = props.tabText
 
 
@@ -415,10 +377,10 @@ export default defineComponent({
   
    watchEffect(()=>{
     console.log("hi")
-    console.log(props.tabText)
+    console.log(message.value)
 
 
-    if(props.tabText == 0){
+    if(message.value == 0){
       pos.value.splice(0)
       
       let url = "https://swarmnet-prod.herokuapp.com/posts"
@@ -470,7 +432,7 @@ export default defineComponent({
 
         for (let i of data.value) { 
           console.log("loop entered")
-          if(i.topicId == parseInt(props.tabText)){
+          if(i.topicId == parseInt(message.value)){
             
             pos.value.unshift(i)
             posTags.value.unshift(i.tags)
@@ -508,12 +470,9 @@ export default defineComponent({
       displayAllPost(); 
     })
   
-  onUpdated(()=> {
-   console.log(props.tabText);
-  })
- 
 
     return {
+      message,
       shape: ref('line'),
       modelMultiple: ref(),
       automodel,
@@ -541,6 +500,7 @@ export default defineComponent({
         model,
         subbed,
         fixed: ref(false),
+        prompt: ref(false),
         text: ref(''),
         ph: ref(''),
         dense: ref(false),
@@ -568,3 +528,4 @@ export default defineComponent({
   }
 })
 </script>
+
