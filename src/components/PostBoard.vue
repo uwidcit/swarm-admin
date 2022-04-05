@@ -97,7 +97,7 @@
 
         <q-card-actions align="right">
           <q-btn flat label="Discard" color="primary" @click="text = ''" v-close-popup />
-          <q-btn flat label="Post" color="primary" v-close-popup @click="triggerPositive(); text = '';"/>
+          <q-btn flat label="Post" color="primary" v-close-popup @click="postPost(text, modelMultiple); text = '';"/>
         </q-card-actions>
 
       </q-card>
@@ -344,36 +344,44 @@ export default defineComponent({
          }   
        }
 
-  function postPost(){
-    let url = "https://swarmnet-prod.herokuapp.com/posts"
-         
-          api.get(url,{
-          method: 'POST',
+ function postPost(text, tags){
+      if(ptopid.value == ''){
+        ptopid.value = props.tabText
+      }
+      let url = "https://swarmnet-prod.herokuapp.com/posts"
           
-          headers: {
+            api.post(url,{
+              topic_id: ptopid.value,  
+              text: text,
+              tags: tags,
+              composed: "2022-03-02T14:48:00Z"
+              },
+              {
+                headers: {
+                  Authorization:'JWT '+ localStorage.getItem('token'),
                   'Access-Control-Allow-Origin': '*'
+                  
                 }
+              }
+              )
+            .then((response) => {
+              if(response.data == "Created"){
+                triggerPositive ();
+                setTimeout(() => {
+                  displayAllPost();    
+          }, 3000) 
+              }
+  
             })
-          .then((response) => {
-            if(response.data == "Created"){
-              triggerPositive ();
-              setTimeout(() => {
-                displayAllPost();    
-        }, 3000) 
-            }
- 
-          })
-          .catch(() => {
-            $q.notify({
-              color: 'negative',
-              position: 'top',
-              message: 'Loading failed',
-              icon: 'report_problem'
-            })
-          })
-
-
-  }
+            .catch(() => {
+              $q.notify({
+                color: 'negative',
+                position: 'top',
+                message: 'Loading failed',
+                icon: 'report_problem'
+              })
+            }) 
+    }  
   
    watchEffect(()=>{
     console.log("hi")
@@ -492,6 +500,7 @@ export default defineComponent({
         data, 
         displayAllPost,
         tops,
+        postPost,
         pos,
         posTags,
         getDetails,
