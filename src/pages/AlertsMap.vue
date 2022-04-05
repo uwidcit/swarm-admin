@@ -5,6 +5,12 @@
     <div id="over_map">
      <q-btn color="primary" icon="fas fa-exclamation-triangle" label="All Alerts" @click="all_alerts= true"/>
      <q-btn color="primary" icon="fas fa-book-open" label="History" @click="history= true"/>
+    
+    </div>
+    <div id="floating-panel">
+      <input id="hide-resolve" type="button" value="Hide Resolve Alerts" />
+      <input id="show-resolve" type="button" value="Show Resolve Alerts" />
+      <input id="delete-resolve" type="button" value="Delete Resolve Alerts" />
     </div>
   </div>
   <q-dialog
@@ -29,7 +35,7 @@
           <div class="text-h6">Alerts</div>
         </q-card-section>
 
-        <q-card-section v-for="alert in alerts " :key="alert.created" class="q-pt-none">
+        <q-card-section v-for="alert in alerts " :key="alert.alertID" class="q-pt-none">
         <div class="text-h7">
          <ul>
            <li>
@@ -38,7 +44,9 @@
             Created: {{alert.created}}<br />
                 Composed: {{alert.composed}}<br />
                 latitude: {{alert.latitude}}<br />
-                longitude: {{alert.longitude}}</p>
+                longitude: {{alert.longitude}}<br />
+                Status: {{alert.status}}<br />
+                </p>
            </li>
          </ul>
          </div>
@@ -53,6 +61,7 @@ import { defineComponent, ref } from 'vue'
 import { api } from 'boot/axios'
 import axios from 'axios';
 import { onMounted} from 'vue'
+import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
 export default defineComponent({
   name: "Map",
@@ -108,7 +117,7 @@ export default defineComponent({
     const alerts = ref([])
     
     const data = ref(null)
-
+    let markers = [];
        /*function loadAlerts () {
     api.get('https://swarmnet-prod.herokuapp.com/alerts',{
   method: 'GET',
@@ -135,6 +144,7 @@ export default defineComponent({
         })
       })
   } */
+  
     function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
          zoom: 8,
@@ -142,9 +152,10 @@ export default defineComponent({
          mapTypeId: google.maps.MapTypeId.ROADMAP
     });
 
-    var infowindow = new google.maps.InfoWindow;
 
-    var marker, i;
+    var infowindow = new google.maps.InfoWindow;
+    //let markers = [];
+    var marker, i,count=0,a=3;
       
       api.get('https://swarmnet-prod.herokuapp.com/alerts',{
   method: 'GET',
@@ -158,23 +169,56 @@ export default defineComponent({
     .then((response) => { 
         data.value = response.data
         for (let i of data.value) { 
+         // const status = {active: "true" };
+         Object.defineProperty(i, "alertID", {value : count,
+                       writable : true,
+                       enumerable : true,
+                       configurable : true});
           
+          Object.defineProperty(i, "status", {value : "Active",
+                       writable : true,
+                       enumerable : true,
+                       configurable : true});
+          
+          
+          //console.log(i.alertID)
           alerts.value.push(i)
-          //console.log(i.longitude,i.latitude)
+         // console.log(alerts.value[0].text)
            marker = new google.maps.Marker({
-          
              position: new google.maps.LatLng(i.latitude,i.longitude),
+             //visible:false,
              map: map
         });
+        markers.push(marker);
+        //console.log(markers[1]);
+
         google.maps.event.addListener(marker, 'click', (function(marker) {
              return function() {
-                 infowindow.setContent("User : "+ i.userID+ "<br/> Created: " + i.created+"<br/> Alert : "+i.text);
+                 infowindow.setContent("User : "+ i.userID+ 
+                 "<br/> Created: " + i.created
+                 +"<br/> Alert: "+i.text
+                 +'<br/> Status: '+i.status
+                 +"<br/>"
+                 +'<center><button id="resolve">Resolve</button></center>');
+                             
+                 /*const someButton = document.getElementById('resolve');
+                if (someButton) {
+                  google.maps.listener.addDomListener(someButton, 'click',    
+                  () => {
+                          console.log("TEST");
+                        })
+                }*/
                  infowindow.open(map, marker);
+                
              }
         })(marker));
-          
+        google.maps.event.addListener(infowindow, "domready", function () {
+      document.getElementById("resolve").onclick= resolveAlert
+  
+    });
+          count++
         }
-       
+
       })
       .catch(() => {
         $q.notify({
@@ -184,40 +228,81 @@ export default defineComponent({
           icon: 'report_problem'
         })
       })
-  
-  
-       
-          
- //for (i = 0; i < alerts.length; i++) {  
-  // for (const alert of Object.entries(alerts) ){
-  // for (var alert in alerts){
-    //Object.keys(alerts).forEach(alert => {
-     // for (let i of alerts.value) { 
-      /* for (let x of alerts.value) { 
-          console.log("test")
-         console.log(x)
-        marker = new google.maps.Marker({
-          
-             position: new google.maps.LatLng(x.latitude,x.longitude),
-             map: map
-        });
+      
+   document
+    .getElementById("show-resolve")
+    .addEventListener("click", showResolveAlerts);
+  document
+    .getElementById("hide-resolve")
+    .addEventListener("click", hideResolveAlerts);
+  document
+    .getElementById("delete-resolve")
+    .addEventListener("click", deleteResolveAlerts);   
 
-        google.maps.event.addListener(marker, 'click', (function(marker, i) {
-             return function() {
-                 infowindow.setContent(x.text);
-                 infowindow.open(map, marker);
-             }
-        })(marker, i));
-  }*/
-    
+  
+ 
 }
+
+ 
+
+function resolveAlert() {
+  //console.log("TEST");
+  alerts.value[3].status="Resolve";
+ // console.log(alerts.value[3].status);
+ /*for (var alert in alerts){
+          this.markers[i]["visibility"] = false;
+        }*/
+}
+
+function setMapOnAll(map) {
+  for (let l = 0; l < markers.length; l++) {
+    markers[l].setMap(map);
+  }
+}
+
+function hideResolveAlerts() {
+  let size=Object.keys(alerts).length
+  for (let k=0;k<size;k++){
+         if(alerts.value[k].status=="Resolve"){
+            markers[k].setVisible(false);
+         }
+        }
+  
+  //visible:false,
+  //markers[0].setVisible(false);
+   //markers[1].setVisible(false);
+    //markers[2].setVisible(false);
+}
+//showMarkers(markers);
+function showResolveAlerts() {
+  let size=Object.keys(alerts).length
+  console.log(size)
+  for (let m=0;m<size;m++){
+         if(alerts.value[m].status=="Resolve"){
+            markers[m].setVisible(true);
+         }
+        }
+}
+function deleteResolveAlerts() {
+  let size=Object.keys(alerts).length
+  console.log(size)
+  for (let m=0;m<size;m++){
+         if(alerts.value[m].status=="Resolve"){
+            markers[m].setMap(null);
+            markers.splice(m, 1);
+
+         }
+        }
+}
+
+
 
  
 /*onMounted(() => {
       loadAlerts();
     })*/
     return {
-      mapData: ref(''),initMap,history: ref(false),all_alerts: ref(false),maximizedToggle: ref(false),alerts//loadAlerts
+      mapData: ref(''),initMap,history: ref(false),all_alerts: ref(false),maximizedToggle: ref(false),alerts,deleteResolveAlerts,hideResolveAlerts,showResolveAlerts,setMapOnAll//loadAlerts
     
       
     }
@@ -231,4 +316,16 @@ export default defineComponent({
 <style scoped>
    #wrapper { position: relative; }
    #over_map { position: absolute; top: 10px; right: 500px; z-index: 99; }
+   #floating-panel {
+  position: absolute;
+  top: 50px;
+  left: 35%;
+  z-index: 5;
+  
+ 
+  text-align: center;
+  font-family: "Roboto", "sans-serif";
+  line-height: 30px;
+  
+}
 </style>
