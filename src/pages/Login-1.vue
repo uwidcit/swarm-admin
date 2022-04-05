@@ -53,15 +53,12 @@ import { api } from 'boot/axios'
 import { useQuasar } from 'quasar'
 import { onMounted, onUpdated} from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-
-
 export default defineComponent({
   setup() {
      const $q = useQuasar()
      const router = useRouter()
     const route = useRoute()
      const loading = ref([false])
-
     function login(username, password){
       console.log("enter")
     
@@ -70,12 +67,10 @@ export default defineComponent({
         "username": username,
         "password": password
       }).then((response) => {
-
         if(response.status == 200){
           localStorage.setItem('token', response.data.access_token)
           const redirectPath = route.query.redirect || '/home'
           router.push(redirectPath)
-
         }     
     })
           .catch(() => {
@@ -91,7 +86,6 @@ export default defineComponent({
      function simulateProgress (number,username,password) {
       // we set loading state
       loading.value[ number ] = true
-
       // simulate a delay
       setTimeout(() => {
         // we're done, we reset loading state
@@ -99,7 +93,6 @@ export default defineComponent({
         login(username,password)
       }, 3000)
     }
-
     return {
       login,
       username: ref(''),
@@ -112,11 +105,9 @@ export default defineComponent({
 </script>
 
 <style>
-
 .bg-image {
   background-image: linear-gradient(135deg, #7028e4 0%, #e5b2ca 100%);
 }
-
 .center {
   margin: auto;
   width: 25%;

@@ -22,6 +22,7 @@
             </q-chip>
            </div>
 
+
           <div class="row justify-between q-mt-sm">
                 <q-btn flat round color="grey" icon="fas fa-comments" size="sm" />
                 
@@ -46,6 +47,24 @@
 <div v-for="c in testdata" :key="c.id" style="margin-left: 40px">
   <comments  :label="c.text" :nodes="c.tags" :depth="0" ></comments>
 </div>
+
+<div class="q-pa-md q-gutter-sm" align="center">
+    <q-btn color="accent" icon="fas fa-trash" label="Delete Post" @click="deletepost=true" dense/>
+    <br>
+</div>
+
+ <q-dialog v-model="deletepost">
+      <q-card style="width: 250px; height: 250px; background-color: powderblue;">
+        <q-card-section>
+          <div class="text-h6">Delete Post</div>
+        </q-card-section>
+        <q-separator />
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="primary" @click="ph = '', lev=''" v-close-popup />
+          <q-btn flat label="Delete Post" color="primary" @click="ph = '', lev=''" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
 
 </template>
 
@@ -224,6 +243,9 @@ export default defineComponent({
         postTags,
         commTags,
         showComments,
+        deletepost:ref(false),
+        ph: ref(''),
+        lev: ref(''),
         testdata,
     }
         
