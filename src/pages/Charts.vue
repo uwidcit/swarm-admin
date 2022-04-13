@@ -29,12 +29,12 @@ import {defineComponent, defineAsyncComponent} from 'vue'
 export default defineComponent({
   name: "Charts",
   components: {
-    PieChart: defineAsyncComponent(() => import('components/charts/PieChart')),
-    ScatterPlot: defineAsyncComponent(() => import('components/charts/ScatterPlot')),
+   // PieChart: defineAsyncComponent(() => import('components/charts/PieChart')),
+   // ScatterPlot: defineAsyncComponent(() => import('components/charts/ScatterPlot')),
     LineChart: defineAsyncComponent(() => import('components/charts/LineChart')),
     BarChart: defineAsyncComponent(() => import('components/charts/BarChart')),
-    AreaChart: defineAsyncComponent(() => import('components/charts/AreaChart')),
-    GuageChart: defineAsyncComponent(() => import('components/charts/GuageChart')),
+    //AreaChart: defineAsyncComponent(() => import('components/charts/AreaChart')),
+    //GuageChart: defineAsyncComponent(() => import('components/charts/GuageChart')),
   },
 })
 </script>

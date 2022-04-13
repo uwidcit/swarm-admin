@@ -88,16 +88,16 @@
           </q-item-section>
         </q-item>
 
-         <q-item to="/Note" active-class="q-item-no-link-highlighting">
+        <!-- <q-item to="/Note" active-class="q-item-no-link-highlighting">
           <q-item-section avatar>
             <q-icon name="fas fa-bell"/>
           </q-item-section>
           <q-item-section>
             <q-item-label>Notifications</q-item-label>
           </q-item-section>
-        </q-item>
+        </q-item>-->
       
-        <q-item to="/Charts" active-class="q-item-no-link-highlighting">
+        <q-item to="/PostAnalytics" active-class="q-item-no-link-highlighting">
           <q-item-section avatar>
             <q-icon name="fas fa-chart-line"/>
           </q-item-section>
@@ -267,7 +267,7 @@ export default defineComponent({
     //const confirm = ref(false)
 
 
-     function loadData () {
+     function loadData () {//get Topics from api
        tops.value.splice(0)
     api.get('https://swarmnet-prod.herokuapp.com/topics',{
   method: 'GET',
@@ -292,7 +292,7 @@ export default defineComponent({
         })
       })
   }
-     function addTopic(newTopic, topLevel){
+     function addTopic(newTopic, topLevel){//add topics 
        console.log(newTopic , topLevel)
 
       api.post("https://swarmnet-prod.herokuapp.com/topics",{        
