@@ -2,7 +2,7 @@
   <div>
     <q-card>
       <q-card-section class="text-h6">
-        Line Chart
+        Line Chart of All Topics
       </q-card-section>
       <q-card-section>
         <div ref="linechart" id="lineChart" style="height: 300px;"></div>
@@ -30,7 +30,7 @@ export default {
           }
         },
         legend: {
-          data: ['Line 1', 'Line 2', 'Line 3', 'Line 4', 'Line 5'],
+          data: ['Flood', 'Fire', 'Hurricane', 'Volcanic', 'Earthquake'],
           bottom: 10,
         },
         grid: {
@@ -78,7 +78,7 @@ export default {
             data: [140, 232, 101, 264, 90, 340, 250]
           },
           {
-            name: 'Line 2',
+            name: 'Fire',
             type: 'line',
             stack: 'Total',
             smooth: true,
@@ -102,7 +102,7 @@ export default {
             data: [120, 282, 111, 234, 220, 340, 310]
           },
           {
-            name: 'Line 3',
+            name: 'Hurricane',
             type: 'line',
             stack: 'Total',
             smooth: true,
@@ -126,7 +126,7 @@ export default {
             data: [320, 132, 201, 334, 190, 130, 220]
           },
           {
-            name: 'Line 4',
+            name: 'Volcanic',
             type: 'line',
             stack: 'Total',
             smooth: true,
@@ -150,7 +150,7 @@ export default {
             data: [220, 402, 231, 134, 190, 230, 120]
           },
           {
-            name: 'Line 5',
+            name: 'Earthquake',
             type: 'line',
             stack: 'Total',
             smooth: true,
