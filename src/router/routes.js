@@ -7,7 +7,7 @@ const routes = [
       {path: '/Alerts', component: () => import('pages/AlertsMap.vue')},
      // { path: '/Note', component: () => import('pages/Notification.vue') },
       //{ path: '/PostAnalytics', component: () => import('pages/Charts.vue') },
-      { path: '/PostAnalytics', component: () => import('components/Charts/BarChart.vue') },
+      { path: '/PostAnalytics', component: () => import('components/charts/BarChart.vue') },
 
     ]
   },
@@ -17,7 +17,6 @@ const routes = [
     path: '/',
     component: () => import('pages/Login.vue')
   },
-
 
   {
     path: '/Details',

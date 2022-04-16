@@ -8,8 +8,8 @@
     
     </div>
     <div id="floating-panel">
-      <input id="hide-resolve" type="button" value="Hide Resolve Alerts" />
-      <input id="show-resolve" type="button" value="Show Resolve Alerts" />
+      <input id="hide-resolve" type="button" value="Hide Resolved Alerts" />
+      <input id="show-resolve" type="button" value="Show Resolved Alerts" />
     </div>
   </div>
   <q-dialog
