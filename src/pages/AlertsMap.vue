@@ -4,13 +4,13 @@
     <div id="map" style=" height: 92.7vh; width: 100%"></div>
     <div id="over_map">
      <q-btn color="primary" icon="fas fa-exclamation-triangle" label="All Alerts" @click="all_alerts= true"/>
-     <q-btn color="primary" icon="fas fa-book-open" label="History" @click="history= true"/>
+     <q-btn color="primary" icon="fas fa-book-open" label="Alerts History" @click="history= true"/>
     
     </div>
     <div id="floating-panel">
-      <input id="hide-resolve" type="button" value="Hide Resolve Alerts" />
-      <input id="show-resolve" type="button" value="Show Resolve Alerts" />
-      <input id="delete-resolve" type="button" value="Delete Resolve Alerts" />
+      <input id="hide-resolve" type="button" value="Hide Resolved Alerts" />
+      <input id="show-resolve" type="button" value="Show Resolved Alerts" />
+      <input id="delete-resolve" type="button" value="Delete Resolved Alerts" />
     </div>
   </div>
   <q-dialog
@@ -191,6 +191,7 @@ export default defineComponent({
         });
         markers.push(marker);
         //console.log(markers[1]);
+        console.log(i.latitude,i.longitude)
 
         google.maps.event.addListener(marker, 'click', (function(marker) {
              return function() {

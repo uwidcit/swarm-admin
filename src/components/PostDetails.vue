@@ -1,7 +1,7 @@
 <template>
 
 <div class="q-pa-md" >
-    <q-list bordered padding>
+    <q-list bordered padding >
 
       <q-item >
         <q-item-section top avatar>
@@ -12,7 +12,6 @@
 
         <q-item-section>
           <q-item-label> <strong> {{title}} </strong></q-item-label>
-          <br/>
 
            <div class=" q-gutter-md">
             <q-chip square color="purple-2" text-color="white" icon="sell" size="md"
@@ -20,76 +19,47 @@
                     :key="tags.id">
               {{tags.text}}
             </q-chip>
+
            </div>
 
-
-          <div class="row justify-between q-mt-sm">
-                <q-btn flat round color="grey" icon="fas fa-comments" size="sm" />
-                
-                <q-btn flat round icon="far fa-eye" size="sm"/>
-                <!--
-                <q-btn flat round icon="far fa-heart" size="sm" />
-                -->
-                
-          </div> 
         </q-item-section>
-        
+
         <q-item-section side top>
-          <q-item-label caption>5 min ago</q-item-label>
+          <q-item-label caption>
+            {{date}}</q-item-label>
         </q-item-section>
         
       </q-item>
     </q-list>
 </div>
 
-<div id="rcorners"><h5 class="text-italic">Comments</h5></div>
 
-<div v-for="c in testdata" :key="c.id" style="margin-left: 40px">
-  <comments  :label="c.text" :nodes="c.tags" :depth="0" ></comments>
-</div>
+  <div  v-for="c in testdata" :key="c.id" style="margin-left: 40px; box-sizing: border-box; ">
+      <comments :label="c.text" :nodes="c.replies" :depth="0"  :id="c.id" :topic="c.topicId" :date="c.created"></comments>
+    </div>
 
-<div class="q-pa-md q-gutter-sm" align="center">
-    <q-btn color="accent" icon="fas fa-trash" label="Delete Post" @click="deletepost=true" dense/>
-    <br>
-</div>
-
- <q-dialog v-model="deletepost">
-      <q-card style="width: 250px; height: 250px; background-color: powderblue;">
-        <q-card-section>
-          <div class="text-h6">Delete Post</div>
-        </q-card-section>
-        <q-separator />
-        <q-card-actions align="right">
-          <q-btn flat label="Cancel" color="primary" @click="ph = '', lev=''" v-close-popup />
-          <q-btn flat label="Delete Post" color="primary" @click="ph = '', lev=''" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
+ 
 </template>
 
 <script>
 import Comments from 'components/Comments.vue'
-import { ref, defineComponent, watch } from 'vue'
+import { ref, defineComponent, provide } from 'vue'
 import { api } from 'boot/axios'
 import { useQuasar } from 'quasar'
 import { onMounted} from 'vue'
 import { useRoute } from 'vue-router'
-
+import { formatDistance} from 'date-fns'
 export default defineComponent({
     
      name: 'PostDetails',
-     props: [ 'label', 'nodes', 'depth' ],
-
+     props: [ 'label', 'nodes', 'depth', 'id', 'topic', 'date' ],
      components: {
       Comments
     },
-
      data(){
         return {PostId: this.$route.params.id}
      },
     
-
      setup() {
       const route = useRoute()
       const $q = useQuasar()
@@ -100,29 +70,12 @@ export default defineComponent({
       const postTags = ref([])
       const commTags = ref([])
       const testdata = ref([])
-      const tree = ref({label: 'root',
-                        nodes: [
-                          {
-                            label: 'item1',
-                            nodes: [
-                              {
-                                label: 'item1.1'
-                              },
-                              {
-                                label: 'item1.2',
-                                nodes: [
-                                  {
-                                    label: 'item1.2.1'
-                                  }
-                                ]
-                              }
-                            ]
-                          }, 
-                          {
-                            label: 'item2'  
-                          }
-                        ]})
-
+      const date = ref("")
+      function datePassed(time) {
+      console.log(Date.parse(time))
+      console.log(formatDistance(Date.parse(time), new Date(), { addSuffix: true }))
+        return formatDistance(Date.parse(time), new Date(), { addSuffix: true })
+    }
       function loadPosts(){
          
          let url = "https://swarmnet-prod.herokuapp.com/posts/" + route.params.id
@@ -137,9 +90,9 @@ export default defineComponent({
           .then((response) => {
             data.value = response.data
             posts.value.push(data.value) 
-            
-          title.value = posts.value[0].text
-          postTags.value = posts.value[0].tags
+            date.value = datePassed(posts.value[0].created)
+            title.value = posts.value[0].text
+            postTags.value = posts.value[0].tags
           })
           .catch(() => {
             $q.notify({
@@ -149,11 +102,8 @@ export default defineComponent({
               icon: 'report_problem'
             })
           })
-
       }
-
       function loadComments(){
-         
          let url = "https://swarmnet-prod.herokuapp.com/replies"
          
           api.get(url,{
@@ -167,7 +117,11 @@ export default defineComponent({
             data.value = response.data
             
             for (let i of data.value) {
-             testdata.value.push(i)
+              if(i.originalPostId == route.params.id){
+                 testdata.value.push(i)
+              }
+              console.log('hi')
+              console.log(i.topicId)
             }
             for (let i of data.value) { 
                 if(i.originalPostId == route.params.id){
@@ -186,12 +140,9 @@ export default defineComponent({
               icon: 'report_problem'
             })
           })
-
       }
-
       function showComments(id){
         this.comments.slice(0);
-
          let url = "https://swarmnet-prod.herokuapp.com/replies"
          
           api.get(url,{
@@ -224,17 +175,14 @@ export default defineComponent({
               icon: 'report_problem'
             })
           })
-
       }
-
-
   onMounted(() => {
       loadPosts();
       loadComments();
     })
-
     return {
-      tree,
+        datePassed,
+        date,
         data, 
         loadPosts,
         posts,
@@ -243,10 +191,8 @@ export default defineComponent({
         postTags,
         commTags,
         showComments,
-        deletepost:ref(false),
-        ph: ref(''),
-        lev: ref(''),
         testdata,
+      
     }
         
     },
@@ -259,5 +205,57 @@ export default defineComponent({
   width: fit-content;
   height: fit-content;
   outline-style: double;
+}
+/**
+ * Lineas / Detalles
+ -----------------------*/
+.comments-list:before {
+	content: '';
+	width: 2px;
+	height: 100%;
+	background: #c7cacb;
+	position: absolute;
+	left: 32px;
+	top: 0;
+}
+.comments-list:after {
+	content: '';
+	position: absolute;
+	background: #c7cacb;
+	bottom: 0;
+	left: 27px;
+	width: 7px;
+	height: 7px;
+	border: 3px solid #dee1e3;
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	border-radius: 50%;
+}
+.reply-list:before, .reply-list:after {display: none;}
+.reply-list li:before {
+	content: '';
+	width: 60px;
+	height: 2px;
+	background: #c7cacb;
+	position: absolute;
+	top: 25px;
+	left: -55px;
+}
+.comments-list li {
+	margin-bottom: 15px;
+	display: block;
+	position: relative;
+}
+.comments-list li:after {
+	content: '';
+	display: block;
+	clear: both;
+	height: 0;
+	width: 0;
+}
+.reply-list {
+	padding-left: 88px;
+	clear: both;
+	margin-top: 15px;
 }
 </style>

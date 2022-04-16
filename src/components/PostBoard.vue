@@ -1,6 +1,5 @@
 <template>
   <div class="q-pa-md" >
-
     <div class="q-gutter-md row">
       <q-input
         v-model="search"
@@ -14,22 +13,25 @@
           <q-icon name="search" />
         </template>
         <template v-slot:append>
-          <q-btn icon="fas fa-times" flat round @click="search=''" />
+          <q-btn icon="fas fa-times" flat round @click="search='', getDetails(topicInfo)" />
         </template>
       </q-input>
+
+      <q-space/>
+
+      <div class="q-gutter-sm row items-center no-wrap ">
+      
+    <q-btn fab flat round icon="far fa-edit" color="accent" size="xs" fab-mini @click="fixed = true">
+      <q-tooltip>
+            Create Post
+          </q-tooltip>
+    </q-btn>
+
     
-
-    <div class="q-pa-md" style="position: absolute; right: 0;">
-  
-       <q-radio keep-color v-model="shape" val="res" label="Restricted" color="accent" />
-       <q-radio keep-color v-model="shape" val="line" label="Unrestricted" color="accent" />
-
-       </div>
-    </div>
-
-  <q-btn fab flat round icon="far fa-edit" color="accent" size="0xs" fab-mini @click="fixed = true"/>
-     
       <q-btn icon="event" flat round color="accent">
+         <q-tooltip>
+            Filter by Date
+          </q-tooltip>
       <q-popup-proxy @before-show="updateProxy" cover transition-show="scale" transition-hide="scale">
         <q-date v-model="proxyDate">
           <div class="row items-center justify-end q-gutter-sm">
@@ -41,7 +43,13 @@
     </q-btn>
 
 
- <q-dialog v-model="fixed" no-refocus>
+
+
+
+      </div>    
+    </div>
+
+     <q-dialog v-model="fixed" no-refocus>
       <q-card style="width: 600px; height: 400px; background-color: powderblue;">
         <q-card-actions>
           <q-btn-dropdown color="primary" label="TOPICS" >
@@ -90,49 +98,43 @@
 
       </q-card>
     </q-dialog>
-  </div> 
-    
+  
+    <!--- 
     <div class="q-pa-md" id= "clear" >
-    <q-list bordered padding separator >
-      <q-item 
-        v-for="(post, index) in pos" 
-        :key="post.id" 
-        :to="`/Details/${post.id}`" 
-        active-class="q-item-no-link-highlighting">
+        <q-list bordered padding separator >
+          
+          <q-item 
+            v-for="(post, index) in pos" 
+            :key="post.id" 
+            :to="`/Details/${post.id}`" 
+            active-class="q-item-no-link-highlighting">
+          
+            <q-item-section top avatar>
+              <q-avatar>
+                <img src="https://cdn.quasar.dev/img/boy-avatar.png">
+              </q-avatar>
+            </q-item-section>
+            <q-item-section>
+              <q-item-label> <strong> {{post.text}} </strong></q-item-label>
+              <div class=" q-gutter-md">
+                
+                <q-chip  v-for="tag in posTags[index]" :key="tag"
+                        square color="purple-2" text-color="white" icon="sell" size="md">     
+                    {{tag.text}}
+                </q-chip>
+                
+                <q-btn @click.prevent flat round color="grey" icon="fas fa-comments" size="sm"
+                      style= " position: absolute; right: 16px;"
+                      @click="prompt = true" />
+              </div>
+            </q-item-section>
+            <q-item-section side top>
+              <q-item-label caption> {{post.created}} </q-item-label>
+            </q-item-section>
+             
+          </q-item> 
+        </q-list>
       
-        <q-item-section top avatar> 
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/img/boy-avatar.png">
-          </q-avatar>
-        </q-item-section>
-
-        <q-item-section>
-          <q-item-label> <strong> {{post.text}} </strong></q-item-label>
-
-          <div class=" q-gutter-md">
-            
-            <q-chip  v-for="tag in posTags[index]" :key="tag"
-                     square color="purple-2" text-color="white" icon="sell" size="md">     
-                {{tag.text}}
-            </q-chip>
-            
-           </div>
-
-          <div class="row justify-between q-mt-sm">
-                <q-btn @click.prevent flat round color="grey" icon="fas fa-comments" size="sm" @click="prompt = true" />
-                <q-btn @click.prevent flat round icon="far fa-eye" size="sm" />
-
-          </div> 
-        </q-item-section>
-
-        <q-item-section side top>
-          <q-item-label caption> {{post.created}} </q-item-label>
-        </q-item-section>
-        
-      
-      </q-item>  
-    </q-list>
-    
         <q-dialog v-model="prompt" persistent>
           <q-card style="min-width: 350px">
             <q-input  placeholder="Add comment..." v-model="text" counter maxlength="260" autogrow :dense="dense">
@@ -145,58 +147,60 @@
             </q-card-actions>
           </q-card>
         </q-dialog>
-
-
-    <br>
+        
     </div>
-  <!--
-  <p>
-    Message to grand child: {{ message }}
-  </p>
-  -->
+    --->
+    </div>
+          
+ <q-page class="q-pa-sm">
+    <div class="row q-col-gutter-sm ">
+      <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12" v-for="(post, index) in pos" >
+        <card-product :data="post"></card-product>
+      </div>
+    </div>
+  </q-page>
 </template>
 
-
-
 <script>
-import {defineComponent, defineAsyncComponent, ref} from 'vue';
+
+import {defineComponent, ref, onMounted, onUpdated, watchEffect } from 'vue';
 import { api } from 'boot/axios'
 import { useQuasar } from 'quasar'
-import { onMounted, onUpdated, watchEffect, inject} from 'vue'
-import { useRoute } from 'vue-router'
-
+import CardProduct from './cards/CardProduct.vue';
 export default defineComponent({
+  components: { CardProduct },
   name: 'PostBoard',
-
-  props:['tabText'],
-
-  data(){
-        return {
-          topic: this.$route.params.tabText,
-          }
-        
-     },
-  
-
+  props:['tabText'], 
+  data() {
+    return {
+      isConnected: false,
+      socketMessage: ''
+  }
+  },
+  sockets: {
+    connect() {
+      // Fired when the socket connects.
+      this.isConnected = true;
+    },
+    disconnect() {
+      this.isConnected = false;
+    },
+  },
   setup (props) {
     const $q = useQuasar()
-    const route = useRoute()
     const data = ref(null)
     const tops = ref([])
     const pos = ref([])
-    const  subbed = ref(true)
+    const subbed = ref(false)
     const model = ref(null)
     const posTags = ref([])
     const tab = ref('flooding')
     const comments = ref([])
     const ptabtext = ref('')
-    const searchtags = ref([])
-    const automodel = ref(null)
-    const options = ref(searchtags)
     const ptopid = ref('')
-    const message = inject('message')
-
-
+    const search = ref('')
+    const options = ref([])
+    const topicInfo = ref('')
     /* gets topics to use for q-dialog */
     function loadData () {
     
@@ -226,80 +230,37 @@ export default defineComponent({
         })
       })
   }
-
-
-  function getDetails(topic){
+    /* filters post to get only post about the selected topic */
+    function getDetails(topic){
+      
       pos.value.splice(0)
-
+      if(topic == 0){
+      pos.value.splice(0)
+      
       let url = "https://swarmnet-prod.herokuapp.com/posts"
-      api.get(url,{
-      method: 'GET',
-      headers: {
-              'Access-Control-Allow-Origin': '*'
-            }
-        })
-      .then((response) => {
-        data.value = response.data
-
-        for (let i of data.value) { 
-          if(i.topicId == parseInt(topic)){
-            pos.value.push(i)
-            posTags.value.push(i.tags)
-          for(let j of comments.value){
-            if(i.id == j.id ){
-              pos.value.pop()
-              posTags.value.pop()
-            }
-            }
-          }
-        }
-
-        for(let j of tops.value){
-          if(j.id == parseInt(props.tabText)){
-            ptabtext.value = j.text
-          }     
-        }    
-      })
-      .catch(() => {
-        $q.notify({
-          color: 'negative',
-          position: 'top',
-          message: 'Loading failed',
-          icon: 'report_problem'
-        })
-      })
-
-      }
-
-  /*get all top level post with a partciular tag*/
-  function searchByTags(searchTag){
-   
-      let url = `https://swarmnet-prod.herokuapp.com/posts/${searchTag}`
-      console.log(url)
+          
             api.get(url,{
             method: 'GET',
             
             headers: {
-                    'Access-Control-Allow-Origin': '*',
-                  },
-  
-            })
+                    'Access-Control-Allow-Origin': '*'
+                  }
+              })
             .then((response) => {
               data.value = response.data
-              console.log(data.value)
-
-              /* display search list */
-              pos.value.splice(0)
               for (let i of data.value) { 
-                  pos.value.unshift(i)
-                  posTags.value.unshift(i.tags)
-                for(let j of comments.value){
-                  if(i.id == j.id ){
-                    pos.value.shift()
-                    posTags.value.shift()
-                  }
-                  }      
-        }
+               
+            
+                pos.value.unshift(i)
+                posTags.value.unshift(i.tags)
+              for (let j of comments.value){
+              if(i.id == j.id){
+                pos.value.shift()
+                 posTags.value.shift()
+              }
+            }
+            }
+            
             })
             .catch(() => {
               $q.notify({
@@ -310,10 +271,50 @@ export default defineComponent({
               })
             })
     }
-
-   /* displays all post after user logins in */
-    function displayAllPost(){
+      
+      else{
+      let url = "https://swarmnet-prod.herokuapp.com/posts"
+      api.get(url,{
+      method: 'GET',
+      headers: {
+              'Access-Control-Allow-Origin': '*'
+            }
+        })
+      .then((response) => {
+        data.value = response.data
+        for (let i of data.value) { 
+          if(i.topicId == parseInt(topic)){
+            pos.value.unshift(i)
+            posTags.value.unshift(i.tags)
+          for(let j of comments.value){ /*remove comments from array with top level post */
+            if(i.id == j.id ){
+              pos.value.shift()
+              posTags.value.shift()
+            }
+            }
+          }
+        }
+        console.log(pos.value)
+        for(let j of tops.value){
+          if(j.id == parseInt(props.tabText)){
+            ptabtext.value = j.text
+          }     
+        }   
+      
+      })
+      .catch(() => {
+        $q.notify({
+          color: 'negative',
+          position: 'top',
+          message: 'Loading failed',
+          icon: 'report_problem'
+        })
+      })
+      }
+      }
     
+    /* displays all post after user logins in */
+    function displayAllPost(){
           let curl = "https://swarmnet-prod.herokuapp.com/replies"
             api.get(curl,{
             method: 'GET',
@@ -328,7 +329,6 @@ export default defineComponent({
             for (let i of data.value) {  /*add all replies to an array */
                 comments.value.push(i)
               }
-              console.log(comments)
             })
             .catch(() => {
               $q.notify({
@@ -338,8 +338,7 @@ export default defineComponent({
                 icon: 'report_problem'
               })
             })
-            
-          pos.value.splice(0)  
+      
           let url = "https://swarmnet-prod.herokuapp.com/posts"
           
             api.get(url,{
@@ -374,62 +373,116 @@ export default defineComponent({
               })
             })
         } 
+    
+    /*get all top level post with a partciular tag*/
+    function searchByTags(searchTag){
+   
+      let url = `https://swarmnet-prod.herokuapp.com/posts/${searchTag}`
+      console.log(url)
+            api.get(url,{
+            method: 'GET',
+            
+            headers: {
+                    'Access-Control-Allow-Origin': '*',
+                  },
   
-  function  showNotif () {
-         if (subbed.value == true){
-           $q.notify({
-          message: 'SUBSCRIBED',
-          color: 'primary',
-          avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
-          actions: [
-            { label: 'Dismiss', color: 'white', handler: () => { /* ... */ } }
-          ]
-        })
-         }   
-       }
-
-
-
+            })
+            .then((response) => {
+              
+              data.value = response.data
+              console.log(data.value)
+              /* display search list */
+              pos.value.splice(0)
+              for (let i of data.value) { 
+                  pos.value.unshift(i)
+                  posTags.value.unshift(i.tags)
+                for(let j of comments.value){
+                  if(i.id == j.id ){
+                    pos.value.shift()
+                    posTags.value.shift()
+                  }
+                  }      
+        }
+            })
+            .catch(() => {
+              $q.notify({
+                color: 'negative',
+                position: 'top',
+                message: 'No post with such tag found',
+                icon: 'report_problem'
+              })
+            })
+    }
+    
     /* creates new post using q-dialog*/ 
-  function postPost(text,tags){
-    let url = "https://swarmnet-prod.herokuapp.com/posts"
-         
-          api.get(url,{
-          method: 'POST',
+    function postPost(text, tags){
+      if(ptopid.value == ''){
+        ptopid.value = props.tabText
+      }
+      let url = "https://swarmnet-prod.herokuapp.com/posts"
           
-          headers: {
+            api.post(url,{
+              topic_id: ptopid.value,  
+              text: text,
+              tags: tags,
+              composed: "2022-03-02T14:48:00Z"
+              },
+              {
+                headers: {
+                  Authorization:'JWT '+ localStorage.getItem('token'),
                   'Access-Control-Allow-Origin': '*'
+                  
                 }
+              }
+              )
+            .then((response) => {
+              if(response.data == "Created"){
+                triggerPositive ();
+                setTimeout(() => {
+                  displayAllPost();    
+          }, 3000) 
+              }
+  
             })
-          .then((response) => {
-            if(response.data == "Created"){
-              triggerPositive ();
-              setTimeout(() => {
-                displayAllPost();    
-        }, 3000) 
-            }
- 
-          })
-          .catch(() => {
-            $q.notify({
-              color: 'negative',
-              position: 'top',
-              message: 'Loading failed',
-              icon: 'report_problem'
+            .catch(() => {
+              $q.notify({
+                color: 'negative',
+                position: 'top',
+                message: 'Loading failed',
+                icon: 'report_problem'
+              })
+            }) 
+    }  
+  
+  /* gets all post tags */
+  function getPostTags(){
+    api.get("https://swarmnet-prod.herokuapp.com/tags",{
+        headers: {
+          Authorization:'JWT '+ localStorage.getItem('token'),
+          'Access-Control-Allow-Origin': '*' 
+        }}
+      )
+            .then((response) => {
+              data.value = response.data
+              for (let i of data.value) { 
+                options.value.unshift(i.text)
+              }
+              console.log(options)
             })
-          })
-
-
+            .catch(() => {
+              $q.notify({
+                color: 'negative',
+                position: 'top',
+                message: 'Loading failed',
+                icon: 'report_problem'
+              })
+            }) 
   }
   
-   watchEffect(()=>{
-    console.log("hi")
-    console.log(message.value)
+  watchEffect(()=>{
     console.log(props.tabText)
-
-
-
-    if(message.value == 0){
+    topicInfo.value = props.tabText
+    if(props.tabText == 0){
       pos.value.splice(0)
       
       let url = "https://swarmnet-prod.herokuapp.com/posts"
@@ -443,18 +496,17 @@ export default defineComponent({
               })
             .then((response) => {
               data.value = response.data
-
               for (let i of data.value) { 
-               
                 pos.value.unshift(i)
-                 posTags.value.unshift(i.tags)
-              for (let j of comments.value){
-              if(i.id == j.id){
-                pos.value.shift()
-                 posTags.value.shift()
-              }
+                posTags.value.unshift(i.tags)
+                  for (let j of comments.value){
+                    if(i.id == j.id){
+                      pos.value.shift()
+                      posTags.value.shift()
+                    }
             }
             }
+            
             })
             .catch(() => {
               $q.notify({
@@ -475,12 +527,9 @@ export default defineComponent({
             }
         })
       .then((response) => {
-        console.log("request sent")
         data.value = response.data
-
         for (let i of data.value) { 
-          console.log("loop entered")
-          if(i.topicId == parseInt(message.value)){
+          if(i.topicId == parseInt(props.tabText)){
             
             pos.value.unshift(i)
             posTags.value.unshift(i.tags)
@@ -492,14 +541,15 @@ export default defineComponent({
             }
           }
         }
-
         console.log(pos.value)
-
         for(let j of tops.value){
           if(j.id == parseInt(props.tabText)){
             ptabtext.value = j.text
           }     
         }  
+        console.log(props.tabText);
+        displaySub()
+       
            })
       .catch(() => {
         $q.notify({
@@ -510,59 +560,43 @@ export default defineComponent({
         })
       })
     }
+     
+      //  subsStatus(props.tabText);
    
   });
-
-
   onMounted(() => {
-      displayAllPost(); 
+      loadData();
+      displayAllPost();
+      getPostTags();
     })
-
-    onUpdated(()=> {
+  
+  onUpdated(()=> {
     props.tabText; 
   })
-  
     return {
-      ptopid: ref(''),
-      searchByTags,
-      postPost,
-      message,
-      shape: ref('line'),
-      modelMultiple: ref(),
-      automodel,
-      options,
-      searchtags,
-
-      filterFn (val, update, abort) {
-        update(() => {
-          const needle = val.toLocaleLowerCase()
-          options.value = searchtags.value.filter(v => v.toLocaleLowerCase().indexOf(needle) > -1)
-        })
-      },
-
-      setModel (val) {
-        automodel.value = val
-      },
+        prompt: ref(false),
+        modelMultiple: ref(),
+        topicInfo,
+        search,
+        searchByTags,
         data, 
-        displayAllPost,
+        loadData,
         tops,
         pos,
         posTags,
         getDetails,
         ptabtext,
-        
+        postPost,
+        ptopid,
+        getPostTags,
+        options,
+       
         model,
-        subbed,
         fixed: ref(false),
-        prompt: ref(false),
         text: ref(''),
         ph: ref(''),
         dense: ref(false),
         tab,
-    
-       showNotif,
-
-
       triggerPositive () {
         $q.notify({
           type: 'positive',
@@ -582,5 +616,8 @@ export default defineComponent({
   }
 })
 </script>
-
-
+<style lang="sass" scoped>
+.my-card
+  width: 100%
+  max-width: 300px
+</style>
