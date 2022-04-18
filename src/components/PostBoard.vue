@@ -13,7 +13,7 @@
           <q-icon name="search" />
         </template>
         <template v-slot:append>
-          <q-btn icon="fas fa-times" flat round @click="search='', getDetails(topicInfo)" />
+          <q-btn icon="fas fa-times" flat round @click="search='', getDetails(message)" />
         </template>
       </q-input>
 
@@ -27,7 +27,7 @@
           </q-tooltip>
     </q-btn>
 
-    
+    <!--
       <q-btn icon="event" flat round color="accent">
          <q-tooltip>
             Filter by Date
@@ -41,6 +41,7 @@
         </q-date>
       </q-popup-proxy>
     </q-btn>
+    -->
 
 
 
@@ -152,23 +153,24 @@
     --->
     </div>
           
- <q-page class="q-pa-sm">
+  <q-page >
     <div class="row q-col-gutter-sm ">
       <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12" v-for="(post, index) in pos" >
-        <card-product :data="post"></card-product>
+        <post-design :data="post"></post-design>
       </div>
     </div>
   </q-page>
+
 </template>
 
 <script>
 
-import {defineComponent, ref, onMounted, onUpdated, watchEffect } from 'vue';
+import {defineComponent, ref, onMounted, onUpdated, watchEffect, inject } from 'vue';
 import { api } from 'boot/axios'
 import { useQuasar } from 'quasar'
-import CardProduct from './cards/CardProduct.vue';
+import PostDesign from './PostDesign.vue';
 export default defineComponent({
-  components: { CardProduct },
+  components: { PostDesign },
   name: 'PostBoard',
   props:['tabText'], 
   data() {
@@ -201,6 +203,8 @@ export default defineComponent({
     const search = ref('')
     const options = ref([])
     const topicInfo = ref('')
+    const message = inject('message')
+
     /* gets topics to use for q-dialog */
     function loadData () {
     
@@ -315,6 +319,7 @@ export default defineComponent({
     
     /* displays all post after user logins in */
     function displayAllPost(){
+      
           let curl = "https://swarmnet-prod.herokuapp.com/replies"
             api.get(curl,{
             method: 'GET',
@@ -390,7 +395,8 @@ export default defineComponent({
             .then((response) => {
               
               data.value = response.data
-              console.log(data.value)
+              console.log("response: " + data.value)
+
               /* display search list */
               pos.value.splice(0)
               for (let i of data.value) { 
@@ -480,9 +486,7 @@ export default defineComponent({
   }
   
   watchEffect(()=>{
-    console.log(props.tabText)
-    topicInfo.value = props.tabText
-    if(props.tabText == 0){
+    if(message.value == 0){
       pos.value.splice(0)
       
       let url = "https://swarmnet-prod.herokuapp.com/posts"
@@ -496,6 +500,7 @@ export default defineComponent({
               })
             .then((response) => {
               data.value = response.data
+
               for (let i of data.value) { 
                 pos.value.unshift(i)
                 posTags.value.unshift(i.tags)
@@ -528,11 +533,13 @@ export default defineComponent({
         })
       .then((response) => {
         data.value = response.data
+
         for (let i of data.value) { 
-          if(i.topicId == parseInt(props.tabText)){
+          if(i.topicId == message.value){
             
             pos.value.unshift(i)
             posTags.value.unshift(i.tags)
+
           for(let j of comments.value){
             if(i.id == j.id ){
               pos.value.shift()
@@ -541,15 +548,17 @@ export default defineComponent({
             }
           }
         }
+
         console.log(pos.value)
+
         for(let j of tops.value){
-          if(j.id == parseInt(props.tabText)){
+          if(j.id == message.value){
             ptabtext.value = j.text
           }     
         }  
+
         console.log(props.tabText);
-        displaySub()
-       
+
            })
       .catch(() => {
         $q.notify({
@@ -590,6 +599,7 @@ export default defineComponent({
         ptopid,
         getPostTags,
         options,
+        message,
        
         model,
         fixed: ref(false),

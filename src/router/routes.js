@@ -7,9 +7,7 @@ const routes = [
       {path: '/Alerts', component: () => import('pages/AlertsMap.vue')},
       {path: '/Map', component: () => import('pages/Map.vue')},
       {path: '/MapMarker', component: () => import('pages/MapMarker.vue')},
-      {path: '/StreetView', component: () => import('pages/StreetView.vue')},
-      { path: '/Pagination', component: () => import('pages/Pagination.vue') },
-      //{ path: '/PostAnalytics', component: () => import('pages/Charts.vue') },
+      { path: '/PostAnalytics', component: () => import('components/charts/BarChart.vue') },
 
     ]
   },

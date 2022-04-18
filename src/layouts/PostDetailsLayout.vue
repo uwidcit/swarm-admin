@@ -1,11 +1,24 @@
 <template >
   <div  class="bg-grey-3">
     <q-layout view="hHh lpR fFf" >
-      <q-header elevated class="bg-secondary text-white"  >
+      <q-header class="background text-white"  >
          <q-toolbar class="glossy">
+
+      <div class="row items-start">
+      <div class="col">
+        <q-btn round dense flat to="/home"  icon = "fas fa-arrow-circle-left" active-class="q-item-no-link-highlighting">
+          </q-btn>
+      </div>
+      <div class="col">
+        <q-btn flat @click="inception = true"  icon = "far fa-edit" active-class="q-item-no-link-highlighting">
+          </q-btn>
+        </div>
+      </div>
+       
        <q-space/>
+
         <div class="q-gutter-sm row items-center no-wrap ">
-    
+
             <q-btn round dense flat color="white" icon="notifications">
               <q-badge color="red" text-color="white" floating>
                 5
@@ -27,24 +40,7 @@
               </q-avatar>
             </q-btn>
           </div>
-        </q-toolbar>
-      </q-header>
-      <q-drawer v-model="leftDrawerOpen" show-if-above class="bg-secondary text-white" :width="65">
-        <!-- drawer content -->
-          <q-list>
-           <q-item to="/home" active-class="q-item-no-link-highlighting">
-            <q-item-section avatar>
-              <q-icon name="fas fa-arrow-circle-left" />
-            </q-item-section>
-          </q-item>
-            <q-separator color="orange" inset />
-    
-          <q-btn flat @click="inception = true" active-class="q-item-no-link-highlighting">
-            <q-item-section avatar>
-              <q-icon name="far fa-edit" />
-            </q-item-section>
-          </q-btn>
-          </q-list>
+
           <q-dialog v-model="inception">
             <q-card style="width: 600px; height: 400px; background-color: powderblue;">
           <q-card-section>
@@ -68,7 +64,10 @@
           </q-card-actions>
         </q-card>
           </q-dialog>
-      </q-drawer>
+
+        </q-toolbar>
+      </q-header>
+
       <q-page-container >
         <router-view />
       </q-page-container>
@@ -111,3 +110,11 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.background{
+background-color: #abe9cd;
+background-image: linear-gradient(315deg, #abe9cd 0%, #3eadcf 74%);
+
+}
+</style>
