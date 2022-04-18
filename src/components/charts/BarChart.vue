@@ -21,7 +21,6 @@ import {ref} from 'vue';
 import { api } from 'boot/axios'
 import axios from 'axios';
 import { useQuasar } from 'quasar'
-
 export default defineComponent({
   name: "BarChart",
   
@@ -79,14 +78,12 @@ export default defineComponent({
      init() {
       let barChart = document.getElementById('barChart');
       this.bar_chart = echarts.init(barChart,'light');
-
        const topics = ref([])
        const data = ref(null)
        const posts = ref([])
          const posTags = ref([])
        var a= []
        var b
-
          api.get('https://swarmnet-prod.herokuapp.com/topics',{
   method: 'GET',
   
@@ -102,9 +99,7 @@ export default defineComponent({
           topics.value.push(i) //add topic to topics object array
         }
 var counter =[]
-
 var a=0
-
  let url = "https://swarmnet-prod.herokuapp.com/posts"
       api.get(url,{
       method: 'GET',
@@ -154,7 +149,6 @@ var a=0
           icon: 'report_problem'
         })
       })
-
     },
      mounted() {
    // this.init();

@@ -1,83 +1,78 @@
-<template>
-  <q-layout view="lHh Lpr lFf">
+<template >
+  <div  class="bg-grey-3">
+    <q-layout view="hHh lpR fFf" >
+      <q-header class="background text-white"  >
+         <q-toolbar class="glossy">
 
-    <q-header elevatedclass="bg-primary text-white">
-       <q-toolbar class="glossy">
-
-     <q-space/>
-
-      <div class="q-gutter-sm row items-center no-wrap ">
-         
-          <q-btn round dense flat color="white" icon="notifications">
-            <q-badge color="red" text-color="white" floating>
-              5
-            </q-badge>
-            <q-menu
-            >
-              <q-list style="min-width: 100px">
-                <messages></messages>
-                <q-card class="text-center no-shadow no-border">
-                  <q-btn label="View All" style="max-width: 120px !important;" flat dense
-                         class="text-indigo-8"></q-btn>
-                </q-card>
-              </q-list>
-            </q-menu>
-
+      <div class="row items-start">
+      <div class="col">
+        <q-btn round dense flat to="/home"  icon = "fas fa-arrow-circle-left" active-class="q-item-no-link-highlighting">
           </q-btn>
-          <q-btn round flat>
-            <q-avatar size="26px">
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png">
-            </q-avatar>
+      </div>
+      <div class="col">
+        <q-btn flat @click="inception = true"  icon = "far fa-edit" active-class="q-item-no-link-highlighting">
           </q-btn>
         </div>
-      </q-toolbar>
-    </q-header>
+      </div>
+       
+       <q-space/>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above class="bg-primary text-white">
-      <!-- drawer content -->
+        <div class="q-gutter-sm row items-center no-wrap ">
 
-    <q-item to="/" active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon name="menu"/>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label><strong>SWARMNET</strong></q-item-label>
-          </q-item-section>
-        </q-item>
+            <q-btn round dense flat color="white" icon="notifications">
+              <q-badge color="red" text-color="white" floating>
+                5
+              </q-badge>
+              <q-menu
+              >
+                <q-list style="min-width: 100px">
+                  <messages></messages>
+                  <q-card class="text-center no-shadow no-border">
+                    <q-btn label="View All" style="max-width: 120px !important;" flat dense
+                           class="text-indigo-8"></q-btn>
+                  </q-card>
+                </q-list>
+              </q-menu>
+            </q-btn>
+            <q-btn round flat>
+              <q-avatar size="26px">
+                <img src="https://cdn.quasar.dev/img/boy-avatar.png">
+              </q-avatar>
+            </q-btn>
+          </div>
 
-        <q-separator color="orange" inset />
-        
-        <q-list>
-         <q-item to="/" active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon name="fas fa-arrow-circle-left" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label><strong>MAIN FEED</strong></q-item-label>
-          </q-item-section>
-        </q-item>
+          <q-dialog v-model="inception">
+            <q-card style="width: 600px; height: 400px; background-color: powderblue;">
+          <q-card-section>
+            <div class="text-h6">CREATE SUBTOPIC</div>
+          </q-card-section>
+    
+          <q-card-section>
+          <q-input filled  v-model="ph" placeholder="Enter Subtopic"  />
+          </q-card-section>
+    
+          <q-separator />
+    
+          <q-card-section style="height: 200px" class="scroll" counter maxlength="260">
+            <q-input type="textarea" v-model="text" counter maxlength="260"  autogrow>
+            </q-input>
+          </q-card-section>
+          <q-separator />
+          <q-card-actions align="right">
+            <q-btn flat label="Discard" color="primary" @click="text = ''" v-close-popup />
+            <q-btn flat label="Post" color="primary" v-close-popup @click="triggerPositive(); text = '';"/>
+          </q-card-actions>
+        </q-card>
+          </q-dialog>
 
-        <!--
-        <q-btn flat @click="inception = true" active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon name="far fa-edit" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label><strong>Create Subtopic</strong></q-item-label>
-          </q-item-section>
-        </q-btn>
-        -->
+        </q-toolbar>
+      </q-header>
 
-        
-        </q-list>
-
-    </q-drawer>
-
-    <q-page-container>
-      <router-view />
-    </q-page-container>
-
-  </q-layout>
+      <q-page-container >
+        <router-view />
+      </q-page-container>
+    </q-layout>
+  </div>
 </template>
 
 <script>
@@ -115,3 +110,11 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.background{
+background-color: #abe9cd;
+background-image: linear-gradient(315deg, #abe9cd 0%, #3eadcf 74%);
+
+}
+</style>

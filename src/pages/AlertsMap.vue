@@ -99,7 +99,6 @@ import { defineComponent, ref } from 'vue'
 import { api } from 'boot/axios'
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
 import { useQuasar,Notify } from 'quasar'
-
 export default defineComponent({
   name: "Map",
   data () {
@@ -164,8 +163,6 @@ export default defineComponent({
          center: new google.maps.LatLng(10.643423917461453,-61.39967380855142),
          mapTypeId: google.maps.MapTypeId.ROADMAP
     });
-
-
     var infowindow = new google.maps.InfoWindow;
     var marker, i,count=0;
       
@@ -208,7 +205,6 @@ export default defineComponent({
             marker.circle = circle;
             markers.push(marker);
         //console.log(markers[1]);
-
         google.maps.event.addListener(marker, 'mouseover', (function(marker) { //Add info window to each marker
              return function() {
                  infowindow.setContent("User : "+ i.userID+ 
@@ -223,7 +219,6 @@ export default defineComponent({
              }
         })(marker));
     
-
        google.maps.event.addDomListener(marker, 'click', function() {// listner for resolve alert function
        resolveAlert(i.alertID);
         });
@@ -233,7 +228,6 @@ export default defineComponent({
           count++
           a++
         }
-
       
 new MarkerClusterer({ markers, map}); //Add marker cluster
       })
@@ -254,9 +248,7 @@ new MarkerClusterer({ markers, map}); //Add marker cluster
     .getElementById("hide-resolve")
     .addEventListener("click", hideResolveAlerts);
 }
-
  
-
  function resolveAlert(markAlert) {// Function to set alerts from active to resolve
     let size1=Object.keys(alerts.value).length
     var l
@@ -291,7 +283,6 @@ new MarkerClusterer({ markers, map}); //Add marker cluster
               caption: 'Click marker to resolve Alert',
             })
     }
-
 function hideResolveAlerts() { //Function to hide Resolve alerts markers
   let size2=Object.keys(alerts.value).length
   for (let k=0;k<size2;k++){
@@ -304,7 +295,6 @@ function hideResolveAlerts() { //Function to hide Resolve alerts markers
          }
         }
 }
-
 function showResolveAlerts() {//Function to display resolve alerts markers
   let size=Object.keys(alerts.value).length
   for (let m=0;m<size;m++){

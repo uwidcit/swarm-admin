@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated >
+    <q-header class="background" elevated >
       <q-toolbar class="glossy">
       <div class="q-gutter-sm row items-center no-wrap ">
         <q-space/>
@@ -21,9 +21,21 @@
             </q-tabs>
             
           </div>
-        <q-btn round color="primary" icon="fas fa-pen-nib" @click="edit=true" dense/>
-        <q-btn round color="primary" icon="fas fa-plus"  @click="create= true" dense/>
-        <q-btn round color="primary" icon="fas fa-trash" @click="remove=true" dense/>
+        <q-btn round color="primary" icon="fas fa-pen-nib" @click="edit=true" dense>
+          <q-tooltip class="primary" :offset="[10, 10]">
+          Edit Topic
+        </q-tooltip>
+          </q-btn>
+        <q-btn round color="primary" icon="fas fa-plus"  @click="create= true" dense>
+          <q-tooltip class="primary" :offset="[10, 10]">
+          Add Topic
+        </q-tooltip>
+          </q-btn>
+        <q-btn round color="primary" icon="fas fa-trash" @click="remove=true" dense>
+          <q-tooltip class="primary" :offset="[10, 10]">
+          Delete Topic
+        </q-tooltip>
+          </q-btn>
         <q-space/>
     
      </div>
@@ -46,14 +58,14 @@
       v-model="leftDrawerOpen"
       show-if-above
       bordered
-      class="bg-primary text-white"
+      class="bg-cyan text-white"
       :mini="miniState"
       @mouseover="miniState = false"
       @mouseout="miniState = true"
       :width="200"
       :breakpoint="500"
     >
-    <q-list>
+    <q-list class="background">
          <q-item to="/" active-class="q-item-no-link-highlighting" >
           <q-item-section avatar>
           <span v-if="$q.platform.is.desktop" ><q-btn
@@ -129,10 +141,14 @@
           <div class="text-h6">TOPIC SELECTED: {{ptabtext}} </div>
         </q-card-section>
         <q-separator />
+
+        <q-card-section>
+          <q-input rounded outlined v-model="text" placeholder="Enter edited topic" />
+        </q-card-section>
        
         <q-card-actions align="right">
-          <q-btn flat label="Discard" color="primary" @click="ph = '', lev=''" v-close-popup />
-          <q-btn flat label="Edit" color="primary" @click="ph = '', lev=''" v-close-popup />
+          <q-btn flat label="Discard" color="primary" @click="text=''" v-close-popup />
+          <q-btn flat label="Edit" color="primary" @click="editTopic(ptopid, text), text=''" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -206,7 +222,7 @@
       </q-card>
     </q-dialog>
 
-      <q-page-container class="bg-grey-2">
+    <q-page-container class="bg-grey-2">
       <router-view />
     </q-page-container>
 
@@ -264,6 +280,7 @@ export default defineComponent({
     const data = ref(null)
     const tagText = ref('0')
     const ptabtext = ref('')
+    const text = ref('')
     //const confirm = ref(false)
 
 
@@ -329,19 +346,37 @@ export default defineComponent({
             }) 
      }
 
-/*edit a topic on the postboard
-function editTopic(topicId){
-  console.log(topicId)
-  api.put("https://swarmnet-prod.herokuapp.com/topics/:{topicId}",{
-              headers: {
+/*edit a topic on the postboard */
+function editTopic(topicId, text){
+  console.log(topicId , text)
+   api.put(`https://swarmnet-prod.herokuapp.com/topics/${topicId}`,
+                {
+                  text: text,
+                  "level": 1
+                },
+                {
+                headers: {
                   Authorization:'JWT '+ localStorage.getItem('token'),
-                  'Access-Control-Allow-Origin': '*'   
+                  'Access-Control-Allow-Origin': '*',
+                  'Content-Type': 'application/json'
                 }
-  }
-  )
-}
-/*
+              })
+                  .then((response) => { 
+                    console.log(response.data)
+                    loadData () /* add check to ensure it only reloads if successul */
 
+                          
+                  })
+                  .catch(() => {
+                      $q.notify({
+                      color: 'negative',
+                      position: 'top',
+                      message: 'Loading failed',
+                      icon: 'report_problem'
+                      })
+                  })
+
+}
 
 /*to delete a topic from the postboard*/ 
 function deleteTopic(postID){
@@ -381,6 +416,8 @@ function deleteTopic(postID){
             })
      }
 
+     
+
   onMounted(() => {
       loadData();
     })
@@ -388,12 +425,13 @@ function deleteTopic(postID){
  
     return { 
       ptabtext,
-      ptopid: ref(''),
+      ptopid: ref(0),
       tagText,
       addTopic,
       tops,
       loadData,
       deleteTopic,
+      editTopic,
       leftDrawerOpen: ref(false),
       /*toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
@@ -410,6 +448,7 @@ function deleteTopic(postID){
         edit: ref(false), 
         ph: ref(''),
         lev: ref(''),
+        text,
 
 
         triggerPositive(){
@@ -430,3 +469,10 @@ function deleteTopic(postID){
   }
 })
 </script>
+
+<style scoped>
+.background{
+  background-color: #abe9cd;
+  background-image: linear-gradient(315deg, #abe9cd 0%, #3eadcf 74%);
+}
+</style>
