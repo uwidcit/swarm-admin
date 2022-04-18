@@ -13,15 +13,18 @@
         <q-item-section>
           <q-item-label> <strong> {{title}} </strong></q-item-label>
 
-           <div class=" q-gutter-md">
+          <div class="row no-wrap items-center bg-grey-3 rounded-borders">
             <q-chip square color="purple-2" text-color="white" icon="sell" size="md"
-                    v-for="tags in postTags" 
-                    :key="tags.id">
-              {{tags.text}}
-            </q-chip>
-
-           </div>
-
+                          v-for="tags in postTags" 
+                          :key="tags.id">
+                    {{tags.text}}
+                  </q-chip>
+            <q-space />
+            <div>
+              <q-btn round dense flat icon="textsms" @click="fixed=true" />    
+            </div>
+          </div>
+           
         </q-item-section>
 
         <q-item-section side top>
@@ -33,12 +36,39 @@
     </q-list>
 </div>
 
-
+  <div v-if="testdata.length == 0" class="text-weight-medium text-center text-italic">
+      This post contains no replies. Be the first to reply?
+      <q-btn round dense flat icon="textsms" @click="fixed=true" />
+   </div>
+   
   <div  v-for="c in testdata" :key="c.id" style="margin-left: 40px; box-sizing: border-box; ">
       <comments :label="c.text" :nodes="c.replies" :depth="0"  :id="c.id" :topic="c.topicId" :date="c.created"></comments>
     </div>
 
- 
+    <q-dialog v-model="fixed" no-refocus>
+      <q-card style="width: 600px; height: 250px; background-color: powderblue;">
+
+        <q-card-section>
+          <div class="text-h6"> Create a reply </div>
+        </q-card-section>
+        <q-separator />
+
+        <q-card-section style="height: 120px" class="scroll" counter maxlength="260">
+          <q-input placeholder="Enter Comment Here!" type="textarea" v-model="text" counter maxlength="260"  autogrow>
+          </q-input>
+        </q-card-section>
+
+        <q-separator />
+
+        <q-card-actions align="right">
+          <q-btn flat label="Discard" color="primary" @click="text = ''" v-close-popup />
+          <q-btn flat label="Post" color="primary" v-close-popup @click="createNewComment(text); text = '';"/>
+        </q-card-actions>
+
+      </q-card>
+    </q-dialog>
+  
+
 </template>
 
 <script>
@@ -64,7 +94,7 @@ export default defineComponent({
      },
     
 
-     setup() {
+     setup(props) {
       const route = useRoute()
       const $q = useQuasar()
       const data = ref(null)
@@ -75,6 +105,8 @@ export default defineComponent({
       const commTags = ref([])
       const testdata = ref([])
       const date = ref("")
+      const text = ref('')
+      const tId = ref(0) /* topic id number */
 
       function datePassed(time) {
       console.log(Date.parse(time))
@@ -95,6 +127,7 @@ export default defineComponent({
             })
           .then((response) => {
             data.value = response.data
+            tId.value = data.value.topicId
             posts.value.push(data.value) 
             date.value = datePassed(posts.value[0].created)
             title.value = posts.value[0].text
@@ -125,6 +158,7 @@ export default defineComponent({
             data.value = response.data
             
             for (let i of data.value) {
+              
               if(i.originalPostId == route.params.id){
                  testdata.value.push(i)
               }
@@ -152,43 +186,47 @@ export default defineComponent({
 
       }
 
-      function showComments(id){
-        this.comments.slice(0);
 
-         let url = "https://swarmnet-prod.herokuapp.com/replies"
-         
-          api.get(url,{
-          method: 'GET',
-          
+      function createNewComment(message){
+        console.log("creating new comment")
+        console.log(message, tId.value, route.params.id)
+
+      api.post("https://swarmnet-prod.herokuapp.com/replies", {
+          "topic_id": tId.value,
+          "text": message,
+          "replyTo": route.params.id,
+          "tags": [],
+          "composed": "2011-10-10T14:48:00Z"
+        },{
           headers: {
-                  'Access-Control-Allow-Origin': '*'
-                }
+            Authorization:'JWT '+ localStorage.getItem('token'),
+            'Access-Control-Allow-Origin': '*'   
+          }
+          }).then((response) => {
+            if(response.status == 201){
+
+              // notify user 
+              $q.notify({
+              type: 'positive',
+              message: 'COMMENT POSTED'
             })
-          .then((response) => {
-            data.value = response.data
-            
-            
-            for (let i of data.value) { 
-                if(i.originalPostId == id){
-                  comm.value.push(i)
-                  commTags.value.push(i.tags)
-                }
-            } 
-          
-           console.log( "Tags ")
-          console.log(commTags.value)
-          
-          })
+              loadComments()
+
+            }
+    })
           .catch(() => {
             $q.notify({
               color: 'negative',
               position: 'top',
-              message: 'Loading failed',
+              message: 'Reply could not be posted',
               icon: 'report_problem'
             })
           })
-
+       
+      
+           
       }
+
 
 
   onMounted(() => {
@@ -206,8 +244,12 @@ export default defineComponent({
         comm,
         postTags,
         commTags,
-        showComments,
+       
         testdata,
+        text,
+        createNewComment,
+        tId,
+        fixed: ref(false)
       
     }
         

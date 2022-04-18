@@ -8,29 +8,33 @@
             </q-avatar>
        {{ label }}
       </div>
-      <div class="col-1">
-        {{datePassed(date)}}
-      </div>
-    </div>
-     
-          <div>
-            <span style="postiton: right">
-              <q-btn @click.prevent flat round color="grey" icon="fas fa-comments" size="sm" />
-              <q-btn @click.prevent.stop flat round icon="fas fa-plus-circle"   @click="toggleReplies()" />
-            </span>
-          </div>
       
+      <div class="col-1">
+      
+    </div>
+
+     <div class="col-2">
+        {{datePassed(date)}}
+        <q-btn @click.prevent flat round color="grey" icon="more_vert" size="sm" />
+          <q-menu>
+            <q-list style="min-width: 100px">
+            <q-item clickable v-close-popup>
+              <q-btn @click.prevent flat round color="grey" icon="fas fa-comments" size="sm" label="View More Comments" />
+            </q-item>
+            <q-item clickable v-close-popup>
+              <q-btn @click.prevent.stop flat round icon="fas fa-plus-circle"   @click="toggleReplies()" label="Add A Reply"/>
+            </q-item>
+            </q-list>
+          </q-menu>
+      </div>
+    </div> 
   </div>
 
-      <div  v-if="createReply" id="newreply" :style="indent" :depth="depth + 1" style="min-width: 250px; max-width: 700px">
+      <div  class="q-pa-sm" v-if="createReply" id="newreply" :style="indent" :depth="depth + 1" style="min-width: 250px; max-width: 900px">
         <q-input  placeholder="Add comment..." v-model="text" counter maxlength="260" autogrow :dense="dense">
         <template v-slot:after>
           <q-btn round dense flat icon="send" @click="createNewComment(text)" />
-          <q-btn round dense flat icon="cancel" @click="createNewComment(text)" />
-        </template>
-        <template v-slot:under>
-          <q-btn round dense flat icon="send" @click="createNewComment(text)" />
-          <q-btn round dense flat icon="cancel" @click="createNewComment(text)" />
+          <q-btn round dense flat icon="cancel" @click="text='', createReply=false" />
         </template>
         </q-input>
 
@@ -58,7 +62,9 @@ import {ref, inject} from 'vue';
 import { api } from 'boot/axios'
 import { useQuasar } from 'quasar'
 import { formatDistance} from 'date-fns'
+
   export default { 
+
     props: [ 'label', 'nodes', 'depth', 'id', 'topic', 'date' ],
    
     data() {
@@ -83,9 +89,11 @@ import { formatDistance} from 'date-fns'
         console.log(this.createReply.valueOf(this.createReply))
       }
     },
+
     setup(props) {
       const text = ref('')
       const $q = useQuasar()
+
       function datePassed(time) {
       console.log(Date.parse(time))
       console.log(formatDistance(Date.parse(time), new Date(), { addSuffix: true }))
@@ -95,6 +103,7 @@ import { formatDistance} from 'date-fns'
       function createNewComment(message){
         console.log("creating new comment")
         console.log(message)
+
       api.post("https://swarmnet-prod.herokuapp.com/replies", {
           "topic_id": props.topic,
           "text": message,
@@ -109,6 +118,7 @@ import { formatDistance} from 'date-fns'
           }).then((response) => {
             if(response.status == 200){
               showChildren = true
+
               // notify user 
               $q.notify({
               type: 'positive',
@@ -122,6 +132,7 @@ import { formatDistance} from 'date-fns'
                 timeout: 1000
               })
             }, 4000)
+
         } 
      
     })
@@ -137,11 +148,13 @@ import { formatDistance} from 'date-fns'
       
            
       }
+
     return{
       createNewComment,
       text,
       datePassed
     }
+
   }
   }
 </script>
@@ -162,7 +175,11 @@ import { formatDistance} from 'date-fns'
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
 }
+
+
 #rcorners3 {
+
+
   display:block;
   position: relative; 
  
@@ -172,6 +189,8 @@ import { formatDistance} from 'date-fns'
   border-radius: 12px;
   box-sizing: border-box;
   width: calc(100% - 5%);
+
+
 }
 #newreply {
   background-color: Gainsboro;
@@ -183,4 +202,5 @@ import { formatDistance} from 'date-fns'
   position: relative;
   left: 40px;
 }
+
 </style>
