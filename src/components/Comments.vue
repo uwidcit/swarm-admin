@@ -1,6 +1,6 @@
 <template>
-  <div >
-    <div class="q-mr-sm box_comment" :style="indent" @click="toggleChildren" id="rcorners3" >
+  <div v-cloak >
+    <div class="q-mr-sm box_comment" :style="indent" id="rcorners3" >
       <div class="row justify-center">
       <div class="col">
          <q-avatar >
@@ -9,28 +9,30 @@
        {{ label }}
       </div>
       
-      <div class="col-1">
-      
+    <div class="col-1"> 
     </div>
 
      <div class="col-2">
-        {{datePassed(date)}}
-        <q-btn @click.prevent flat round color="grey" icon="more_vert" size="sm" />
-          <q-menu>
-            <q-list style="min-width: 100px">
-            <q-item clickable v-close-popup>
-              <q-btn @click.prevent flat round color="grey" icon="fas fa-comments" size="sm" label="View More Comments" />
-            </q-item>
-            <q-item clickable v-close-popup>
-              <q-btn @click.prevent.stop flat round icon="fas fa-plus-circle"   @click="toggleReplies()" label="Add A Reply"/>
-            </q-item>
-            </q-list>
-          </q-menu>
-      </div>
-    </div> 
+        {{datePassed(date)}}  
+      </div> 
+    </div>
+     <span  class="q-ml-xl" v-if="nodes.length != 0 && showChildren==false">
+         <a @click="toggleChildren" > View {{nodes.length}} more reply </a>
+      </span>
+      <span  class="q-ml-xl" v-if="nodes.length != 0 && showChildren==true" style="position=right">
+         <a @click="toggleChildren" > View less replies </a>
+      </span>
   </div>
 
-      <div  class="q-pa-sm" v-if="createReply" id="newreply" :style="indent" :depth="depth + 1" style="min-width: 250px; max-width: 900px">
+    <div class="row">
+      <div class="col">  
+    </div>
+    <div class="col-1">
+      <a  @click="toggleReplies()" > Reply </a>  
+    </div>
+    </div>
+
+      <div  v-if="createReply" id="newreply" :style="indent" :depth="depth + 1" >
         <q-input  placeholder="Add comment..." v-model="text" counter maxlength="260" autogrow :dense="dense">
         <template v-slot:after>
           <q-btn round dense flat icon="send" @click="createNewComment(text)" />
@@ -103,8 +105,7 @@ import { formatDistance} from 'date-fns'
       function createNewComment(message){
         console.log("creating new comment")
         console.log(message)
-
-      api.post("https://swarmnet-prod.herokuapp.com/replies", {
+        api.post("https://swarmnet-prod.herokuapp.com/replies", {
           "topic_id": props.topic,
           "text": message,
           "replyTo": props.id,
@@ -116,37 +117,25 @@ import { formatDistance} from 'date-fns'
             'Access-Control-Allow-Origin': '*'   
           }
           }).then((response) => {
-            if(response.status == 200){
-              showChildren = true
-
+            if(response.status == 201){
+              
               // notify user 
               $q.notify({
-              type: 'positive',
-              message: 'COMMENT POSTED'
-            })
-            // simulate delay
-            setTimeout(() => {
-              notif({
+                colour:'purple',
                 type: 'positive',
-                message: 'Found the results that you were looking for',
-                timeout: 1000
-              })
-            }, 4000)
-
-        } 
-     
+                message: 'REPLY POSTED'
+            })
+            }
+  
     })
           .catch(() => {
             $q.notify({
               color: 'negative',
               position: 'top',
-              message: 'Incorrect e-mail or password!',
+              message: 'Could not create reply',
               icon: 'report_problem'
             })
-          })
-       
-      
-           
+          })     
       }
 
     return{
@@ -195,12 +184,13 @@ import { formatDistance} from 'date-fns'
 #newreply {
   background-color: Gainsboro;
   margin-bottom: 10px;
-  height: fit-content;
+
   border: 2px solid Gainsboro;
   border-radius: 12px;
   padding: 5px;
   position: relative;
   left: 40px;
+  width: calc(100% - 10%);
 }
 
 </style>
