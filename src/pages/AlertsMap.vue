@@ -4,8 +4,8 @@
     <div id="map" style=" height: 92.7vh; width: 100%"></div>
     <div id="over_map">
      <q-btn color="primary" icon="fas fa-exclamation-triangle" label="Active Alerts" @click="active_alerts= true"/>
-     <q-btn id="hide-resolve" color="primary" icon="fas fa-eye-slash" label="Hide Resolve Alerts"/>
-      <q-btn id="show-resolve" color="primary" icon="fas fa-eye" label="Show Resolve Alerts"/>
+     <q-btn id="hide-resolve" color="primary" icon="fas fa-eye-slash" label="Hide Resolved Alerts"/>
+      <q-btn id="show-resolve" color="primary" icon="fas fa-eye" label="Show Resolved Alerts"/>
      <q-btn color="primary" icon="fas fa-book-open" label="Resolve Alerts" @click="resolve_alerts= true"/>
     
     
