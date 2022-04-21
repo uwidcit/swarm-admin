@@ -4,12 +4,16 @@
     <div id="map" style=" height: 92.7vh; width: 100%"></div>
     <div id="over_map">
      <q-btn color="primary" icon="fas fa-exclamation-triangle" label="Active Alerts" @click="active_alerts= true"/>
+     <q-btn id="hide-resolve" color="primary" icon="fas fa-eye-slash" label="Hide Resolve Alerts"/>
+      <q-btn id="show-resolve" color="primary" icon="fas fa-eye" label="Show Resolve Alerts"/>
      <q-btn color="primary" icon="fas fa-book-open" label="Resolve Alerts" @click="resolve_alerts= true"/>
+    
     
     </div>
     <div id="floating-panel">
-      <input id="hide-resolve" type="button" value="Hide Resolved Alerts" />
-      <input id="show-resolve" type="button" value="Show Resolved Alerts" />
+     <!-- <input id="hide-resolve" type="button" value="Hide Resolved Alerts" />
+      <input id="show-resolve" type="button" value="Show Resolved Alerts" />-->
+       
     </div>
   </div>
   <q-dialog
@@ -21,7 +25,7 @@
       <q-card class="bg-primary text-white" :style="dialogStyle" >
         <q-bar v-touch-pan.mouse="onPan">
           <q-icon name="fas fa-book-open"/>
-          <div>All Alerts</div>
+          <div>Active Alerts</div>
           <q-space />
 
           <q-btn dense flat icon="close" v-close-popup>
@@ -321,7 +325,7 @@ function showResolveAlerts() {//Function to display resolve alerts markers
 </script>
 <style scoped>
    #wrapper { position: relative; }
-   #over_map { position: absolute; top: 10px; right: 500px; z-index: 99; }
+   #over_map { position: absolute; top: 10px; right: 250px; z-index: 99; }
    #floating-panel {
   position: absolute;
   top: 50px;
