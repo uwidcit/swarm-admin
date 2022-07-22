@@ -2,8 +2,11 @@
         <q-page>
             <q-page-container style="padding-top: 50px;padding-left: 100px;">
               <div class="row">
-              <div class="col-6"> 
-                <q-btn class ="btnStyle" @click="prompt = true" label="Create Topic"> 
+             <div class="col-3 text-p textStyle"> 
+                Relief Centres
+             </div>
+              <div class="col-3"> 
+                <q-btn class ="btnStyle" @click="prompt = true" label="Create"> 
                 </q-btn>
               </div>
               
@@ -13,37 +16,33 @@
                   outlined
                   v-model="filter"
                   debounce="500" 
-                  placeholder="Search Topics"
+                  placeholder="Search"
                   style="width: 350px; padding-bottom: 32px"
                  
                   > </q-input> 
                 </div>
       </div>
-                <q-table  :rows ="topics" :columns="columns" :filter="filter"> 
+                <q-table  :rows ="rows" :columns="columns" :filter="filter"> 
                   <template v-slot:body="props"> 
                     
                     <q-tr :props="props">
-                    <q-td key ="topic" :props="props"> 
-                      {{ props.row.topic}}
+                    <q-td key ="name" :props="props"> 
+                      {{ props.row.name}}
                     </q-td>
 
-                      <q-td key ="createdby" :props="props"> 
-                        {{ props.row.createdby}}
+                      <q-td key ="address" :props="props"> 
+                        {{ props.row.address}}
                       </q-td>
 
-                    <q-td key ="createddate" :props="props"> 
-                      {{ props.row.createddate}}
+                    <q-td key ="email" :props="props"> 
+                      {{ props.row.email}}
                     </q-td>
 
-
-                    <q-td key ="seeAllPostByTopic" :props="props"> 
-                      <q-btn :label="'View Post('+ props.row.seeAllPostByTopic + ')'"> </q-btn>
-                    </q-td>
                   
                   <q-td key ="moreOptions" :props="props"> 
                       <q-btn-dropdown dropdown-icon="fas fa-ellipsis" flat round> 
                         <q-list>
-                         <q-item clickable v-close-popup @click="promptEdit = true, current_row= props.row" >
+                        <q-item clickable v-close-popup @click="promptEdit = true, current_row= props.row" >
                           <q-item-section>
                             <q-item-label>Edit</q-item-label>
                           </q-item-section>
@@ -65,18 +64,27 @@
                 </q-table>
 
                 <q-dialog v-model="prompt" persistent>
-                  <q-card style="min-width:418px; min-height: 171px">
+                  <q-card style="min-width:830px; min-height: 520px">
                     <div class= "row">
-                      <div class="col-10">
-                        <p class = "textStyle"> Create Topic</p>
+                      <div class="col-11">
+                        <p class = "q-px-xl q-pt-lg q-pb-md textStyle"> Create Relief Centre </p>
                       </div>
-                      <div class= "col-2 q-pa-sm">
+                      <div class= "col-1 q-pa-sm">
                         <q-btn flat icon="fa-solid fa-x" v-close-popup />
                       </div>
                     </div>
                      <div class="row">
-                        <div class= "col-12 text-p q-px-xl textContent"> 
-                            <q-input outlined style="max-width : 90%" placeholder="Add topic..." v-model="text" counter maxlength="60" autogrow   :dense="dense" />
+                        <div class= "col-12 text-p q-px-xl textContent">
+                            <q-form @submit="createReliefCentre"> 
+                              <q-input class="q-py-sm" outlined style="max-width : 90%" placeholder="FName" v-model="Name"  maxlength="60" autogrow   :dense="dense" />
+                              <q-input class="q-py-sm" outlined style="max-width : 90%" placeholder="Address Line 1" v-model="addressLone"  maxlength="60" autogrow  :dense="dense" />
+                              <q-input class="q-py-sm" outlined style="max-width : 90%" placeholder="Address Line 2" v-model="addressLtwo"  maxlength="60" autogrow  :dense="dense" />
+                              <q-input class="q-py-sm" outlined style="max-width : 90%" placeholder="City" v-model="city"  maxlength="60" autogrow  :dense="dense" />
+                              <q-input class="q-py-sm" outlined style="max-width : 90%" placeholder="Longitude " v-model="longitude"  maxlength="60" autogrow  :dense="dense" />
+                              <q-input class="q-py-sm" outlined style="max-width : 90%" placeholder="Latitude" v-model="latitude"  maxlength="60" autogrow  :dense="dense" />
+                              <q-input class="q-py-sm" outlined style="max-width : 90%" placeholder="Phone Number" v-model="pNo"  maxlength="60" autogrow   :dense="dense" />
+                              <q-input class="q-py-sm" outlined style="max-width : 90%" placeholder="Email Address" v-model="email" type="email" maxlength="60" autogrow   :dense="dense" />
+                            </q-form>
                       </div>
                      </div>
                       <template v-slot:after>
@@ -86,7 +94,7 @@
                       
                       <q-card-actions align="right" class="text-primary">
                          <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center"> 
-                               <q-btn class= "btnStyle" flat label="Save" @click="createTopic(text)" v-close-popup />
+                               <q-btn class= "btnStyle" type="submit" flat label="Save" v-close-popup />
                           </div>
 
                           <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center">
@@ -98,25 +106,37 @@
                 </q-dialog>
             </q-page-container>
 
-          <q-dialog v-model="promptEdit" full-widthpersistent @show="loadData(current_row)">
-                  <q-card style="min-width:418px; min-height: 171px">
+               <q-dialog v-model="promptEdit" full-widthpersistent @show="loadData(current_row)">
+                  <q-card style="min-width:830px; min-height: 520px">
                     <div class= "row">
                       <div class="col-10">
-                        <p class = "textStyle"> Edit Topic </p>
+                        <p class = "q-px-xl q-pt-lg q-pb-md textStyle"> Edit Topic </p>
                       </div>
                       <div class= "col-2 q-pa-sm">
                         <q-btn flat icon="fa-solid fa-x" v-close-popup />
                       </div>
                     </div>
-                      <q-input rounded outline style="padding:5% 15%"  v-model="text" counter maxlength="60" autogrow   :dense="dense" >
+
+                     <div class="row">
+                        <div class= "col-12 text-p q-px-xl textContent">
+                            <q-form @submit="createReliefCentre"> 
+                              <q-input class="q-py-sm" outlined style="max-width : 90%" placeholder="FName" v-model="Name"  maxlength="60" autogrow   :dense="dense" />
+                              <q-input class="q-py-sm" outlined style="max-width : 90%" placeholder="Address Line 1" v-model="addressLone"  maxlength="60" autogrow  :dense="dense" />
+                              <q-input class="q-py-sm" outlined style="max-width : 90%" placeholder="Address Line 2" v-model="addressLtwo"  maxlength="60" autogrow  :dense="dense" />
+                              <q-input class="q-py-sm" outlined style="max-width : 90%" placeholder="City" v-model="city"  maxlength="60" autogrow  :dense="dense" />
+                              <q-input class="q-py-sm" outlined style="max-width : 90%" placeholder="Longitude " v-model="longitude"  maxlength="60" autogrow  :dense="dense" />
+                              <q-input class="q-py-sm" outlined style="max-width : 90%" placeholder="Latitude" v-model="latitude"  maxlength="60" autogrow  :dense="dense" />
+                              <q-input class="q-py-sm" outlined style="max-width : 90%" placeholder="Phone Number" v-model="pNo"  maxlength="60" autogrow   :dense="dense" />
+                              <q-input class="q-py-sm" outlined style="max-width : 90%" placeholder="Email Address" v-model="email" type="email" maxlength="60" autogrow   :dense="dense" />
+                            </q-form>
+                      </div>
+                     </div>                  
                       <template v-slot:after>
                       
                       </template>
-                      </q-input>
-                      
                       <q-card-actions align="right" class="text-primary">
                          <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center"> 
-                               <q-btn class= "btnStyle" flat label="Save" @click = "editTopic(text, current_row)" v-close-popup />
+                               <q-btn class= "btnStyle" flat label="Save" type="submit" v-close-popup />
                           </div>
 
                           <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center">
@@ -125,20 +145,19 @@
                       </q-card-actions>
                   </q-card>
                 </q-dialog>
-              
 
                <q-dialog v-model="promptDelete" full-widthpersistent>
                   <q-card style="min-width:418px; min-height: 171px">
                     <div class= "row">
                       <div class="col-10">
-                        <p class = "textStyle"> Delete {{ current_row.topic }} </p>
+                        <p class = "q-px-xl q-pt-lg q-pb-md textStyle"> Delete {{ current_row.name  }} </p>
                       </div>
-                      <div class= "col-2 q-pa-sm">
+                      <div class= "col-2 q-pa-md">
                         <q-btn flat icon="fa-solid fa-x" v-close-popup />
                       </div>
                     </div>
                       <div class= "text-p q-px-xl q-pt-lg q-pb-md"> 
-                        Are you sure you want to delete this Topic 
+                        Are you sure you want to delete this Relief Centre 
                     </div>
                       <template v-slot:after>
                       
@@ -173,32 +192,25 @@ export default defineComponent({
 
   setup(props) {
     const value = Date.now()
-    const text = ref('')
     const topics = ref([])
     const data = ref(null)
     const columns = [{
-        name:'topic',
-        label:'Topic',
-        field:'topic',
+        name:'name',
+        label:'Name',
+        field:'name',
         align: 'left',
     }, {
-        name:'createdby',
-        label:'Created By',
-        field:'createdby',
+        name:'address',
+        label:'Address',
+        field:'address',
         align: 'left',
     } ,
        {
-        name:'createddate',
-        label:'Created Date',
-        field:'createddate',
+        name:'email',
+        label:'Email Address',
+        field:'email',
         align: 'left',
-       }, 
-       {
-        name:'seeAllPostByTopic',
-        label:'',
-        field:'seeAllPostByTopic',
-        align: 'left',
-       }, 
+       },  
        {
         name:'moreOptions',
         label:'',
@@ -208,17 +220,15 @@ export default defineComponent({
 
     const rows =[{
         id:1,
-        topic:'Earthquakes',
-        createdby:'Kwasi Edwards',
-        createddate:'07.22.22',
-        seeAllPostByTopic:'100',
+        name:'Port of Spain Relief Cen…',
+        address: '123 Centre Street, Port of Spain',
+        email:'kwasiedwards@gmail.com',
 
     }, {
         id:2,
-        topic:'Flood',
-        createdby:'Kwasi Edwards',
-        createddate:'07.22.22',
-        seeAllPostByTopic:'12',
+        name:'Port of Spain Relief Cen…',
+        address: '123 Centre Street, Port of Spain',
+        email:'kwasiedwards@gmail.com',
     }]
 
     function getTopics(){
@@ -241,9 +251,6 @@ export default defineComponent({
         }})
     }
 
-  function loadData(current_row){
-    text.value = current_row.topic
-  }
 
     function createTopic(newTopic){
       console.log(newTopic)
@@ -330,7 +337,6 @@ export default defineComponent({
       topics,
       columns,
       rows,
-      text,
     }
   }
 })
@@ -355,7 +361,6 @@ color: #F8F8F8;
 .textStyle{
   color: var(--unnamed-color-3e3e3e);
   text-align: left;
-  padding: 5%;
   font: normal normal bold 30px/46px Poppins;
   letter-spacing: 0px;
   color: #3E3E3E;

@@ -50,12 +50,6 @@
                   <q-td key ="moreOptions" :props="props"> 
                       <q-btn-dropdown dropdown-icon="fas fa-ellipsis" flat round> 
                         <q-list>
-                         <q-item clickable v-close-popup @click="promptEdit = true, current_row= props.row" >
-                          <q-item-section>
-                            <q-item-label>Edit</q-item-label>
-                          </q-item-section>
-                         </q-item>
-
                           <q-item clickable v-close-popup @click="promptDelete = true , current_row= props.row ">
                           <q-item-section>
                             <q-item-label>Delete</q-item-label>
@@ -72,18 +66,22 @@
                 </q-table>
 
                 <q-dialog v-model="prompt" persistent>
-                  <q-card style="min-width:418px; min-height: 171px">
+                  <q-card style="min-width:830px; min-height: 520px">
                     <div class= "row">
-                      <div class="col-10">
-                        <p class = "textStyle"> Create Topic</p>
+                      <div class="col-11">
+                        <p class = "q-px-xl q-pt-lg q-pb-md textStyle"> Create Administrator</p>
                       </div>
-                      <div class= "col-2 q-pa-sm">
+                      <div class= "col-1 q-pa-sm">
                         <q-btn flat icon="fa-solid fa-x" v-close-popup />
                       </div>
                     </div>
                      <div class="row">
-                        <div class= "col-12 text-p q-px-xl textContent"> 
-                            <q-input outlined style="max-width : 90%" placeholder="Add topic..." v-model="text" counter maxlength="60" autogrow   :dense="dense" />
+                        <div class= "col-12 text-p q-px-xl textContent">
+                            <q-form @submit="createAdmin"> 
+                              <q-input class="q-py-lg" outlined style="max-width : 90%" placeholder="First Name" v-model="fName"  maxlength="60" autogrow   :dense="dense" />
+                              <q-input class="q-py-lg" outlined style="max-width : 90%" placeholder="Last Name" v-model="lName"  maxlength="60" autogrow   :dense="dense" />
+                              <q-input class="q-py-lg" outlined style="max-width : 90%" placeholder="Email Address" v-model="email" type="email" maxlength="60" autogrow   :dense="dense" />
+                            </q-form>
                       </div>
                      </div>
                       <template v-slot:after>
@@ -93,7 +91,7 @@
                       
                       <q-card-actions align="right" class="text-primary">
                          <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center"> 
-                               <q-btn class= "btnStyle" flat label="Save" @click="createTopic(text)" v-close-popup />
+                               <q-btn class= "btnStyle" type="submit" flat label="Save" v-close-popup />
                           </div>
 
                           <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center">
@@ -104,48 +102,19 @@
                   </q-card>
                 </q-dialog>
             </q-page-container>
-
-          <q-dialog v-model="promptEdit" full-widthpersistent>
-                  <q-card style="min-width:418px; min-height: 171px">
-                    <div class= "row">
-                      <div class="col-10">
-                        <p class = "textStyle"> Edit Topic </p>
-                      </div>
-                      <div class= "col-2 q-pa-sm">
-                        <q-btn flat icon="fa-solid fa-x" v-close-popup />
-                      </div>
-                    </div>
-                      <q-input rounded outline style="padding:5% 15%" :placeholder= "current_row.topic" v-model="text" counter maxlength="60" autogrow   :dense="dense" >
-                      <template v-slot:after>
-                      
-                      </template>
-                      </q-input>
-                      
-                      <q-card-actions align="right" class="text-primary">
-                         <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center"> 
-                               <q-btn class= "btnStyle" flat label="Save" @click = "editTopic(text, current_row)" v-close-popup />
-                          </div>
-
-                          <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center">
-                              <q-btn class= "btnStyle2" flat label="Cancel" v-close-popup />
-                          </div>
-                      </q-card-actions>
-                  </q-card>
-                </q-dialog>
               
-
                <q-dialog v-model="promptDelete" full-widthpersistent>
                   <q-card style="min-width:418px; min-height: 171px">
                     <div class= "row">
                       <div class="col-10">
-                        <p class = "textStyle"> Delete {{ current_row.topic }} </p>
+                        <p class = "q-px-xl q-pt-lg q-pb-md textStyle"> Delete {{ current_row.first_name  }}  {{ current_row.last_name  }} </p>
                       </div>
-                      <div class= "col-2 q-pa-sm">
+                      <div class= "col-2 q-pa-md">
                         <q-btn flat icon="fa-solid fa-x" v-close-popup />
                       </div>
                     </div>
                       <div class= "text-p q-px-xl q-pt-lg q-pb-md"> 
-                        Are you sure you want to delete this Topic 
+                        Are you sure you want to delete this Administrator 
                     </div>
                       <template v-slot:after>
                       

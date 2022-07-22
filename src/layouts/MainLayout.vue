@@ -4,7 +4,7 @@
       <div class= "q-pa-md q-ml-xl q-gutter-y-sm">
       <q-toolbar>
         <q-toolbar-title> </q-toolbar-title>
-         <q-btn padding="xl" color="blue" icon="far fa-comment" @click="edit=true" :label="'Chat'" flat unelevated dense>
+         <q-btn padding="xl" color="blue" icon="far fa-comment" to="/Chat" clickable :label="'Chat'" flat unelevated dense>
                 <q-tooltip class="primary" :offset="[10, 10]">
                    Chat
                 </q-tooltip>
@@ -174,7 +174,7 @@
          
         </q-expansion-item>
 
-        <q-item to="/Alerts"  class="menuText" active-class="q-item-no-link-highlighting">
+        <q-item to="/DisasterReliefCenters"  class="menuText" active-class="q-item-no-link-highlighting">
           <q-item-section avatar>
             <q-icon style = "color:#457B9D" name="fa-solid fa-hand-holding-medical"/>
           </q-item-section>

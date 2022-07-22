@@ -12,7 +12,8 @@ const routes = [
       { path: '/PostAnalytics', component: () => import('components/charts/BarChart.vue') },
       {path: '/Users/AdminUsers', component: ()=> import('pages/Adminstrators.vue'),props:true},
       {path:'/Users/ExternalUsers', component: () => import('pages/ExternalUsers.vue'), props:true},
-      
+      {path:'/DisasterReliefCenters', component: () => import('pages/DisasterCenters.vue'), props:true},
+      {path:'/Chat', component: () => import('pages/Chat.vue'), props:true},
     ]
   },
   
