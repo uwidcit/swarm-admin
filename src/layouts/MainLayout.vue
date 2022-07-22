@@ -1,9 +1,31 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header class="background" elevated >
-      <q-toolbar class="glossy">
-      <div class="q-gutter-sm row items-center no-wrap ">
-        <q-space/>
+  <q-layout view="lHh Lpr lFf" class="shadow-2 rounded-borders">
+    <q-header class="headerStyle text-black" style=" height: 100px;" elevated >
+      <div class= "q-pa-md q-ml-xl q-gutter-y-sm">
+      <q-toolbar>
+        <q-toolbar-title> </q-toolbar-title>
+         <q-btn padding="xl" color="blue" icon="far fa-comment" @click="edit=true" :label="'Chat'" flat unelevated dense>
+                <q-tooltip class="primary" :offset="[10, 10]">
+                   Chat
+                </q-tooltip>
+            </q-btn>
+
+          <q-btn padding="xl" color="orange" icon="far fa-bell" @click="edit=true" :label= "`Emergencies`" flat unelevated dense>
+          <q-tooltip class="primary" :offset="[10, 10]">
+            Emergencies
+          </q-tooltip>
+            </q-btn>
+
+      <!--<div class="q-gutter-lg">
+          <div class="">
+            <div class="col">
+            
+          </div>
+            <div class="col">
+        
+       </div>
+       </div>-->
+        <!-- <q-space/>
           <div  style="max-width: 1000px">
               <q-tabs
               v-model="tab"
@@ -49,54 +71,115 @@
             <q-avatar size="26px">
               <img src="https://cdn.quasar.dev/img/boy-avatar.png">
             </q-avatar>
-          </q-btn>
-        </div>
+          </q-btn>>
+        </div>-->
       </q-toolbar>
+      </div>
     </q-header>
-
+  
     <q-drawer
-      v-model="leftDrawerOpen"
+      v-model="drawer"
       show-if-above
-      bordered
-      class="bg-cyan text-white"
-      :mini="miniState"
+      elevated
+      class="text-black"
       @mouseover="miniState = false"
       @mouseout="miniState = true"
-      :width="200"
+      :width="300"
       :breakpoint="500"
+      style =" background: #FFFFFF 0% 0% no-repeat padding-box; box-shadow: 0px 3px 6px #00000029;"
     >
-    <q-list class="background">
-         <q-item to="/" active-class="q-item-no-link-highlighting" >
-          <q-item-section avatar>
+    <q-list class="bg-white">
+        <div class= "row q-col-gutter-xs">
+          <div class= "col">
+          <q-img  class= "header-img" src="https://raw.githubusercontent.com/TheGreatDevourer/swarm-client-staging/main/src/logo.png"></q-img>
+          </div>
+        </div>
+         <q-item to="/" class="menuText" style="justify-content:left;" active-class="q-item-no-link-highlighting">
+          <!--<q-item-section>
           <span v-if="$q.platform.is.desktop" ><q-btn
           flat
           dense
           round
-          icon="menu"
           aria-label="Menu"
         /> </span> 
-          </q-item-section>
-          <q-item-section>
-            <q-item-label><strong>SWARMNET</strong></q-item-label>
+          </q-item-section>-->
+          <q-item-section avatar>
+            <q-icon style = "color:#457B9D;" name="fas fa-cube"></q-icon>
+            </q-item-section>
+            <q-item-section>
+            <q-item-label class="menuText">Dashboard</q-item-label>
           </q-item-section>
         </q-item>
 
-        <q-separator color="orange" inset />
-        <q-item to="/home" active-class="q-item-no-link-highlighting v-ripple">
+        <q-item to="/home"  class="menuText"  active-class="q-item-no-link-highlighting v-ripple">
           <q-item-section avatar>
-            <q-icon name="fas fa-home"/>
+            <q-icon style = "color:#457B9D" name="fa-solid fa-file-lines"/>
           </q-item-section>
           <q-item-section>
-            <q-item-label>Post Board</q-item-label>
+            <q-item-label >Post</q-item-label>
           </q-item-section>
         </q-item>
 
-        <q-item to="/Alerts" active-class="q-item-no-link-highlighting">
+        <q-item to="/Alerts"  class="menuText"  active-class="q-item-no-link-highlighting">
           <q-item-section avatar>
-            <q-icon name="fas fa-exclamation-triangle"/>
+            <q-icon style = "color:#457B9D" name="fa-solid fa-exclamation"/>
           </q-item-section>
           <q-item-section>
-            <q-item-label>Alerts</q-item-label>
+            <q-item-label >Emergency Reports</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-item to="/Topics" class="menuText"  active-class="q-item-no-link-highlighting">
+          <q-item-section avatar>
+            <q-icon style = "color:#457B9D" name="fa-solid fa-certificate"/>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label >Topics</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-item to="/Broadcast"  class="menuText" active-class="q-item-no-link-highlighting" >
+          <q-item-section avatar>
+            <q-icon style = "color:#457B9D" name="fa-solid fa-podcast"/>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label class="menuText">Broadcast</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-item to="/Alerts"  class="menuText" active-class="q-item-no-link-highlighting">
+          <q-item-section avatar>
+            <q-icon style = "color:#457B9D" name="fa-solid fa-chart-area"/>
+          </q-item-section>
+          <q-item-section no-wrap>
+            <q-item-label class="menuText">Reports and Analytics</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-expansion-item  style = "color:#457B9D" icon="fa-solid fa-circle-user" label="Users"  class="menuText" active-class="q-item-no-link-highlighting">
+          <q-item to="/Users/AdminUsers" class="menuText" active-class="q-item-no-link-highlighting">
+              <q-item-section avatar/>
+
+              <q-item-section no-wrap>
+                <q-item-label class="menuText" >Administrators</q-item-label>
+              </q-item-section>
+            </q-item>
+
+        <q-item to="/Users/ExternalUsers" class="menuText" active-class="q-item-no-link-highlighting">
+              <q-item-section avatar/>
+              <q-item-section no-wrap>
+                <q-item-label class="menuText" >External Users</q-item-label>
+              </q-item-section>
+        </q-item>
+         
+        </q-expansion-item>
+
+        <q-item to="/Alerts"  class="menuText" active-class="q-item-no-link-highlighting">
+          <q-item-section avatar>
+            <q-icon style = "color:#457B9D" name="fa-solid fa-hand-holding-medical"/>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label class="menuText">Diaster Relief Center</q-item-label>
           </q-item-section>
         </q-item>
 
@@ -109,18 +192,11 @@
           </q-item-section>
         </q-item>-->
       
-        <q-item to="/PostAnalytics" active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon name="fas fa-chart-line"/>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Post Analytics</q-item-label>
-          </q-item-section>
-        </q-item>
+       
       </q-list>
     </q-drawer>
 
-    <q-dialog v-model="edit">
+   <!-- <q-dialog v-model="edit">
       <q-card style="width: 600px; height: 400px; background-color: powderblue;">
         <q-card-section>
           <div class="text-h6">Edit Topic</div>
@@ -220,9 +296,9 @@
           <q-btn flat label="No" color="primary" @click="ph = '', lev=''" v-close-popup />
         </q-card-actions>
       </q-card>
-    </q-dialog>
+    </q-dialog> -->
 
-    <q-page-container class="bg-grey-2">
+    <q-page-container class="background">
       <router-view />
     </q-page-container>
 
@@ -472,7 +548,41 @@ function deleteTopic(postID){
 
 <style scoped>
 .background{
-  background-color: #abe9cd;
-  background-image: linear-gradient(315deg, #abe9cd 0%, #3eadcf 74%);
+  background-color: #F8F8F8;
+  background: #F8F8F8 0% 0% no-repeat padding-box;
+  opacity: 1;
+}
+
+.header-img{
+  top: 5px;
+  left: 60px;
+  width: 169px;
+  height: 114px;
+  margin-bottom: 30px;
+}
+
+.b-items{
+  top: 10px; 
+  width: 209px; 
+  height: 122px;
+
+  max-width:209px;
+  max-height: 122px;
+
+}
+  
+.headerStyle{
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 0px 10px 10px 0px;
+  opacity: 1;
+}
+.menuText {
+  text-align: left;
+  font: normal normal normal 20px/30px Poppins;
+  letter-spacing: 0px;
+  color: #707070;
+  opacity: 1;
+  margin-bottom: 10px;
 }
 </style>

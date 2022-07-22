@@ -1,6 +1,6 @@
 <template>
-  <div class="q-pa-md" >
-    <div class="q-gutter-md row">
+   <!--<div class="q-pa-md" >
+   <div class="q-gutter-md row">
       <q-input
         v-model="search"
         debounce="500"
@@ -16,16 +16,16 @@
           <q-btn icon="fas fa-times" flat round @click="search='', getDetails(message)" />
         </template>
       </q-input>
-
+-->
       <q-space/>
 
-      <div class="q-gutter-sm row items-center no-wrap ">
-      
+     <!-- <div class="q-gutter-sm row items-center no-wrap ">
+    
     <q-btn fab flat round icon="far fa-edit" color="accent" size="xs" fab-mini @click="fixed = true">
       <q-tooltip>
             Create Post
           </q-tooltip>
-    </q-btn>
+    </q-btn> -->
 
     <!--
       <q-btn icon="event" flat round color="accent">
@@ -41,14 +41,9 @@
         </q-date>
       </q-popup-proxy>
     </q-btn>
-    -->
-
-
-
-
-
+    
       </div>    
-    </div>
+    </div>-->
 
      <q-dialog v-model="fixed" no-refocus>
       <q-card style="width: 600px; height: 400px; background-color: powderblue;">
@@ -150,14 +145,32 @@
         </q-dialog>
         
     </div>
-    --->
+    
+    </div>--->
+    <div class="row">
+        <div class= "postHeader q-ma-lg" style="color: #4D4D4D;"> All Posts </div>
+    </div> 
+  <q-page class="row-12 q-col-gutter-lg" > 
+   
+    <div class="row q-col-gutter-lg">
+      <div class= "col-lg-10 col-md-8 q-col-gutter-lg">
+         <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" v-for="(post, index) in pos" >
+           <post-design :data="post"></post-design>
+        </div>
     </div>
-          
-  <q-page >
-    <div class="row q-col-gutter-sm ">
-      <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12" v-for="(post, index) in pos" >
-        <post-design :data="post"></post-design>
+    <div class= "col-lg-2 col-md-4 col-sm-1 col-xs-1  q-col-gutter-lg">
+    
+      <q-select sqaure filled v-model= "selectModel" :options="['Most Recent', 'Oldest', 'Trending']" :display-value="'Most Recent'" ></q-select>
+      <q-item-label class="text-h6"> Filter By: </q-item-label>  
+      
+      <q-form @submit="searchByTags(selectModel)">
+      <q-option-group v-model= "selectModel" type="radio" :options= "[{label:'Earthquake', value:'2'}, {label:'Floods', value:'1'}, {label:'Road Works', value:'3'},{label:'Storm', value:'4'},{label:'Fire', value:'5'}]">
+      </q-option-group>
+      <div>
+        <q-btn label="Submit" type="submit" color="primary"/>
       </div>
+      </q-form>
+    </div>
     </div>
   </q-page>
 
@@ -195,6 +208,7 @@ export default defineComponent({
     const pos = ref([])
     const subbed = ref(false)
     const model = ref(null)
+    const selectModel = ref(null)
     const posTags = ref([])
     const tab = ref('flooding')
     const comments = ref([])
@@ -319,20 +333,21 @@ export default defineComponent({
     
     /* displays all post after user logins in */
     function displayAllPost(){
-      
-          let curl = "https://swarmnet-prod.herokuapp.com/replies"
+          let curl = "https://swarmnet.sundaebytes.com/api/admin/posts"
             api.get(curl,{
             method: 'GET',
             
             headers: {
+                     Authorization:  'Bearer '+ localStorage.getItem('token') ,
                     'Access-Control-Allow-Origin': '*'
                   }
               })
             .then((response) => {
-              data.value = response.data
-              
-            for (let i of data.value) {  /*add all replies to an array */
-                comments.value.push(i)
+              data.value = response.data.posts
+        
+            for (let i of data.value) { /*add all replies to an array */
+                let o = JSON.parse(JSON.stringyfy(i))
+                comments.value.push(o)
               }
             })
             .catch(() => {
@@ -344,26 +359,29 @@ export default defineComponent({
               })
             })
       
-          let url = "https://swarmnet-prod.herokuapp.com/posts"
+          let url = "https://swarmnet.sundaebytes.com/api/admin/posts"
           
             api.get(url,{
             method: 'GET',
             
             headers: {
+                    Authorization: 'Bearer '+ localStorage.getItem('token'),
                     'Access-Control-Allow-Origin': '*'
                   }
               })
             .then((response) => {
-              data.value = response.data /* get all post */
+              data.value =  response.data.posts/* get all post */
               
             for (let i of data.value) {  /* filter post from replies */
-                pos.value.unshift(i)  /*the unshift() function adds one or more items to the start of an array*/
-                posTags.value.unshift(i.tags)
+                let o = JSON.parse(JSON.stringify(i))
+                pos.value.unshift(o)  /*the unshift() function adds one or more items to the start of an array*/
+                posTags.value.unshift(o.tags)
                  
               for(let j of comments.value){
                 if(i.id == j.id){
-                  pos.value.shift(i)  
-                  posTags.value.shift(i.tags)
+                  let o = JSON.parse(JSON.stringify(i))
+                  pos.value.shift(o)  
+                  posTags.value.shift(o.tags)
                 }  
               }
               }
@@ -386,7 +404,6 @@ export default defineComponent({
       console.log(url)
             api.get(url,{
             method: 'GET',
-            
             headers: {
                     'Access-Control-Allow-Origin': '*',
                   },
@@ -395,11 +412,12 @@ export default defineComponent({
             .then((response) => {
               
               data.value = response.data
-              console.log("response: " + data.value)
+              console.log(data.value)
 
               /* display search list */
               pos.value.splice(0)
               for (let i of data.value) { 
+                
                   pos.value.unshift(i)
                   posTags.value.unshift(i.tags)
                 for(let j of comments.value){
@@ -489,12 +507,13 @@ export default defineComponent({
     if(message.value == 0){
       pos.value.splice(0)
       
-      let url = "https://swarmnet-prod.herokuapp.com/posts"
+      let url = "https://swarmnet.sundaebytes.com/api/admin/posts"
           
             api.get(url,{
             method: 'GET',
             
             headers: {
+                    Authorization: 'Bearer '+ localStorage.getItem('token'),
                     'Access-Control-Allow-Origin': '*'
                   }
               })
@@ -588,6 +607,7 @@ export default defineComponent({
         topicInfo,
         search,
         searchByTags,
+        selectModel,
         data, 
         loadData,
         tops,
@@ -600,7 +620,6 @@ export default defineComponent({
         getPostTags,
         options,
         message,
-       
         model,
         fixed: ref(false),
         text: ref(''),
@@ -629,5 +648,19 @@ export default defineComponent({
 <style lang="sass" scoped>
 .my-card
   width: 100%
-  max-width: 300px
+  height: 100%
+  max-width: 800px
+  background: #FFFFFF 0% 0% no-repeat padding-box
+  border-radius: 20px
+  opacity: 1
+
+.postHeader
+  text-align: left
+  font: normal normal bold 40px/60px Poppins
+  letter-spacing: 0px
+  color: #4D4D4D
+  opacity: 1
+
+.col-lg-12
+  padding: 20px 30px 30px
 </style>
