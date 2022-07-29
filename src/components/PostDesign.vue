@@ -1,6 +1,6 @@
 <template>
   <q-card class="my-card background">
-     <a :href="`/Details/${data.id}`">
+     <!--<a :href="`/Details/${data.id}`"> </a>-->
     <q-card-section square=true>
       <div class="row q-gutter-none q-pa-md q-ma-xs">
         <div class="col-4 text-p postTitle">{{data.title}}</div>
@@ -51,14 +51,54 @@
           </div>
          
           </div>
-
+    
     </q-card-section>
+    <q-separator color="grey"/>
      <q-card-actions>
-           <q-btn flat> Likes 496 </q-btn>
-            <q-btn flat> Comments: 210 </q-btn>
-            <q-btn flat> Share</q-btn>
+            <div class="col-4 q-px-xl">
+                <q-icon name="fa-solid fa-message"></q-icon>
+                <q-btn flat @click="toggleComments"> Comments 20 </q-btn>
+            </div>
+             <div class="col-4 q-px-xl">
+              <q-icon name="fa-solid fa-heart"> </q-icon>
+              <q-btn flat> Likes: 210 </q-btn>
+            </div>
+             <div class="col-4 q-px-xl">
+              <q-icon name="fa-solid fa-share"></q-icon>
+              <q-btn flat> Share</q-btn>
+            </div>
+    </q-card-actions>
+
+  <div v-if="seeComments">
+    <q-separator color="grey"/>
+      <q-card class=" q-pa-md my-card background">
+        <q-card-section square="true">
+          <div class="row">
+            <div class="col-1">
+              <q-avatar icon="fa-solid fa-circle-user fa-2xl"/>
+            </div>
+            <div class="col-11">
+              <p> John Doe </p>
+              <p>This is a simulated reply only to be used for testing </p>
+            </div>
+          </div>
+             <q-card-actions>
+             <div class="col-4 q-px-xl">
+                <q-icon name="fa-solid fa-message"></q-icon>
+                <q-btn flat> Comments 20 </q-btn>
+            </div>
+             <div class="col-4 q-px-xl">
+              <q-icon name="fa-solid fa-heart"> </q-icon>
+              <q-btn flat> Likes: 210 </q-btn>
+            </div>
+             <div class="col-4 q-px-xl">
+              <q-icon name="fa-solid fa-share"></q-icon>
+              <q-btn flat> Share</q-btn>
+            </div>
           </q-card-actions>
-    </a>
+        <q-separator color="grey"/>
+      </q-card-section>    
+</q-card></div>
   </q-card>
 </template>
 
@@ -74,6 +114,7 @@ export default defineComponent({
  
   setup(props) {
     const value = Date.now()
+    const seeComments = ref(false)
     function datePassed() {
     //  console.log(Date.parse(props.data.created))
     //  console.log(formatDistance(Date.parse(props.data.created), new Date(), { addSuffix: true }))
@@ -82,8 +123,14 @@ export default defineComponent({
        // return formatDistance(Date.parse(props.data.created), new Date(), { addSuffix: true })
     }
 
+    function toggleComments(){
+      seeComments.value = !seeComments.value
+    }
+
     return{
       datePassed,
+      toggleComments,
+      seeComments,
       slide:ref(1),
     }
   }

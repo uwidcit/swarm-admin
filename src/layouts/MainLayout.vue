@@ -179,7 +179,7 @@
             <q-icon style = "color:#457B9D" name="fa-solid fa-hand-holding-medical"/>
           </q-item-section>
           <q-item-section>
-            <q-item-label class="menuText">Diaster Relief Center</q-item-label>
+            <q-item-label class="menuText">Disaster Relief Center</q-item-label>
           </q-item-section>
         </q-item>
 

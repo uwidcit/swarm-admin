@@ -333,6 +333,15 @@ export default defineComponent({
     
     /* displays all post after user logins in */
     function displayAllPost(){
+          pos.value.unshift([{
+            title: 'This is a post title',
+            text:'This is my first post on SwarNET',
+            created_date: '2022-07-27T23:24:21.125Z',
+            tags:{
+              id:'1',
+              tag:'flood'
+            }
+          }])
           let curl = "https://swarmnet.sundaebytes.com/api/admin/posts"
             api.get(curl,{
             method: 'GET',
