@@ -1,6 +1,7 @@
 <template>
-    <q-page>
-        <q-page-container style="padding-top:0px; padding-left:0px;">
+   
+        <q-page-container  style="padding-top:0px; padding-left:0px;"> 
+            <q-page>
             <div class="row">
                 <div class = "col-4 q-px-lg q-py-lg q-gutter-lg chatStyle">
                 <q-input 
@@ -13,7 +14,7 @@
                   style="width: 90%"> </q-input>
 
                 
-                <q-scroll-area style="height: 100%; width: 90%">
+                <q-scroll-area style="height: 75vh; width: 90%">
                         <q-card class="q-my-xs">
                          <q-card-section v-for="(conversation, index) in conversations" :key="index">
                             <div class="row items-center q-pl-md">
@@ -48,12 +49,13 @@
                          </div>
                         </div>
                 
-                    <div class="row-8 chatWindow" >
+                    <div class="row-8 q-pl-md" >
+                        <q-scroll-area class="chatWindow">
                         <div v-for="(m,index) in messages" :key="index">
                             <q-chat-message v-if="m.owner" :text="[m.message]" :name="m.name" :stamp="m.stamp" sent/>
                             <q-chat-message v-else :text="[m.message]" :name="m.name" :stamp="m.stamp" /> 
                         </div>
-                        
+                        </q-scroll-area>
                     </div>
                     <div class="row-2">
                     <div class="row items-center chatStyle">
@@ -76,8 +78,9 @@
                 </div>
 
             </div>
+        </q-page>
         </q-page-container>
-    </q-page>
+    
 </template>
 
 <script>
@@ -113,8 +116,7 @@ export default defineComponent({
             name:'Jane Doe',
             message: 'Sorry I think you have the wrong number',
             owner: false,
-            stamp: 'just now'}
-
+            stamp: 'just now'},  
             ])
         const conversations = ref([
             {chatID: '100',
@@ -169,10 +171,13 @@ export default defineComponent({
 
 <style scoped>
 .chatWindow{
+    height: 74vh;
+    width:100%;
 }
 .chatStyle{
     background: #FFFFFF 0% 0% no-repeat padding-box;
     opacity: 1;
+     min-height: 5vh;
 }
 
 input[type="file"] {

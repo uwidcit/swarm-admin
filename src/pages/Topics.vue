@@ -19,7 +19,7 @@
                   > </q-input> 
                 </div>
       </div>
-                <q-table  :rows ="topics" :columns="columns" :filter="filter"> 
+                <q-table  :rows ="topics" :columns="columns" :filter="filter" > 
                   <template v-slot:body="props"> 
                     
                     <q-tr :props="props">
@@ -176,22 +176,35 @@ export default defineComponent({
     const text = ref('')
     const topics = ref([])
     const data = ref(null)
-    const columns = [{
+    const columns = [
+      {name:'topicID',
+      label:'ID',
+      field:'topicID',
+      align:'left',
+      sortable:true
+      },
+    {
         name:'topic',
         label:'Topic',
         field:'topic',
         align: 'left',
+        sortable:true,
+        
     }, {
         name:'createdby',
         label:'Created By',
         field:'createdby',
         align: 'left',
+        sortable:true,
+        
     } ,
        {
         name:'createddate',
         label:'Created Date',
         field:'createddate',
         align: 'left',
+        sortable:true,
+        
        }, 
        {
         name:'seeAllPostByTopic',

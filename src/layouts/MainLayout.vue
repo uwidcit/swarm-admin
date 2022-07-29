@@ -501,6 +501,7 @@ function deleteTopic(postID){
  
     return { 
       ptabtext,
+      drawer:ref(false),
       ptopid: ref(0),
       tagText,
       addTopic,
