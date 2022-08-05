@@ -98,7 +98,7 @@
                 </q-dialog>
             </q-page-container>
 
-          <q-dialog v-model="promptEdit" full-widthpersistent @show="loadData(current_row)">
+          <q-dialog v-model="promptEdit" full-widthpersistent @show="text=current_row.topic">
                   <q-card style="min-width:418px; min-height: 171px">
                     <div class= "row">
                       <div class="col-10">
@@ -108,7 +108,7 @@
                         <q-btn flat icon="fa-solid fa-x" v-close-popup />
                       </div>
                     </div>
-                      <q-input rounded outline style="padding:5% 15%"  v-model="text" counter maxlength="60" autogrow   :dense="dense" >
+                      <q-input rounded outline style="padding:5% 15%"  v-model="text" counter maxlength="60" autogrow  :dense="dense" >
                       <template v-slot:after>
                       
                       </template>

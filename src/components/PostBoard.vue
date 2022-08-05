@@ -658,7 +658,7 @@ export default defineComponent({
 .my-card
   width: 100%
   height: 100%
-  max-width: 800px
+  max-width: 1440px
   background: #FFFFFF 0% 0% no-repeat padding-box
   border-radius: 20px
   opacity: 1

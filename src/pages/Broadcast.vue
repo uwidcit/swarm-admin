@@ -155,7 +155,7 @@
 
                       <div class="row">
                         <div class= "col-12 text-p q-px-xl textContent"> 
-                           <q-input outlined v-model="text" style= "max-width : 90%" maxlength="60" />
+                           <q-input outlined v-model="title" style= "max-width : 90%" maxlength="60" />
                         </div>
                       </div>
 
@@ -178,7 +178,7 @@
                       <q-card-actions class="text-primary">
                   
                           <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center"> 
-                               <q-btn class= "btnStyle" flat label="Save" v-close-popup/>
+                               <q-btn class= "btnStyle" flat label="Save" @click="sendBroadcast(title,text)" v-close-popup/>
                           </div>
 
                           <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center">
@@ -355,6 +355,22 @@ export default defineComponent({
         }})
     }
 
+    function sendBroadcast(title,content){
+       let url = "https://swarmnet.sundaebytes.com/api/admin/broadcast"
+      api.post(url,{
+        'title':title,
+        'text':content
+      },{
+        headers: {
+           Authorization:  'Bearer '+ localStorage.getItem('token') ,
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json',
+        }
+      }).then((response) => {
+        console.log(response.data)
+      })
+    }
+
     function datePassed() {
     //  console.log(Date.parse(props.data.created))
     //  console.log(formatDistance(Date.parse(props.data.created), new Date(), { addSuffix: true }))
@@ -368,6 +384,7 @@ export default defineComponent({
     return{
       datePassed,
       data,
+      title:ref(''),
       current_row:ref(''),
       contentCard:ref(false),
       prompt: ref(false),
@@ -375,6 +392,7 @@ export default defineComponent({
       promptDelete: ref(false),
       search:ref(''),
       getTopics,
+      sendBroadcast,
       topics,
       columns,
       rows,
