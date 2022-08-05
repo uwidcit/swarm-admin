@@ -18,7 +18,7 @@
                   > </q-input> 
                 </div>
       </div>
-                <q-table  :rows ="rows" :columns="columns" :filter="filter"> 
+                <q-table  :rows ="users" :columns="columns" :filter="filter"> 
                   <template v-slot:body="props"> 
                     
                     <q-tr :props="props">
@@ -38,20 +38,10 @@
                     <q-td key ="last_seen" :props="props"> 
                        {{ props.row.last_seen}}
                     </q-td>
-
-                     <q-td key ="pass_reset" :props="props"> 
-                      <q-btn :label="'Send Password Reset Link'"> </q-btn>
-                    </q-td>
-                  
+              
                   <q-td key ="moreOptions" :props="props"> 
                       <q-btn-dropdown dropdown-icon="fas fa-ellipsis" flat round> 
                         <q-list>
-                         <q-item clickable v-close-popup @click="promptEdit = true, current_row= props.row" >
-                          <q-item-section>
-                            <q-item-label>Edit</q-item-label>
-                          </q-item-section>
-                         </q-item>
-
                           <q-item clickable v-close-popup @click="promptDelete = true , current_row= props.row ">
                           <q-item-section>
                             <q-item-label>Delete</q-item-label>
@@ -66,68 +56,7 @@
                   </template>
                   
                 </q-table>
-
-                <q-dialog v-model="prompt" persistent>
-                  <q-card style="min-width:418px; min-height: 171px">
-                    <div class= "row">
-                      <div class="col-10">
-                        <p class = "textStyle"> Create Topic</p>
-                      </div>
-                      <div class= "col-2 q-pa-sm">
-                        <q-btn flat icon="fa-solid fa-x" v-close-popup />
-                      </div>
-                    </div>
-                     <div class="row">
-                        <div class= "col-12 text-p q-px-xl textContent"> 
-                            <q-input outlined style="max-width : 90%" placeholder="Add topic..." v-model="text" counter maxlength="60" autogrow   :dense="dense" />
-                      </div>
-                     </div>
-                      <template v-slot:after>
-                      
-                      </template>
-                      
-                      
-                      <q-card-actions align="right" class="text-primary">
-                         <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center"> 
-                               <q-btn class= "btnStyle" flat label="Save" @click="createTopic(text)" v-close-popup />
-                          </div>
-
-                          <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center">
-                              <q-btn class= "btnStyle2" flat label="Cancel" v-close-popup />
-                          </div>
-                       
-                      </q-card-actions>
-                  </q-card>
-                </q-dialog>
             </q-page-container>
-
-          <q-dialog v-model="promptEdit" full-widthpersistent>
-                  <q-card style="min-width:418px; min-height: 171px">
-                    <div class= "row">
-                      <div class="col-10">
-                        <p class = "textStyle"> Edit Topic </p>
-                      </div>
-                      <div class= "col-2 q-pa-sm">
-                        <q-btn flat icon="fa-solid fa-x" v-close-popup />
-                      </div>
-                    </div>
-                      <q-input rounded outline style="padding:5% 15%" :placeholder= "current_row.topic" v-model="text" counter maxlength="60" autogrow   :dense="dense" >
-                      <template v-slot:after>
-                      
-                      </template>
-                      </q-input>
-                      
-                      <q-card-actions align="right" class="text-primary">
-                         <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center"> 
-                               <q-btn class= "btnStyle" flat label="Save" @click = "editTopic(text, current_row)" v-close-popup />
-                          </div>
-
-                          <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center">
-                              <q-btn class= "btnStyle2" flat label="Cancel" v-close-popup />
-                          </div>
-                      </q-card-actions>
-                  </q-card>
-                </q-dialog>
               
 
                <q-dialog v-model="promptDelete" full-widthpersistent>
@@ -159,7 +88,6 @@
                   </q-card>
                 </q-dialog>
 
-
         </q-page>
 </template>
 
@@ -176,7 +104,7 @@ export default defineComponent({
 
   setup(props) {
     const value = Date.now()
-    const topics = ref([])
+    const users = ref([])
     const data = ref(null)
     const columns = [{
         name:'first_name',
@@ -199,12 +127,6 @@ export default defineComponent({
         name:'last_seen',
         label:'Last Seen',
         field:'last_seen',
-        align: 'left',
-       },
-       {
-        name:'pass_reset',
-        label:'',
-        field:'pass_reset',
         align: 'left',
        }, 
        {
@@ -230,52 +152,28 @@ export default defineComponent({
 
     }]
 
-    function getTopics(){
-        let url = "https://swarmnet.sundaebytes.com/api/topics"
+    function getUsers(){
+        let url = "https://swarmnet.sundaebytes.com/api/admin/users"
         api.get(url, {
           method: 'GET',
           headers: {
-          'Access-Control-Allow-Origin': '*'
+          'Access-Control-Allow-Origin': '*',
+          Authorization:  'Bearer '+ localStorage.getItem('token') ,
         }
         }).then((response) => {
-            data.value =  response.data.topics
+            data.value =  response.data.users
             console.log(data.value)
             for(let i of data.value){
-              topics.value.push({ id: i.id,
-                topic: i.text,
-                createdby:'Kwasi Edwards',
-                createddate:'07.22.22',
-                seeAllPostByTopic:'100',
+              users.value.push({ 
+                id: i.id,
+                email: i.email,
+                first_name: i.first_name,
+                last_name: i.last_name,
+                last_seen:'07.22.22',
             })
         }})
     }
 
-
-    function createTopic(newTopic){
-      console.log(newTopic)
-      
-      let url = "https://swarmnet.sundaebytes.com/api/admin/topics"
-      api.post(url, {
-        text:newTopic,
-        level: 1
-      }, {
-        headers: {
-           Authorization:  'Bearer '+ localStorage.getItem('token') ,
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json',
-        }
-      }).then((response) => {
-        data.value = response.data.topic
-        console.log(data.value)
-        topics.value.push({
-                id: data.value.id,
-                topic: data.value.text,
-                createdby:'Kwasi Edwards',
-                createddate:'07.22.22',
-                seeAllPostByTopic:'100',
-        })
-      })
-    }
 
     function editTopic(newTopic,currentTopic){
   
@@ -318,7 +216,7 @@ export default defineComponent({
        // return formatDistance(Date.parse(props.data.created), new Date(), { addSuffix: true })
     }
   onMounted(() => {
-    getTopics();
+    getUsers();
   })
     return{
       datePassed,
@@ -329,11 +227,10 @@ export default defineComponent({
       promptDelete: ref(false),
       current_row:ref(''),
       search:ref(''),
-      getTopics,
+      getUsers,
       editTopic,
-      createTopic,
       deleteTopic,
-      topics,
+      users,
       columns,
       rows,
     }

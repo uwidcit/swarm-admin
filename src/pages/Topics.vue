@@ -23,6 +23,8 @@
                   <template v-slot:body="props"> 
                     
                     <q-tr :props="props">
+
+
                     <q-td key ="topic" :props="props"> 
                       {{ props.row.topic}}
                     </q-td>
@@ -177,12 +179,6 @@ export default defineComponent({
     const topics = ref([])
     const data = ref(null)
     const columns = [
-      {name:'topicID',
-      label:'ID',
-      field:'topicID',
-      align:'left',
-      sortable:true
-      },
     {
         name:'topic',
         label:'Topic',

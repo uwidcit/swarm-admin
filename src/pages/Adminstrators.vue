@@ -22,7 +22,7 @@
                   > </q-input> 
                 </div>
       </div>
-                <q-table  :rows ="rows" :columns="columns" :filter="filter"> 
+                <q-table  :rows ="admins" :columns="columns" :filter="filter"> 
                   <template v-slot:body="props"> 
                     
                     <q-tr :props="props">
@@ -44,7 +44,7 @@
                     </q-td>
 
                      <q-td key ="pass_reset" :props="props"> 
-                      <q-btn :label="'Send Password Reset Link'"> </q-btn>
+                      <q-btn :label="'Send Password Reset Link'" @click="sendPasswordReset(props.row.email)"> </q-btn>
                     </q-td>
                   
                   <q-td key ="moreOptions" :props="props"> 
@@ -77,7 +77,7 @@
                     </div>
                      <div class="row">
                         <div class= "col-12 text-p q-px-xl textContent">
-                            <q-form @submit="createAdmin"> 
+                            <q-form> 
                               <q-input class="q-py-lg" outlined style="max-width : 90%" placeholder="First Name" v-model="fName"  maxlength="60" autogrow   :dense="dense" />
                               <q-input class="q-py-lg" outlined style="max-width : 90%" placeholder="Last Name" v-model="lName"  maxlength="60" autogrow   :dense="dense" />
                               <q-input class="q-py-lg" outlined style="max-width : 90%" placeholder="Email Address" v-model="email" type="email" maxlength="60" autogrow   :dense="dense" />
@@ -91,7 +91,7 @@
                       
                       <q-card-actions align="right" class="text-primary">
                          <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center"> 
-                               <q-btn class= "btnStyle" type="submit" flat label="Save" v-close-popup />
+                               <q-btn class= "btnStyle" type="submit" flat label="Save" v-close-popup @click="createAdmin(fName,lName,email)"/>
                           </div>
 
                           <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center">
@@ -140,16 +140,18 @@
 import {defineComponent, ref, onMounted} from 'vue'
 import { formatDistance} from 'date-fns'
 import { api } from 'boot/axios'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
-  name: "Topics",
+  name: "Admins",
 
   props: ['data'],
 
 
   setup(props) {
     const value = Date.now()
-    const topics = ref([])
+    const $q = useQuasar()
+    const admins = ref([])
     const data = ref(null)
     const columns = [{
         name:'first_name',
@@ -203,34 +205,37 @@ export default defineComponent({
 
     }]
 
-    function getTopics(){
-        let url = "https://swarmnet.sundaebytes.com/api/topics"
+    function getAdmins(){
+        let url = "https://swarmnet.sundaebytes.com/api/admin/users/administrator"
         api.get(url, {
           method: 'GET',
           headers: {
-          'Access-Control-Allow-Origin': '*'
+          Authorization:  'Bearer '+ localStorage.getItem('token') ,
+          'Access-Control-Allow-Origin': '*',
         }
         }).then((response) => {
-            data.value =  response.data.topics
+            data.value =  response.data.adminstrators
             console.log(data.value)
             for(let i of data.value){
-              topics.value.push({ id: i.id,
-                topic: i.text,
-                createdby:'Kwasi Edwards',
-                createddate:'07.22.22',
-                seeAllPostByTopic:'100',
+              admins.value.push({ 
+                id: i.id,
+                email: i.email,
+                first_name: i.first_name,
+                last_name: i.last_name,
+                last_seen:'Mon, 21st July 2022',
             })
         }})
     }
 
 
-    function createTopic(newTopic){
-      console.log(newTopic)
+    function createAdmin(fName,lName,email){
       
-      let url = "https://swarmnet.sundaebytes.com/api/admin/topics"
+      let url = "https://swarmnet.sundaebytes.com/api/admin/users/administrator"
+      
       api.post(url, {
-        text:newTopic,
-        level: 1
+        firstname:fName,
+        lastname:lName,
+        email:email,
       }, {
         headers: {
            Authorization:  'Bearer '+ localStorage.getItem('token') ,
@@ -238,24 +243,22 @@ export default defineComponent({
           'Content-Type': 'application/json',
         }
       }).then((response) => {
-        data.value = response.data.topic
+        data.value = response.data.administrator
         console.log(data.value)
-        topics.value.push({
+        admins.value.push({
                 id: data.value.id,
-                topic: data.value.text,
-                createdby:'Kwasi Edwards',
-                createddate:'07.22.22',
-                seeAllPostByTopic:'100',
+                email: data.value.email,
+                first_name: data.value.first_name,
+                last_name: data.value.last_name,
+                last_seen:'Mon, 21st July 2022',
         })
       })
     }
 
-    function editTopic(newTopic,currentTopic){
-  
-      let url = "https://swarmnet.sundaebytes.com/api/admin/topic/"+currentTopic.id
-      api.put(url, {
-        text:newTopic,
-        level: 1
+    function sendPasswordReset(email){
+      let url = "https://swarmnet.sundaebytes.com/api/reset-password"
+      api.post(url, {
+        email:email
       }, {
         headers: {
            Authorization:  'Bearer '+ localStorage.getItem('token') ,
@@ -263,9 +266,11 @@ export default defineComponent({
           'Content-Type': 'application/json',
         }
       }).then((response) => {
-        console.log(response)
-        topics.value = ([])
-        getTopics()
+        $q.notify({
+          type: 'positive',
+          position: 'top',
+          message: 'Success',
+        })
       })
     }
 
@@ -291,7 +296,7 @@ export default defineComponent({
        // return formatDistance(Date.parse(props.data.created), new Date(), { addSuffix: true })
     }
   onMounted(() => {
-    getTopics();
+    getAdmins();
   })
     return{
       datePassed,
@@ -302,13 +307,16 @@ export default defineComponent({
       promptDelete: ref(false),
       current_row:ref(''),
       search:ref(''),
-      getTopics,
-      editTopic,
-      createTopic,
+      getAdmins,
+      sendPasswordReset,
+      createAdmin,
       deleteTopic,
-      topics,
+      admins,
+      fName:ref(''),
+      lName:ref(''),
+      email:ref(''),
       columns,
-      rows,
+      rows,     
     }
   }
 })
