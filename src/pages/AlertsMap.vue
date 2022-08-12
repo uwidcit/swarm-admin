@@ -156,7 +156,7 @@ export default defineComponent({
     });
     var infowindow = new google.maps.InfoWindow;
     var marker, i,count=0;
-    let url="https://swarmnet.sundaebytes.com/api/common/alert"
+    let url= process.env.ADMIN_API_URL+"/alert"
     let urll='https://swarmnet-prod.herokuapp.com/alerts'
       api.get(url,{
   method: 'GET',
@@ -284,7 +284,7 @@ document
 
     function falseAlert(a_id){
       console.log(a_id,"Hello there")
-      api.put(`https://swarmnet.sundaebytes.com/api/admin/alert/falsify/${a_id}`,
+      api.put( process.env.ADMIN_API_URL+"/alert/falsify/"+a_id,
                 {
                  
                 },
@@ -317,7 +317,7 @@ document
 
      function resolveAlert(a_id){
       console.log(a_id,"Hello there")
-      api.put(`https://swarmnet.sundaebytes.com/api/admin/alert/resolve/${a_id}`,
+      api.put( process.env.ADMIN_API_URL+"/alert/resolve/"+a_id,
                 {
                  
                 },

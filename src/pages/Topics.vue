@@ -166,15 +166,16 @@
 import {defineComponent, ref, onMounted} from 'vue'
 import { formatDistance} from 'date-fns'
 import { api } from 'boot/axios'
+import Quasar from 'quasar'
 
 export default defineComponent({
   name: "Topics",
 
   props: ['data'],
 
-
   setup(props) {
     const value = Date.now()
+  
     const text = ref('')
     const topics = ref([])
     const data = ref(null)
@@ -231,7 +232,7 @@ export default defineComponent({
     }]
 
     function getTopics(){
-        let url = "https://swarmnet.sundaebytes.com/api/topics"
+        let url = process.env.BASE_API_URL+"/topics"
         api.get(url, {
           method: 'GET',
           headers: {
@@ -257,7 +258,7 @@ export default defineComponent({
     function createTopic(newTopic){
       console.log(newTopic)
       
-      let url = "https://swarmnet.sundaebytes.com/api/admin/topics"
+      let url = process.env.ADMIN_API_URL+ "/topics"
       api.post(url, {
         text:newTopic,
         level: 1
@@ -282,7 +283,7 @@ export default defineComponent({
 
     function editTopic(newTopic,currentTopic){
   
-      let url = "https://swarmnet.sundaebytes.com/api/admin/topic/"+currentTopic.id
+      let url = process.env.ADMIN_API_URL+ "/topics"+currentTopic.id
       api.put(url, {
         text:newTopic,
         level: 1
@@ -300,7 +301,7 @@ export default defineComponent({
     }
 
     function deleteTopic(currentTopic){
-      let url = "https://swarmnet.sundaebytes.com/api/admin/topic/"+currentTopic.id
+      let url = process.env.ADMIN_API_URL+ "/topics"+currentTopic.id
       api.delete(url, {
         headers: {
            Authorization:  'Bearer '+ localStorage.getItem('token') ,

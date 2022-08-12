@@ -164,7 +164,7 @@
       <q-item-label class="text-h6"> Filter By: </q-item-label>  
       
       <q-form @submit="searchByTags(selectModel)">
-      <q-option-group v-model= "selectModel" type="radio" :options= "[{label:'Earthquake', value:'2'}, {label:'Floods', value:'1'}, {label:'Road Works', value:'3'},{label:'Storm', value:'4'},{label:'Fire', value:'5'}]">
+      <q-option-group v-model= "selectModel" type="radio" :options= "options">
       </q-option-group>
       <div>
         <q-btn label="Submit" type="submit" color="primary"/>
@@ -342,7 +342,7 @@ export default defineComponent({
               tag:'flood'
             }
           }])
-          let curl = "https://swarmnet.sundaebytes.com/api/admin/posts"
+          let curl = process.env.ADMIN_API_URL+"/posts"
             api.get(curl,{
             method: 'GET',
             
@@ -368,7 +368,7 @@ export default defineComponent({
               })
             })
       
-          let url = "https://swarmnet.sundaebytes.com/api/admin/posts"
+          let url = process.env.ADMIN_API_URL+"/posts"
           
             api.get(url,{
             method: 'GET',
@@ -489,18 +489,22 @@ export default defineComponent({
   
   /* gets all post tags */
   function getPostTags(){
-    api.get("https://swarmnet-prod.herokuapp.com/tags",{
+    api.get(process.env.COMMON_API_URL+"/tag",{
         headers: {
-          Authorization:'JWT '+ localStorage.getItem('token'),
+          Authorization:  'Bearer '+ localStorage.getItem('token'),
           'Access-Control-Allow-Origin': '*' 
         }}
       )
             .then((response) => {
-              data.value = response.data
+              data.value = response.data.tags
               for (let i of data.value) { 
-                options.value.unshift(i.text)
+
+                options.value.push({
+                  value:i.id,
+                  label:i.text,
+                  created:i.created})
               }
-              console.log(options)
+              console.log(options.value)
             })
             .catch(() => {
               $q.notify({

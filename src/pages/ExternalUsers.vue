@@ -78,7 +78,7 @@
                       
                       <q-card-actions align="right" class="text-primary">
                          <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center"> 
-                               <q-btn class= "btnStyle" flat label="Confirm" @click = "deleteTopic(current_row)" v-close-popup/>
+                               <q-btn class= "btnStyle" flat label="Confirm"  v-close-popup/>
                           </div>
 
                           <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center">
@@ -153,7 +153,7 @@ export default defineComponent({
     }]
 
     function getUsers(){
-        let url = "https://swarmnet.sundaebytes.com/api/admin/users"
+        let url = process.env.ADMIN_API_URL+"/users"
         api.get(url, {
           method: 'GET',
           headers: {
@@ -172,40 +172,6 @@ export default defineComponent({
                 last_seen:'07.22.22',
             })
         }})
-    }
-
-
-    function editTopic(newTopic,currentTopic){
-  
-      let url = "https://swarmnet.sundaebytes.com/api/admin/topic/"+currentTopic.id
-      api.put(url, {
-        text:newTopic,
-        level: 1
-      }, {
-        headers: {
-           Authorization:  'Bearer '+ localStorage.getItem('token') ,
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json',
-        }
-      }).then((response) => {
-        console.log(response)
-        topics.value = ([])
-        getTopics()
-      })
-    }
-
-    function deleteTopic(currentTopic){
-      let url = "https://swarmnet.sundaebytes.com/api/admin/topic/"+currentTopic.id
-      api.delete(url, {
-        headers: {
-           Authorization:  'Bearer '+ localStorage.getItem('token') ,
-          'Access-Control-Allow-Origin': '*',
-        }
-      }).then((response) => {
-        console.log(response)
-        topics.value = ([])
-        getTopics()
-      })
     }
 
     function datePassed() {
@@ -228,8 +194,6 @@ export default defineComponent({
       current_row:ref(''),
       search:ref(''),
       getUsers,
-      editTopic,
-      deleteTopic,
       users,
       columns,
       rows,
