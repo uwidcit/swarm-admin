@@ -103,11 +103,11 @@ export default defineComponent({
 
 const rows = [
   {
-    Title: 'Broadcast Title',
+    Title: 'Broadcast 1',
     Date: "15/9/2022",
   },
    {
-    Title: 'Broadcast Title',
+    Title: 'Broadcast 2',
     Date: "15/9/2022",
   },
 ]
