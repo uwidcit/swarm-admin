@@ -228,7 +228,7 @@ export default defineComponent({
     }]
 
     function getBroadcast(){
-        let url = "https://swarmnet.sundaebytes.com/api/admin/broadcast"
+        let url = process.env.ADMIN_API_URL+ "/broadcast"
         api.get(url, {
           method: 'GET',
           headers: {
@@ -253,7 +253,7 @@ export default defineComponent({
     }
 
     function sendBroadcast(title,content){
-       let url = "https://swarmnet.sundaebytes.com/api/admin/broadcast"
+       let url = process.env.ADMIN_API_URL+ "/broadcast"
       api.post(url,{
         'title':title,
         'text':content
