@@ -62,7 +62,7 @@ export default defineComponent({
     function login(username, password){
       console.log("enter", username, password)
     
-      let urrl = "https://swarmnet.sundaebytes.com/api/admin/login"
+      let urrl =  process.env.ADMIN_API_URL+"/login"
       api.post(urrl, {
         "username": username,
         "password": password

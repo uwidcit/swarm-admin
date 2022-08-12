@@ -121,7 +121,7 @@ export default defineComponent({
     });
     var infowindow = new google.maps.InfoWindow;
     var marker, i,count=0;
-    let url="https://swarmnet.sundaebytes.com/api/common/alert"
+    let url= process.env.COMMON_API_URL+"/alert"
     let urll='https://swarmnet-prod.herokuapp.com/alerts'
       api.get(url,{
   method: 'GET',
@@ -214,7 +214,7 @@ new MarkerClusterer({ markers, map}); //Add marker cluster
 
 
     function unfalsifyAlert(a_id){
-      api.delete(`https://swarmnet.sundaebytes.com/api/admin/alert/falsify/${a_id}`,
+      api.delete( process.env.COMMON_API_URL+"/alert/falsify/"+a_id,
                 {
                 headers: {
                   Authorization:'Bearer '+ localStorage.getItem('token'),
