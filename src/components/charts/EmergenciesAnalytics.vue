@@ -18,7 +18,7 @@
     <q-resize-observer @resize="onResize"/>
   </div>
 </template>
-
+ 
 <script>
 import {defineComponent} from 'vue';
 import {ref} from 'vue';
@@ -26,7 +26,7 @@ import { api } from 'boot/axios'
 import axios from 'axios';
 import { useQuasar } from 'quasar'
 export default defineComponent({
-  name: "EmergenciesCart",
+  name: "EmergenciesChart",
   
  
   setup() {

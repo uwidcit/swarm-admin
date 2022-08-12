@@ -5,6 +5,7 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/Dashboard.vue'), props: true  },
       {path:'/Topics', component: () => import('pages/Topics.vue'), props:true},
+      {path:'/Post', component: () => import('pages/Post.vue'), props:true},
       {path:'/Broadcast', component: () => import('pages/Broadcast.vue'), props:true},
       {path: '/Active', component: () => import('pages/AlertsMap.vue')},
       {path: '/Resolve', component: () => import('pages/ResolveAlerts.vue')},

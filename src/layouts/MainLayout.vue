@@ -3,7 +3,7 @@
     <q-header class="headerStyle text-black" style=" height: 100px;" elevated >
       <div class= "q-pa-md q-ml-xl q-gutter-y-sm">
       <q-toolbar>
-        <q-toolbar-title> </q-toolbar-title>
+         <q-toolbar-title>Welcome Back Admin </q-toolbar-title>
          <q-btn padding="xl" color="blue" icon="far fa-comment" to="/Chat" clickable :label="'Chat'" flat unelevated dense>
                 <q-tooltip class="primary" :offset="[10, 10]">
                    Chat
@@ -111,7 +111,7 @@
           </q-item-section>
         </q-item>
 
-        <q-item to="/home"  class="menuText"  active-class="q-item-no-link-highlighting v-ripple">
+        <q-item to="/Post"  class="menuText"  active-class="q-item-no-link-highlighting v-ripple">
           <q-item-section avatar>
             <q-icon style = "color:#457B9D" name="fa-solid fa-file-lines"/>
           </q-item-section>

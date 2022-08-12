@@ -1,161 +1,163 @@
 <template>
   <div>
+    
     <q-card>
       <q-card-section class="text-h6">
-       BAR CHART SHOWING NUMBER OF POST UNDER EACH TOPIC
-        <q-btn icon="fa fa-download" class="float-right" @click="SaveImage" flat dense>
-          <q-tooltip>Download PNG</q-tooltip>
+       Broadcast
+       <div class="q-gutter-md row float-right items-start">
+       <q-input  v-model="date1" filled type="date" hint="Start Date" />
+       <q-input  v-model="date2" filled type="date" hint="End Date" />
+        <q-btn color="orange" icon="fa fa-download" class="float-right" @click="SaveImage" flat dense>
+          <q-tooltip>Download Chart</q-tooltip>
         </q-btn>
+       </div>
       </q-card-section>
       <q-card-section>
-        <div ref="barchart" id="barChart" style="height: 300px;"></div>
+        <card-broadcast icon_position="right"/>
+        </q-card-section>
+      <q-card-section>
+        <div ref="linechart" id="lineChart" class="charts"></div>
       </q-card-section>
     </q-card>
     <q-resize-observer @resize="onResize"/>
   </div>
 </template>
-
+ 
 <script>
-import {defineComponent} from 'vue';
+import {defineComponent, defineAsyncComponent} from 'vue';
 import {ref} from 'vue';
 import { api } from 'boot/axios'
 import axios from 'axios';
 import { useQuasar } from 'quasar'
 export default defineComponent({
-  name: "BarChart",
+  name: "BroadcastChart",
+   components: {
+    CardBroadcast: defineAsyncComponent(() => import("components/cards/CardBroadcast"))
+  },
   
  
   setup() {
     return {
+      date1:ref(""),
+      date2:ref(""),
       model: ref(false),
       options: {
-        legend: {
-          bottom: 10,
+        color: ['#80FFA5', '#00DDFF', '#37A2FF', '#FF0087', '#FFBF00'],
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross',
+            label: {
+              backgroundColor: '#6a7985'
+            }
+          }
         },
-        tooltip: {},
-        dataset: {
-          source: [
-           // ['tOPICS', '2015'],
-           // ['Fire', 43.3],
-           // ['Flood', 83.1],
-           // ['Volcanic', 86.4],
-           // ['Hurricane', 72.4]
-          ]
+        legend: {
+         // data: ['ODPM', 'FLOOD', 'HURRICANE', 'EARTHQUAKE', 'LANDSLIDES','CYCLONES'],
+          bottom: 10,
+           data: ['POST'],
         },
         grid: {
           left: '3%',
           right: '4%',
-          bottom: '5%',
+          bottom: '20%',
           top: '5%',
           containLabel: true
         },
-        xAxis: {type: 'category'},
-        yAxis: {},
-        // Declare several bar series, each will be mapped
-        // to a column of dataset.source by default.
-        series: [
-          {type: 'bar'}
+        xAxis: [
+          {
+            type: 'category',
+            boundaryGap: false,
+            data: ['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+         series: [
+          {
+            name: 'Emergencies',
+            type: 'line',
+            stack: 'Total',
+            smooth: true,
+            lineStyle: {
+              width: 0
+            },
+            showSymbol: false,
+            areaStyle: {
+              opacity: 0.8,
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                offset: 0,
+                color: 'rgba(128, 255, 165)'
+              }, {
+                offset: 1,
+                color: 'rgba(1, 191, 236)'
+              }])
+            },
+            emphasis: {
+              focus: 'series'
+            },
+            data: [3000, 2700, 900, 1400, 8700, 6000, 2000]
+          },
         ]
       },
-      bar_chart: ref(null),
+      line_chart: null,
     }
   },
   mounted() {
     this.init();
-  },
+  }, 
   methods: {
     
     SaveImage() {
-      const linkSource = this.bar_chart.getDataURL();
+      const linkSource = this.line_chart.getDataURL();
       const downloadLink = document.createElement('a');
       document.body.appendChild(downloadLink);
       downloadLink.href = linkSource;
       downloadLink.target = '_self';
-      downloadLink.download = 'BarChart.png';
+      downloadLink.download = 'EmergenciesReport.png';
       downloadLink.click();
     },
     
      init() {
-      let barChart = document.getElementById('barChart');
-      this.bar_chart = echarts.init(barChart,'light');
-       const topics = ref([])
-       const data = ref(null)
-       const posts = ref([])
-         const posTags = ref([])
-       var a= []
-       var b
-         api.get('https://swarmnet-prod.herokuapp.com/topics',{
-  method: 'GET',
-  
-  headers: {
-         
+     let data = ref(null)
+      let post = ref([])
+     
+    
+
+      let lineChart = document.getElementById('lineChart');
+      echarts.dispose(lineChart);
+      let theme = this.model ? 'dark' : 'light';
+      this.line_chart = echarts.init(lineChart, theme);
+
+      //var x = localStorage.getItem("username");
+      //console.log(x)
+
+      let url ="https://swarmnet.sundaebytes.com/api/admin/dashboard"
+        api.get(url,{
+        method: 'GET',
+        headers: {
+          Authorization:'Bearer '+ localStorage.getItem('token'),
           'Access-Control-Allow-Origin': '*'
-          
         }
     })
     .then((response) => { 
-        data.value = response.data //topicscollected from api
-        for (let i of data.value) { 
-          topics.value.push(i) //add topic to topics object array
-        }
-var counter =[]
-var a=0
- let url = "https://swarmnet-prod.herokuapp.com/posts"
-      api.get(url,{
-      method: 'GET',
-      headers: {
-              'Access-Control-Allow-Origin': '*'
-            }
-        })
-      .then((response) => {//Get post from API
-        data.value = response.data
-        var size2=0
-        for (let j of data.value) { 
-          posts.value.push(j)  
-          size2++
-          
-        }
-        let size=Object.keys(topics.value).length
-        
-        console.log(posts.value)
-        for (let m=0;m<size;m++){
-        var count=0
-        
-        for (let n=0;n<size2;n++){
-            if(posts.value[n].topicId==topics.value[m].id){
-              count++
-            }
-        }
-        b=[topics.value[m].text,count]
-        this.options.dataset.source.push(b);
-        this.bar_chart.setOption(this.options)//add topic and post numberto bar chart
-        }
-      })
-      .catch(() => {
-        $q.notify({
-          color: 'negative',
-          position: 'top',
-          message: 'Loading failed',
-          icon: 'report_problem'
-        })
-      })
-   
-      })
-      .catch(() => {
-        $q.notify({
-          color: 'negative',
-          position: 'top',
-          message: 'Loading failed',
-          icon: 'report_problem'
-        })
-      })
+      data.value = response.data 
+     // console.log(response.data)
+    post=data.value.weekly_post_analytics
+      
+      this.line_chart.setOption(this.options)
+
+    })
     },
      mounted() {
    // this.init();
   },
     onResize() {
-      if (this.bar_chart) {
-        this.bar_chart.resize();
+       if (this.line_chart) {
+        this.line_chart.resize();
       }
     }
   }
@@ -163,4 +165,8 @@ var a=0
 </script>
 
 <style scoped>
+.charts {
+    width: 1000px;
+    height: 500px;
+  }
 </style>
