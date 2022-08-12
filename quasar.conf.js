@@ -7,9 +7,11 @@
 // https://quasar.dev/quasar-cli/quasar-conf-js
 
 const { configure } = require('quasar/wrappers');
+const dotenv = require('dotenv').config().parsed
 
-module.exports = configure(function (/* ctx */) {
+module.exports = configure(function (ctx) {
   return {
+    
     // https://quasar.dev/quasar-cli/supporting-ts
     supportTS: false,
 
@@ -46,7 +48,7 @@ module.exports = configure(function (/* ctx */) {
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
-
+      env: dotenv ,
       // transpile: false,
 
       // Add dependencies for transpiling with Babel (Array of string/regex)
@@ -192,3 +194,4 @@ module.exports = configure(function (/* ctx */) {
     }
   }
 });
+

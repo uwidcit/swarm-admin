@@ -192,7 +192,7 @@ const stuff = {
       //var x = localStorage.getItem("username");
       //console.log(x)
 
-      let url ="https://swarmnet.sundaebytes.com/api/admin/dashboard"
+      let url = process.env.ADMIN_API_URL+"/dashboard"
         api.get(url,{
         method: 'GET',
         headers: {

@@ -191,8 +191,6 @@ export default defineComponent({
 
 
   setup(props) {
-    const commonURL = 'https://swarmnet.sundaebytes.com/api/common'
-    const baseAdminURL = 'https://swarmnet.sundaebytes.com/api/admin'
 
     const fName = ref('')
     const city = ref('')
@@ -243,7 +241,7 @@ export default defineComponent({
     }]
 
     function getReliefCenter(){
-        let url = commonURL+'/relief_center'
+        let url = process.env.COMMON_API_URL+'/relief_center'
         api.get(url, {
           method: 'GET',
           headers: {
@@ -272,7 +270,7 @@ export default defineComponent({
 
     function createCenter(fname, line_1, line_2,city, lat, lon, pNo,email){
       console.log('Hello there')
-      let url = baseAdminURL+'/users/relief_center'
+      let url = process.env.ADMIN_API_URL+'/users/relief_center'
       api.post(url, {
         name:fname,
         line_1:line_1,
@@ -306,7 +304,7 @@ export default defineComponent({
     }
 
     function editCenter(id,fname, line_1, line_2,city, lat, lon, pNo,email){
-      let url = baseAdminURL+'/users/relief_center/'+id
+      let url = process.env.ADMIN_API_URL+'/users/relief_center'+id
       api.put(url, {
        name:fname,
         line_1:line_1,
@@ -330,7 +328,7 @@ export default defineComponent({
     }
 
     function deleteCenter(id){
-      let url = baseAdminURL+'/users/relief_center/'+id
+      let url = process.env.ADMIN_API_URL+'/users/relief_center'+id
       api.delete(url, {
         headers: {
            Authorization:  'Bearer '+ localStorage.getItem('token') ,

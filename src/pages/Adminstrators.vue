@@ -206,7 +206,7 @@ export default defineComponent({
     }]
 
     function getAdmins(){
-        let url = "https://swarmnet.sundaebytes.com/api/admin/users/administrator"
+        let url = process.env.ADMIN_API_URL+"/users/administrator"
         api.get(url, {
           method: 'GET',
           headers: {
@@ -230,7 +230,7 @@ export default defineComponent({
 
     function createAdmin(fName,lName,email){
       
-      let url = "https://swarmnet.sundaebytes.com/api/admin/users/administrator"
+      let url = process.env.ADMIN_API_URL+ "/users/administrator"
       
       api.post(url, {
         firstname:fName,
@@ -256,7 +256,7 @@ export default defineComponent({
     }
 
     function sendPasswordReset(email){
-      let url = "https://swarmnet.sundaebytes.com/api/reset-password"
+      let url = process.env.BASE_API_URL+"/reset-password"
       api.post(url, {
         email:email
       }, {
