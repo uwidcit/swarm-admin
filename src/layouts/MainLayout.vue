@@ -94,7 +94,7 @@
           <q-img  class= "header-img" src="https://raw.githubusercontent.com/TheGreatDevourer/swarm-client-staging/main/src/logo.png"></q-img>
           </div>
         </div>
-         <q-item to="/" class="menuText" style="justify-content:left;" active-class="q-item-no-link-highlighting">
+         <q-item to="/home" class="menuText" style="justify-content:left;" active-class="q-item-no-link-highlighting">
           <!--<q-item-section>
           <span v-if="$q.platform.is.desktop" ><q-btn
           flat
@@ -120,14 +120,30 @@
           </q-item-section>
         </q-item>
 
-        <q-item to="/Alerts"  class="menuText"  active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon style = "color:#457B9D" name="fa-solid fa-exclamation"/>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label >Emergency Reports</q-item-label>
-          </q-item-section>
+        <q-expansion-item  style = "color:#457B9D" icon="fa-solid fa-exclamation" label="Alerts"  class="menuText" active-class="q-item-no-link-highlighting">
+          <q-item to="/Active" class="menuText" active-class="q-item-no-link-highlighting">
+              <q-item-section avatar/>
+
+              <q-item-section no-wrap>
+                <q-item-label class="menuText" >Active</q-item-label>
+              </q-item-section>
+            </q-item>
+
+        <q-item to="/Resolve" class="menuText" active-class="q-item-no-link-highlighting">
+              <q-item-section avatar/>
+              <q-item-section no-wrap>
+                <q-item-label class="menuText" >Resolve</q-item-label>
+              </q-item-section>
         </q-item>
+
+         <q-item to="/False" class="menuText" active-class="q-item-no-link-highlighting">
+              <q-item-section avatar/>
+              <q-item-section no-wrap>
+                <q-item-label class="menuText" >False</q-item-label>
+              </q-item-section>
+        </q-item>
+         
+        </q-expansion-item>
 
         <q-item to="/Topics" class="menuText"  active-class="q-item-no-link-highlighting">
           <q-item-section avatar>
@@ -147,14 +163,37 @@
           </q-item-section>
         </q-item>
 
-        <q-item to="/Alerts"  class="menuText" active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon style = "color:#457B9D" name="fa-solid fa-chart-area"/>
-          </q-item-section>
-          <q-item-section no-wrap>
-            <q-item-label class="menuText">Reports and Analytics</q-item-label>
-          </q-item-section>
+         <q-expansion-item  style = "color:#457B9D" icon="fa-solid fa-chart-area" label="Reports and Analytics"  class="menuText" active-class="q-item-no-link-highlighting">
+          <q-item to="/UserAnalytics" class="menuText" active-class="q-item-no-link-highlighting">
+              <q-item-section avatar/>
+
+              <q-item-section no-wrap>
+                <q-item-label class="menuText" >Active Users</q-item-label>
+              </q-item-section>
+            </q-item>
+
+        <q-item to="/PostAnalytics" class="menuText" active-class="q-item-no-link-highlighting">
+              <q-item-section avatar/>
+              <q-item-section no-wrap>
+                <q-item-label class="menuText" >Post Activity</q-item-label>
+              </q-item-section>
         </q-item>
+
+         <q-item to="/EmergenciesAnalytics" class="menuText" active-class="q-item-no-link-highlighting">
+              <q-item-section avatar/>
+              <q-item-section no-wrap>
+                <q-item-label class="menuText" >Emergencies</q-item-label>
+              </q-item-section>
+        </q-item>
+
+         <q-item to="/BroadcastAnalytics" class="menuText" active-class="q-item-no-link-highlighting">
+              <q-item-section avatar/>
+              <q-item-section no-wrap>
+                <q-item-label class="menuText" >Broadcast</q-item-label>
+              </q-item-section>
+        </q-item>
+         
+        </q-expansion-item>
 
         <q-expansion-item  style = "color:#457B9D" icon="fa-solid fa-circle-user" label="Users"  class="menuText" active-class="q-item-no-link-highlighting">
           <q-item to="/Users/AdminUsers" class="menuText" active-class="q-item-no-link-highlighting">
