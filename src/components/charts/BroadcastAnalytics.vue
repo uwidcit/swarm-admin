@@ -16,8 +16,21 @@
         <card-broadcast icon_position="right"/>
         </q-card-section>
       <q-card-section>
-        <div ref="linechart" id="lineChart" class="charts"></div>
+         <canvas id="myChart" class="charts"></canvas>
       </q-card-section>
+       
+       <q-separator />
+          
+       <q-card-section>
+          <div class="q-pa-md">
+          <q-table
+            title="Treats"
+            :rows="rows"
+            :columns="columns"
+            row-key="name"
+          />
+        </div>
+        </q-card-section>
     </q-card>
     <q-resize-observer @resize="onResize"/>
   </div>
@@ -27,6 +40,33 @@
 import {defineComponent, defineAsyncComponent} from 'vue';
 import {ref} from 'vue';
 import { api } from 'boot/axios'
+import {
+  Chart,
+  ArcElement,
+  LineElement,
+  BarElement,
+  PointElement,
+  BarController,
+  BubbleController,
+  DoughnutController,
+  LineController,
+  PieController,
+  PolarAreaController,
+  RadarController,
+  ScatterController,
+  CategoryScale,
+  LinearScale,
+  LogarithmicScale,
+  RadialLinearScale,
+  TimeScale,
+  TimeSeriesScale,
+  Decimation,
+  Filler,
+  Legend,
+  Title,
+  Tooltip,
+  SubTitle
+} from 'chart.js';
 import axios from 'axios';
 import { useQuasar } from 'quasar'
 export default defineComponent({
@@ -36,82 +76,140 @@ export default defineComponent({
   },
   
  
-  setup() {
-    return {
-      date1:ref(""),
-      date2:ref(""),
-      model: ref(false),
-      options: {
-        color: ['#80FFA5', '#00DDFF', '#37A2FF', '#FF0087', '#FFBF00'],
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'cross',
-            label: {
-              backgroundColor: '#6a7985'
-            }
-          }
-        },
-        legend: {
-         // data: ['ODPM', 'FLOOD', 'HURRICANE', 'EARTHQUAKE', 'LANDSLIDES','CYCLONES'],
-          bottom: 10,
-           data: ['POST'],
-        },
-        grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '20%',
-          top: '5%',
-          containLabel: true
-        },
-        xAxis: [
-          {
-            type: 'category',
-            boundaryGap: false,
-            data: ['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-          }
-        ],
-        yAxis: [
-          {
-            type: 'value'
-          }
-        ],
-         series: [
-          {
-            name: 'Emergencies',
-            type: 'line',
-            stack: 'Total',
-            smooth: true,
-            lineStyle: {
-              width: 0
-            },
-            showSymbol: false,
-            areaStyle: {
-              opacity: 0.8,
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                offset: 0,
-                color: 'rgba(128, 255, 165)'
-              }, {
-                offset: 1,
-                color: 'rgba(1, 191, 236)'
-              }])
-            },
-            emphasis: {
-              focus: 'series'
-            },
-            data: [3000, 2700, 900, 1400, 8700, 6000, 2000]
-          },
-        ]
-      },
-      line_chart: null,
-    }
-  },
+   
+  
   mounted() {
     this.init();
-  }, 
-  methods: {
+  },
+    watch: {
+    '$q.dark.isActive': function () {
+      this.init();
+    }
+  },
+  setup ()  {
+     const columns = [
+  {
+    name: 'name',
+    required: true,
+    label: 'Dessert (100g serving)',
+    align: 'left',
+    field: row => row.name,
+    format: val => `${val}`,
+    sortable: true
+  },
+  { name: 'calories', align: 'center', label: 'Calories', field: 'calories', sortable: true },
+  { name: 'fat', label: 'Fat (g)', field: 'fat', sortable: true },
+  { name: 'carbs', label: 'Carbs (g)', field: 'carbs' },
+  { name: 'protein', label: 'Protein (g)', field: 'protein' },
+  { name: 'sodium', label: 'Sodium (mg)', field: 'sodium' },
+  { name: 'calcium', label: 'Calcium (%)', field: 'calcium', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10) },
+  { name: 'iron', label: 'Iron (%)', field: 'iron', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10) }
+]
+
+const rows = [
+  {
+    name: 'Frozen Yogurt',
+    calories: 159,
+    fat: 6.0,
+    carbs: 24,
+    protein: 4.0,
+    sodium: 87,
+    calcium: '14%',
+    iron: '1%'
+  },
+  {
+    name: 'Ice cream sandwich',
+    calories: 237,
+    fat: 9.0,
+    carbs: 37,
+    protein: 4.3,
+    sodium: 129,
+    calcium: '8%',
+    iron: '1%'
+  },
+  {
+    name: 'Eclair',
+    calories: 262,
+    fat: 16.0,
+    carbs: 23,
+    protein: 6.0,
+    sodium: 337,
+    calcium: '6%',
+    iron: '7%'
+  },
+  {
+    name: 'Cupcake',
+    calories: 305,
+    fat: 3.7,
+    carbs: 67,
+    protein: 4.3,
+    sodium: 413,
+    calcium: '3%',
+    iron: '8%'
+  },
+  {
+    name: 'Gingerbread',
+    calories: 356,
+    fat: 16.0,
+    carbs: 49,
+    protein: 3.9,
+    sodium: 327,
+    calcium: '7%',
+    iron: '16%'
+  },
+  {
+    name: 'Jelly bean',
+    calories: 375,
+    fat: 0.0,
+    carbs: 94,
+    protein: 0.0,
+    sodium: 50,
+    calcium: '0%',
+    iron: '0%'
+  },
+  {
+    name: 'Lollipop',
+    calories: 392,
+    fat: 0.2,
+    carbs: 98,
+    protein: 0,
+    sodium: 38,
+    calcium: '0%',
+    iron: '2%'
+  },
+  {
+    name: 'Honeycomb',
+    calories: 408,
+    fat: 3.2,
+    carbs: 87,
+    protein: 6.5,
+    sodium: 562,
+    calcium: '0%',
+    iron: '45%'
+  },
+  {
+    name: 'Donut',
+    calories: 452,
+    fat: 25.0,
+    carbs: 51,
+    protein: 4.9,
+    sodium: 326,
+    calcium: '2%',
+    iron: '22%'
+  },
+  {
+    name: 'KitKat',
+    calories: 518,
+    fat: 26.0,
+    carbs: 65,
+    protein: 7,
+    sodium: 54,
+    calcium: '12%',
+    iron: '6%'
+  }
+]
     
-    SaveImage() {
+    function SaveImage() {
       const linkSource = this.line_chart.getDataURL();
       const downloadLink = document.createElement('a');
       document.body.appendChild(downloadLink);
@@ -119,18 +217,74 @@ export default defineComponent({
       downloadLink.target = '_self';
       downloadLink.download = 'EmergenciesReport.png';
       downloadLink.click();
-    },
+    }
     
-     init() {
+     function init() {
      let data = ref(null)
-      let post = ref([])
-     
-    
 
-      let lineChart = document.getElementById('lineChart');
-      echarts.dispose(lineChart);
+     Chart.register(
+  ArcElement,
+  LineElement,
+  BarElement,
+  PointElement,
+  BarController,
+  BubbleController,
+  DoughnutController,
+  LineController,
+  PieController,
+  PolarAreaController,
+  RadarController,
+  ScatterController,
+  CategoryScale,
+  LinearScale,
+  LogarithmicScale,
+  RadialLinearScale,
+  TimeScale,
+  TimeSeriesScale,
+  Decimation,
+  Filler,
+  Legend,
+  Title,
+  Tooltip,
+  SubTitle
+);
+     const ctx = document.getElementById('myChart');
+     const DATA_COUNT = 5;
+const NUMBER_CFG = {count: DATA_COUNT, min: 0, max: 100};
+
+const stuff = {
+  labels: ['Delivered', 'Not Delivered'],
+  datasets: [
+    {
+      label: 'Dataset 1',
+      data: [1,2],
+      backgroundColor: [ 'grey','#7797D9'],
+               
+    }
+  ]
+};
+    const myChart = new Chart(ctx, {
+    type: 'pie',
+  data: stuff,
+  options: {
+    responsive: false,
+    plugins: {
+      legend: {
+        position: 'bottom',
+      },
+      title: {
+        display: true,
+        text: 'Broadcast Chart'
+      }
+    }
+  },
+});
+
+     /* let pieChart = document.getElementById('pieChart');
+      echarts.dispose(pieChart);
       let theme = this.model ? 'dark' : 'light';
-      this.line_chart = echarts.init(lineChart, theme);
+      this.pie_chart = echarts.init(pieChart, theme);
+      this.pie_chart.setOption(this.options)*/
 
       //var x = localStorage.getItem("username");
       //console.log(x)
@@ -148,25 +302,156 @@ export default defineComponent({
      // console.log(response.data)
     post=data.value.weekly_post_analytics
       
-      this.line_chart.setOption(this.options)
+     
 
     })
+     const columns = [
+  {
+    name: 'name',
+    required: true,
+    label: 'Dessert (100g serving)',
+    align: 'left',
+    style: 'width: 500px',
+    field: row => row.name,
+    format: val => `${val}`,
+    sortable: true
+  },
+  { name: 'Title', align: 'center', label: 'Broadcast Title', field: 'Title', sortable: true },
+  { name: 'Date', label: 'Date', field: 'Date', sortable: true },
+  { name: 'carbs', label: 'Carbs (g)', field: 'carbs' },
+  { name: 'protein', label: 'Protein (g)', field: 'protein' },
+  { name: 'sodium', label: 'Sodium (mg)', field: 'sodium' },
+  { name: 'calcium', label: 'Calcium (%)', field: 'calcium', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10) },
+  { name: 'iron', label: 'Iron (%)', field: 'iron', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10) }
+]
+
+const rows = [
+  {
+    name: 'Frozen Yogurt',
+    calories: 159,
+    fat: 6.0,
+    carbs: 24,
+    protein: 4.0,
+    sodium: 87,
+    calcium: '14%',
+    iron: '1%'
+  },
+  {
+    name: 'Ice cream sandwich',
+    calories: 237,
+    fat: 9.0,
+    carbs: 37,
+    protein: 4.3,
+    sodium: 129,
+    calcium: '8%',
+    iron: '1%'
+  },
+  {
+    name: 'Eclair',
+    calories: 262,
+    fat: 16.0,
+    carbs: 23,
+    protein: 6.0,
+    sodium: 337,
+    calcium: '6%',
+    iron: '7%'
+  },
+  {
+    name: 'Cupcake',
+    calories: 305,
+    fat: 3.7,
+    carbs: 67,
+    protein: 4.3,
+    sodium: 413,
+    calcium: '3%',
+    iron: '8%'
+  },
+  {
+    name: 'Gingerbread',
+    calories: 356,
+    fat: 16.0,
+    carbs: 49,
+    protein: 3.9,
+    sodium: 327,
+    calcium: '7%',
+    iron: '16%'
+  },
+  {
+    name: 'Jelly bean',
+    calories: 375,
+    fat: 0.0,
+    carbs: 94,
+    protein: 0.0,
+    sodium: 50,
+    calcium: '0%',
+    iron: '0%'
+  },
+  {
+    name: 'Lollipop',
+    calories: 392,
+    fat: 0.2,
+    carbs: 98,
+    protein: 0,
+    sodium: 38,
+    calcium: '0%',
+    iron: '2%'
+  },
+  {
+    name: 'Honeycomb',
+    calories: 408,
+    fat: 3.2,
+    carbs: 87,
+    protein: 6.5,
+    sodium: 562,
+    calcium: '0%',
+    iron: '45%'
+  },
+  {
+    name: 'Donut',
+    calories: 452,
+    fat: 25.0,
+    carbs: 51,
+    protein: 4.9,
+    sodium: 326,
+    calcium: '2%',
+    iron: '22%'
+  },
+  {
+    name: 'KitKat',
+    calories: 518,
+    fat: 26.0,
+    carbs: 65,
+    protein: 7,
+    sodium: 54,
+    calcium: '12%',
+    iron: '6%'
+  }
+]
+  console.log(rows)
+     }
+    return {
+      rows,columns,
+      date1:ref(""),
+      date2:ref(""),
+      model: ref(false),
+      init,SaveImage
+    }
     },
      mounted() {
-   // this.init();
+    this.init();
   },
     onResize() {
-       if (this.line_chart) {
-        this.line_chart.resize();
+       if (this.pie_chart) {
+        this.pie_chart.resize();
       }
     }
-  }
+  
 })
 </script>
 
 <style scoped>
 .charts {
-    width: 1000px;
-    height: 500px;
+    width: 300px;
+    height: 300px;
   }
 </style>

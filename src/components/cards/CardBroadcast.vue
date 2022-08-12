@@ -61,7 +61,7 @@ export default defineComponent({
      items.value = ([
       {
             title: "Broadcast",
-            icon: "fa-solid fa-podcast",
+            icon: "fas fa-broadcast-tower",
             value: post.number,
             color1: "#546bfa",
             color2: "#3e51b5",
