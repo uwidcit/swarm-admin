@@ -165,12 +165,12 @@
           </q-item-section>
         </q-item>
 
-         <q-item clickable @click="logout()" active-class="q-item-no-link-highlighting">
+        <q-item clickable @click="logout()"  class="menuText" active-class="q-item-no-link-highlighting">
           <q-item-section avatar>
-            <q-icon name="fas fa-bell"/>
+            <q-icon style = "color:#457B9D" name="fas fa-sign-out"/>
           </q-item-section>
           <q-item-section>
-            <q-item-label>Logout</q-item-label>
+            <q-item-label class="menuText">Logout</q-item-label>
           </q-item-section>
         </q-item>
       
