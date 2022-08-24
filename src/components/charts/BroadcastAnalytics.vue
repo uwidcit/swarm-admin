@@ -16,12 +16,19 @@
         <card-broadcast icon_position="right"/>
         </q-card-section>
       <q-card-section>
+         <div class="q-pa-lg row">
          <canvas id="myChart" class="charts"></canvas>
+         
+          <q-table
+            title="Treats"
+            :rows="rows"
+            :columns="columns"
+            row-key="name"
+          />
+        
+         </div>
       </q-card-section>
-       
-       <q-separator />
-          
-       <q-card-section>
+       <!--<q-card-section>
           <div class="q-pa-md">
           <q-table
             title="Treats"
@@ -30,7 +37,7 @@
             row-key="name"
           />
         </div>
-        </q-card-section>
+        </q-card-section>-->
     </q-card>
     <q-resize-observer @resize="onResize"/>
   </div>
@@ -113,13 +120,18 @@ const rows = [
 ]
     
     function SaveImage() {
-      const linkSource = this.line_chart.getDataURL();
+      const canvas = document.getElementById('myChart')
       const downloadLink = document.createElement('a');
-      document.body.appendChild(downloadLink);
+      downloadLink.href = canvas.toDataURL('image/png',1);
+      //document.write('<img src=" '+downloadLink+ '"/>')
+     downloadLink.download= 'BroadcastReport.png'
+     downloadLink.click();
+     //const linkSource = this.line_chart.getDataURL();
+      /*document.body.appendChild(downloadLink);
       downloadLink.href = linkSource;
       downloadLink.target = '_self';
       downloadLink.download = 'EmergenciesReport.png';
-      downloadLink.click();
+      downloadLink.click();*/
     }
     
      function init() {
@@ -233,7 +245,7 @@ const stuff = {
 
 <style scoped>
 .charts {
-    width: 300px;
-    height: 300px;
+    width: 400px;
+    height: 400px;
   }
 </style>

@@ -60,7 +60,7 @@ export default defineComponent({
      const loading = ref([false])
 
     function login(username, password){
-      console.log("enter", username, password)
+    
     
       let urrl =  process.env.ADMIN_API_URL+"/login"
       api.post(urrl, {
@@ -87,7 +87,7 @@ export default defineComponent({
   }
   
      function simulateProgress (number,username,password) {
-        //console.log("enter", username, password)
+        
       // we set loading state
       loading.value[ number ] = true
 

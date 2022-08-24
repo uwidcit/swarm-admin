@@ -240,7 +240,7 @@ export default defineComponent({
         }
         }).then((response) => {
             data.value =  response.data.topics
-            console.log(data.value)
+           // console.log(data.value)
             for(let i of data.value){
               topics.value.push({ id: i.id,
                 topic: i.text,
@@ -256,7 +256,7 @@ export default defineComponent({
   }
 
     function createTopic(newTopic){
-      console.log(newTopic)
+     // console.log(newTopic)
       
       let url = process.env.ADMIN_API_URL+ "/topics"
       api.post(url, {
@@ -270,7 +270,7 @@ export default defineComponent({
         }
       }).then((response) => {
         data.value = response.data.topic
-        console.log(data.value)
+        //console.log(data.value)
         topics.value.push({
                 id: data.value.id,
                 topic: data.value.text,
@@ -294,7 +294,7 @@ export default defineComponent({
           'Content-Type': 'application/json',
         }
       }).then((response) => {
-        console.log(response)
+        //console.log(response)
         topics.value = ([])
         getTopics()
       })
@@ -308,7 +308,7 @@ export default defineComponent({
           'Access-Control-Allow-Origin': '*',
         }
       }).then((response) => {
-        console.log(response)
+       // console.log(response)
         topics.value = ([])
         getTopics()
       })

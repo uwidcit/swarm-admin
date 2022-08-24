@@ -141,7 +141,7 @@ export default defineComponent({
     })
     .then((response) => {  
         data.value = response.data //alert collected from api
-        console.log(data.value.resolved)
+       // console.log(data.value.resolved)
         for (let i of data.value.resolved) { 
           if(i.is_resolved==true){
     
@@ -161,7 +161,7 @@ export default defineComponent({
             marker.circle = circle;
             markers.push(marker);
         //console.log(markers[1]);
-        google.maps.event.addListener(marker, 'mouseover', (function(marker) { //Add info window to each marker
+        /*google.maps.event.addListener(marker, 'mouseover', (function(marker) { //Add info window to each marker
              return function() {
                  infowindow.setContent("User : "+ i.user.first_name+ 
                  "<br/> Created: " + i.created
@@ -171,9 +171,9 @@ export default defineComponent({
                  infowindow.open(map, marker);
                 
              }
-        })(marker));
+        })(marker));*/
     
-       google.maps.event.addDomListener(marker, 'click', function() {// Listener for resolve alert function
+       google.maps.event.addListener(marker, 'click', function() {// Listener for resolve alert function
        //openBar=true;
        //console.log("Hello")
       document.getElementById("text").innerHTML = i.text;
@@ -197,9 +197,6 @@ export default defineComponent({
         
       //document.getElementById("testing").innerHTML = "Peace";
         });
-        google.maps.event.addListener(marker, "rightclick", function () { // listner for set active function
-               setActive(i.alertID);
-            });
           count++
           a++
         }// end of if statement
@@ -222,7 +219,7 @@ new MarkerClusterer({ markers, map}); //Add marker cluster
 }
 
     function unresolveAlert(a_id){
-      api.delete( process.env.ADMIN_API_URL+"/alert/resolve/"+{a_id},
+      api.delete( process.env.ADMIN_API_URL+"/alert/resolve/"+a_id,
                 {
                 headers: {
                   Authorization:'Bearer '+ localStorage.getItem('token'),
@@ -284,7 +281,7 @@ new MarkerClusterer({ markers, map}); //Add marker cluster
   padding: 2em 3em; 
   position: fixed; 
   z-index: 100;
-  top: 10%;
+  top: 13%;
   right: -100%;
   background: #FFFFFF;
   color: #393D3D;

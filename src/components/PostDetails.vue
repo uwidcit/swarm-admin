@@ -109,8 +109,8 @@ export default defineComponent({
       const tId = ref(0) /* topic id number */
 
       function datePassed(time) {
-      console.log(Date.parse(time))
-      console.log(formatDistance(Date.parse(time), new Date(), { addSuffix: true }))
+     // console.log(Date.parse(time))
+     // console.log(formatDistance(Date.parse(time), new Date(), { addSuffix: true }))
         return formatDistance(Date.parse(time), new Date(), { addSuffix: true })
     }
 
@@ -162,8 +162,8 @@ export default defineComponent({
               if(i.originalPostId == route.params.id){
                  testdata.value.push(i)
               }
-              console.log('hi')
-              console.log(i.topicId)
+           
+             // console.log(i.topicId)
             }
 
             for (let i of data.value) { 
@@ -172,7 +172,7 @@ export default defineComponent({
                   commTags.value.push(i.tags)
                 }
             } 
-          console.log(testdata.value)
+          //console.log(testdata.value)
           
           })
           .catch(() => {
@@ -188,8 +188,8 @@ export default defineComponent({
 
 
       function createNewComment(message){
-        console.log("creating new comment")
-        console.log(message, tId.value, route.params.id)
+       // console.log("creating new comment")
+       // console.log(message, tId.value, route.params.id)
 
       api.post("https://swarmnet-prod.herokuapp.com/replies", {
           "topic_id": tId.value,
