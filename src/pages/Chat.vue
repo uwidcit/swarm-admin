@@ -1,9 +1,9 @@
 <template>
    
-        <q-page-container  style="padding-top:0px; padding-left:0px;"> 
+        <q-page-container style="padding-top:0px; padding-left:0px;"> 
             <q-page>
-            <div class="row">
-                <div class = "col-4 q-px-lg q-py-lg q-gutter-lg chatStyle">
+            <div class="fit row">
+                <div :class = "`col-lg-4 col-xl-4 col-md-4 q-px-lg q-py-lg q-gutter-sm ${($q.screen.sm || $q.screen.xs) ? 'hidden':''} messageSelect`">
                 <q-input 
                 
                   rounded
@@ -11,10 +11,10 @@
                   v-model="filter"
                   debounce="500" 
                   placeholder="Search"
-                  style="width: 90%"> </q-input>
-
+                  style="width: 90%"/>
                 
-                <q-scroll-area style="height: 75vh; width: 90%">
+                <q-scroll-area :style="`height:100%`" >
+                   
                         <q-card class="q-my-xs">
                          <q-card-section v-for="(conversation, index) in conversations" :key="index">
                             <div class="row items-center q-pl-md">
@@ -37,7 +37,7 @@
                     
                  
 
-                <div class = "col-8 q-pl-xs">
+                <div :class = "` col-xl-8 col-lg-8 col-md-8 col-xs-12 q-pl-xs ${$q.screen.sm ? 'height':'80vh'}`">
                     <div class="row-2 banner">
                         <div class="row items-center">
                             <div class="col-2 q-pl-lg q-py-lg">
@@ -171,13 +171,21 @@ export default defineComponent({
 
 <style scoped>
 .chatWindow{
-    height: 74vh;
+    height: 67vh;
+    max-height: 94vh;
     width:100%;
+}
+.messageSelect{
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    opacity: 1;
+    min-height: 67vh;
+    max-height: 94vh;
 }
 .chatStyle{
     background: #FFFFFF 0% 0% no-repeat padding-box;
     opacity: 1;
-     min-height: 5vh;
+    min-height: 5vh;
+    max-height: 38vh;
 }
 
 input[type="file"] {

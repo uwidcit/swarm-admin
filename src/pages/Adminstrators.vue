@@ -122,7 +122,7 @@
                       
                       <q-card-actions align="right" class="text-primary">
                          <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center"> 
-                               <q-btn class= "btnStyle" flat label="Confirm" @click = "deleteTopic(current_row)" v-close-popup/>
+                               <q-btn class= "btnStyle" flat label="Confirm" @click = "deleteAdmin(current_row.id)" v-close-popup/>
                           </div>
 
                           <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center">
@@ -274,8 +274,8 @@ export default defineComponent({
       })
     }
 
-    function deleteTopic(currentTopic){
-      let url = "https://swarmnet.sundaebytes.com/api/admin/topic/"+currentTopic.id
+    function deleteAdmin(id){
+      let url = process.env.ADMIN_API_URL+ "/users/administrator/"+id
       api.delete(url, {
         headers: {
            Authorization:  'Bearer '+ localStorage.getItem('token') ,
@@ -283,8 +283,8 @@ export default defineComponent({
         }
       }).then((response) => {
         console.log(response)
-        topics.value = ([])
-        getTopics()
+        admins.value = ([])
+        getAdmins()
       })
     }
 
@@ -310,7 +310,7 @@ export default defineComponent({
       getAdmins,
       sendPasswordReset,
       createAdmin,
-      deleteTopic,
+      deleteAdmin,
       admins,
       fName:ref(''),
       lName:ref(''),
