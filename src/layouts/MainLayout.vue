@@ -10,69 +10,12 @@
                 </q-tooltip>
             </q-btn>
 
-          <q-btn padding="xl" color="orange" icon="far fa-bell" @click="edit=true" :label= "`Emergencies`" flat unelevated dense>
+          <q-btn padding="xl" color="orange" to="/Active" icon="far fa-bell" @click="edit=true" :label= "`Emergencies`" flat unelevated dense>
           <q-tooltip class="primary" :offset="[10, 10]">
             Emergencies
           </q-tooltip>
             </q-btn>
 
-      <!--<div class="q-gutter-lg">
-          <div class="">
-            <div class="col">
-            
-          </div>
-            <div class="col">
-        
-       </div>
-       </div>-->
-        <!-- <q-space/>
-          <div  style="max-width: 1000px">
-              <q-tabs
-              v-model="tab"
-              inline-label
-              outside-arrows
-              mobile-arrows
-              class="text-white shadow-2"
-              dense
-              indicator-color="purple"
-              active-color="white"
-            >
-              <q-tab name="all" label="ALL TOPICS" @click="tagText='0'" />
-              <q-tab v-for="topic in tops" :key="topic.id" :label="topic.text" @click="tagText=topic.id"/>
-                
-            </q-tabs>
-            
-          </div>
-        <q-btn round color="primary" icon="fas fa-pen-nib" @click="edit=true" dense>
-          <q-tooltip class="primary" :offset="[10, 10]">
-          Edit Topic
-        </q-tooltip>
-          </q-btn>
-        <q-btn round color="primary" icon="fas fa-plus"  @click="create= true" dense>
-          <q-tooltip class="primary" :offset="[10, 10]">
-          Add Topic
-        </q-tooltip>
-          </q-btn>
-        <q-btn round color="primary" icon="fas fa-trash" @click="remove=true" dense>
-          <q-tooltip class="primary" :offset="[10, 10]">
-          Delete Topic
-        </q-tooltip>
-          </q-btn>
-        <q-space/>
-    
-     </div>
-     <div class="board">
- </div>
-    
-     <q-space/>
-
-      <div class="q-gutter-sm row items-center no-wrap ">
-          <q-btn round flat>
-            <q-avatar size="26px">
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png">
-            </q-avatar>
-          </q-btn>>
-        </div>-->
       </q-toolbar>
       </div>
     </q-header>
@@ -111,7 +54,7 @@
           </q-item-section>
         </q-item>
 
-        <q-item to="/Post"  class="menuText"  active-class="q-item-no-link-highlighting v-ripple">
+        <q-item to="/Post "  class="menuText"  active-class="q-item-no-link-highlighting v-ripple">
           <q-item-section avatar>
             <q-icon style = "color:#457B9D" name="fa-solid fa-file-lines"/>
           </q-item-section>
@@ -222,120 +165,20 @@
           </q-item-section>
         </q-item>
 
-        <!-- <q-item to="/Note" active-class="q-item-no-link-highlighting">
+        <q-item clickable @click="logout()"  class="menuText" active-class="q-item-no-link-highlighting">
           <q-item-section avatar>
-            <q-icon name="fas fa-bell"/>
+            <q-icon style = "color:#457B9D" name="fas fa-sign-out"/>
           </q-item-section>
           <q-item-section>
-            <q-item-label>Notifications</q-item-label>
+            <q-item-label class="menuText">Logout</q-item-label>
           </q-item-section>
-        </q-item>-->
+        </q-item>
       
        
       </q-list>
     </q-drawer>
 
-   <!-- <q-dialog v-model="edit">
-      <q-card style="width: 600px; height: 400px; background-color: powderblue;">
-        <q-card-section>
-          <div class="text-h6">Edit Topic</div>
-        </q-card-section>
-        <q-card-actions>
-          <q-btn-dropdown color="primary" label="TOPICS">
-            <q-list v-for="topic in tops" :key="topic.id">
-              <q-item clickable v-close-popup @click="ptabtext= topic.text , ptopid= topic.id">
-                <q-item-section>
-                  <q-item-label>{{topic.text}}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
-        </q-card-actions>
-
-        <q-card-section>
-          <div class="text-h6">TOPIC SELECTED: {{ptabtext}} </div>
-        </q-card-section>
-        <q-separator />
-
-        <q-card-section>
-          <q-input rounded outlined v-model="text" placeholder="Enter edited topic" />
-        </q-card-section>
-       
-        <q-card-actions align="right">
-          <q-btn flat label="Discard" color="primary" @click="text=''" v-close-popup />
-          <q-btn flat label="Edit" color="primary" @click="editTopic(ptopid, text), text=''" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="create">
-      <q-card style="width: 600px; height: 400px; background-color: powderblue;">
-        <q-card-section>
-          <div class="text-h6">New Topic</div>
-        </q-card-section>
-        
-        <q-card-section>
-          <q-input filled  v-model="ph" placeholder="Enter Title of Topic"  />
-        </q-card-section>
-
-        <q-card-section>
-          <div class="text-h6">Topic Level</div>
-        </q-card-section>
-        
-        <q-card-section>
-          <q-input filled  v-model="lev" placeholder="Enter Level of Topic"  />
-        </q-card-section>
-      
-        <q-card-actions align="right">
-          <q-btn flat label="Discard" color="primary" @click="ph = '', lev=''" v-close-popup />
-          <q-btn flat label="Post" color="primary" v-close-popup @click="addTopic(ph,lev), ph = '', lev='';"/>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-     <q-dialog v-model="remove">
-      <q-card style="width: 350px; height: 350px; background-color: powderblue;">
-        <q-card-section>
-          <div class="text-h6">Delete Topic</div>
-        </q-card-section>
-        
-        <q-card-actions>
-          <q-btn-dropdown color="primary" label="TOPICS">
-            <q-list v-for="topic in tops" :key="topic.id">
-              <q-item clickable v-close-popup @click="ptabtext= topic.text , ptopid= topic.id">
-                <q-item-section>
-                  <q-item-label>{{topic.text}}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
-        </q-card-actions>
-
-        <q-card-section>
-          <div class="text-h6">TOPIC SELECTED: {{ptabtext}} </div>
-        </q-card-section>
-        <q-separator />
-        
-        <q-card-actions align="right">
-          <q-btn flat label="Cancel" color="primary" @click="ph = '', lev=''" v-close-popup />
-          <q-btn flat label="Delete Topic" color="primary" @click="deleteTopic(ptopid)" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-
-    <q-dialog v-model="confirm">
-      <q-card style="width: 250px; height: 250px; background-color: powderblue;">
-        <q-card-section>
-          <div class="text-h6">ARE YOU SURE YOU WANT TO DELETE THIS TOPIC?</div>
-        </q-card-section>
-        
-        <q-card-actions align="right">
-          <q-btn flat label="Yes" color="primary"  @click="ph = '', lev=''" v-close-popup />
-          <q-btn flat label="No" color="primary" @click="ph = '', lev=''" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog> -->
+   
 
     <q-page-container class="background">
       <router-view />
@@ -396,8 +239,29 @@ export default defineComponent({
     const tagText = ref('0')
     const ptabtext = ref('')
     const text = ref('')
+    const router = useRouter()
+    const route = useRoute()
     //const confirm = ref(false)
 
+
+
+    function logout(){
+      localStorage.clear();
+      this.$router.push({ path: '/' })
+      //console.log("successful")
+       /*let url =  "https://swarmnet.sundaebytes.com/api/common/logout"
+
+         api.post(url, {
+      }).then((response) => {
+         console.log("successfully")
+        if(response.status == 200){
+           console.log("successfully")
+          const redirectPath = route.query.redirect || '/'
+          router.push(redirectPath)
+
+        }     
+    })*/
+    }
 
      function loadData () {//get Topics from api
        tops.value.splice(0)
@@ -413,7 +277,7 @@ export default defineComponent({
         for (let i of data.value) { 
           tops.value.push(i)
         }
-        console.log(tops.value)
+       // console.log(tops.value)
       })
       .catch(() => {
         $q.notify({
@@ -425,7 +289,7 @@ export default defineComponent({
       })
   }
      function addTopic(newTopic, topLevel){//add topics 
-       console.log(newTopic , topLevel)
+      // console.log(newTopic , topLevel)
 
       api.post("https://swarmnet-prod.herokuapp.com/topics",{        
               text: newTopic,
@@ -439,7 +303,7 @@ export default defineComponent({
               }
               )
             .then((response) => {
-              console.log(response.status)
+             // console.log(response.status)
               if(response.status == 201){
                 loadData ();
                 $q.notify({
@@ -463,7 +327,7 @@ export default defineComponent({
 
 /*edit a topic on the postboard */
 function editTopic(topicId, text){
-  console.log(topicId , text)
+  //console.log(topicId , text)
    api.put(`https://swarmnet-prod.herokuapp.com/topics/${topicId}`,
                 {
                   text: text,
@@ -477,7 +341,7 @@ function editTopic(topicId, text){
                 }
               })
                   .then((response) => { 
-                    console.log(response.data)
+                    //console.log(response.data)
                     loadData () /* add check to ensure it only reloads if successul */
 
                           
@@ -495,7 +359,7 @@ function editTopic(topicId, text){
 
 /*to delete a topic from the postboard*/ 
 function deleteTopic(postID){
-       console.log(postID)
+      // console.log(postID)
 
        api.delete(`https://swarmnet-prod.herokuapp.com/topics/${postID}`,
               {
@@ -506,9 +370,9 @@ function deleteTopic(postID){
               }
               )
             .then((response) => {
-              console.log(response.status)
+             // console.log(response.status)
               if(response.status == 201 || response.status == 200){
-                console.log("entered")
+               // console.log("entered")
               /*  confirm = false;  set this to false here or in the dialog to close after deleting*/
                 loadData()
                 $q.notify({
@@ -548,6 +412,7 @@ function deleteTopic(postID){
       loadData,
       deleteTopic,
       editTopic,
+      logout,
       leftDrawerOpen: ref(false),
       /*toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value

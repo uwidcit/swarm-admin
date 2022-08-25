@@ -33,35 +33,6 @@
        
     </div>
   </div>
-
-     <!--<q-dialog v-model="r_alert" persistent>
-      <q-card>
-        <q-card-section class="row items-center">
-          <q-avatar  icon="fas fa-exclamation-triangle" color="primary" text-color="white" />
-          <span class="q-ml-sm">Are you sure you want to mark this emergency as resolved?</span>
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn id ="to_resolve" flat label="Yes" color="primary"/>
-          <q-btn flat label="No" color="primary" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="f_alert" persistent>
-      <q-card>
-        <q-card-section class="row items-center">
-          <q-avatar  icon="fas fa-exclamation-triangle" color="primary" text-color="white" />
-          <span class="q-ml-sm">Are you sure you want to mark this emergency as false</span>
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn flat label="yes" color="primary" v-close-popup />
-          <q-btn flat label="No" color="primary" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>-->
-
     
   </q-page>
 </template>
@@ -156,35 +127,22 @@ export default defineComponent({
     });
     var infowindow = new google.maps.InfoWindow;
     var marker, i,count=0;
-    let url= process.env.ADMIN_API_URL+"/alert"
+    let url= process.env.COMMON_API_URL+"/alert"
     let urll='https://swarmnet-prod.herokuapp.com/alerts'
       api.get(url,{
   method: 'GET',
   
   headers: {
-          Authorization:'Bearer '+ localStorage.getItem('token'),
+          Authorization:'Bearer '+ localStorage.getItem('token'), 
           'Access-Control-Allow-Origin': '*'
         }
     })
     .then((response) => { 
         data.value = response.data //alert collected from api
-        console.log(data.value.alerts)
+       // console.log(data.value.alerts)
         for (let i of data.value.alerts) { 
           if((i.is_false==false) && (i.is_resolved==false)){
-         /*Object.defineProperty(i, "alertID", {value : count, //add id to alert object
-                       writable : true,
-                       enumerable : true,
-                       configurable : true});
-          
-          Object.defineProperty(i, "status", {value : "Active", //add status to alert object
-                       writable : true,
-                       enumerable : true,
-                       configurable : true});*/
-          
-          //console.log(data.value)
-          //if((i.is_false==false) && (i.is_resolve==false)){
-          
-         
+    
           alerts.value.push(i) //add alert to alert object array
            marker = new google.maps.Marker({
              position: new google.maps.LatLng(i.latitude,i.longitude),//Place marker with alert co ordinates
@@ -201,7 +159,7 @@ export default defineComponent({
             marker.circle = circle;
             markers.push(marker);
         //console.log(markers[1]);
-        google.maps.event.addListener(marker, 'mouseover', (function(marker) { //Add info window to each marker
+        /*google.maps.event.addListener(marker, 'mouseover', (function(marker) { //Add info window to each marker
              return function() {
                  infowindow.setContent("User : "+ i.user.first_name+ 
                  "<br/> Created: " + i.created
@@ -212,9 +170,9 @@ export default defineComponent({
                  infowindow.open(map, marker);
                 
              }
-        })(marker));
+        })(marker));*/
     
-       google.maps.event.addDomListener(marker, 'click', function() {// Listener for resolve alert function
+       google.maps.event.addListener(marker, 'click', function() {// Listener for resolve alert function
        //openBar=true;
        //console.log("Hello")
       document.getElementById("text").innerHTML = i.text;
@@ -243,9 +201,6 @@ export default defineComponent({
         
        //document.getElementById("testing").innerHTML = "Peace";
         });
-        google.maps.event.addListener(marker, "rightclick", function () { // listner for set active function
-               setActive(i.alertID);
-            });
           count++
           a++
         }// end of if statement
@@ -263,27 +218,10 @@ new MarkerClusterer({ markers, map}); //Add marker cluster
         })
       })
     
-    
-   /*document
-    .getElementById("show-resolve")
-    .addEventListener("click", showResolveAlerts);
-  document
-    .getElementById("hide-resolve")
-    .addEventListener("click", hideResolveAlerts);*/
 }
-/* function resolveAlerts(alertID){
 
-}
-document
-    .getElementById("resolve")
-    .addEventListener("click", resolveAlert);
-
-   document
-    .getElementById("false")
-    .addEventListener("click", falseAlert());*/
 
     function falseAlert(a_id){
-      console.log(a_id,"Hello there")
       api.put( process.env.ADMIN_API_URL+"/alert/falsify/"+a_id,
                 {
                  
@@ -316,7 +254,7 @@ document
     }
 
      function resolveAlert(a_id){
-      console.log(a_id,"Hello there")
+      //console.log(a_id,"Hello there")
       api.put( process.env.ADMIN_API_URL+"/alert/resolve/"+a_id,
                 {
                  
@@ -348,91 +286,8 @@ document
                   })
     }
 
-
- /*function resolveAlert(markAlert) {// Function to set alerts from active to resolve
-      // Code to toggle the slide in box state to open or closed. Opened state has 'open' class    
-   document.write ("This is a warning message!");
-
-  var dialog = document.getElementById('myFirstDialog');    
-    document.getElementById('show').onclick = function() {    
-        dialog.show(); 
-    };    
-    document.getElementById('hide').onclick = function() {    
-        dialog.close();    
-    };  
-    //toggle();
-    //console.log(this.open)
-    let size1=Object.keys(alerts.value).length
-    var l
-      for (l=0;l<size1;l++){
-            if(alerts.value[l].alertID==markAlert){
-                alerts.value[l].status="Resolve";//set alert to resolve
-              break
-            }
-            }
-      $q.notify({// alert to show it was successful
-              message: 'Alert has been Resolved',
-              type: 'positive',
-              position: 'top',
-              icon: 'check',
-              color:'green',
-              caption: 'Right click marker to set Alert Active',
-            })
-}*/
-function test() {  
-  console.log("Sliding");  
-  
-  /*console.log("Show Dialog");  
-    var dialog = document.getElementById('myFirstDialog');    
-    document.getElementById('show').onclick = function() {    
-        dialog.show(); 
-    };    
-    document.getElementById('hide').onclick = function() {    
-        dialog.close();    
-    };   */ 
-} 
- function setActive(markAlert) {// Function to set alerts from resolve to active
-    let size1=Object.keys(alerts.value).length
-      for (let l=0;l<size1;l++){
-            if(alerts.value[l].alertID==markAlert){
-                alerts.value[l].status="Active";
-            }
-            }
-            $q.notify({//alert to show it was successful
-              message: 'Alert has been set to Active',
-              type: 'positive',
-              position: 'bottom',
-              icon: 'check',
-              color:'green',
-              caption: 'Click marker to resolve Alert',
-            })
-    }
-function hideResolveAlerts() { //Function to hide Resolve alerts markers
-  let size2=Object.keys(alerts.value).length
-  for (let k=0;k<size2;k++){
-         if(alerts.value[k].status=="Resolve"){
-            markers[k].setVisible(false);//hide marker
-            markers[k].circle.setOptions({// hide circle
-              fillOpacity: 0,
-              strokeOpacity: 0
-            }); 
-         }
-        }
-}
-function showResolveAlerts() {//Function to display resolve alerts markers
-  let size=Object.keys(alerts.value).length
-  for (let m=0;m<size;m++){
-         if(alerts.value[m].status=="Resolve"){
-            markers[m].setVisible(true);//show markers
-            markers[m].circle.setOptions({//show circle
-              fillOpacity: 0.35,
-              strokeOpacity: 1
-            });
-         }
-        }
-}
     return {
-      mapData: ref(''),initMap,resolve_alerts: ref(false),test,active_alerts: ref(false),alerts,falseAlert,resolveAlert,setActive,hideResolveAlerts,showResolveAlerts,r_alert: ref(false),
+      mapData: ref(''),initMap,resolve_alerts: ref(false),active_alerts: ref(false),alerts,falseAlert,resolveAlert,r_alert: ref(false),
       f_alert: ref(false),
     
       
@@ -466,7 +321,7 @@ function showResolveAlerts() {//Function to display resolve alerts markers
   padding: 2em 3em; 
   position: fixed; 
   z-index: 100;
-  top: 10%;
+  top: 13%;
   right: -100%;
   background: #FFFFFF;
   color: #393D3D;

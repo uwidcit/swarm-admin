@@ -237,7 +237,7 @@ export default defineComponent({
         }
       
       /* console.log( tops.value[0].text) */
-       console.log(tops) 
+      // console.log(tops) 
       })
       .catch(() => {
         $q.notify({
@@ -312,7 +312,7 @@ export default defineComponent({
             }
           }
         }
-        console.log(pos.value)
+       // console.log(pos.value)
         for(let j of tops.value){
           if(j.id == parseInt(props.tabText)){
             ptabtext.value = j.text
@@ -410,7 +410,7 @@ export default defineComponent({
     function searchByTags(searchTag){
    
       let url = `https://swarmnet-prod.herokuapp.com/posts/${searchTag}`
-      console.log(url)
+      //console.log(url)
             api.get(url,{
             method: 'GET',
             headers: {
@@ -421,7 +421,7 @@ export default defineComponent({
             .then((response) => {
               
               data.value = response.data
-              console.log(data.value)
+             // console.log(data.value)
 
               /* display search list */
               pos.value.splice(0)
@@ -504,7 +504,7 @@ export default defineComponent({
                   label:i.text,
                   created:i.created})
               }
-              console.log(options.value)
+             // console.log(options.value)
             })
             .catch(() => {
               $q.notify({
@@ -581,7 +581,7 @@ export default defineComponent({
           }
         }
 
-        console.log(pos.value)
+        //console.log(pos.value)
 
         for(let j of tops.value){
           if(j.id == message.value){
@@ -589,7 +589,7 @@ export default defineComponent({
           }     
         }  
 
-        console.log(props.tabText);
+       // console.log(props.tabText);
 
            })
       .catch(() => {

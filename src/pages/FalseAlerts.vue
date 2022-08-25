@@ -133,7 +133,7 @@ export default defineComponent({
     })
     .then((response) => { 
         data.value = response.data //alert collected from api
-        console.log(data.value.alerts)
+       // console.log(data.value.alerts)
         for (let i of data.value.falsified) { 
           if(i.is_false==true){ 
           alerts.value.push(i) //add alert to alert object array
@@ -152,7 +152,7 @@ export default defineComponent({
             marker.circle = circle;
             markers.push(marker);
         //console.log(markers[1]);
-        google.maps.event.addListener(marker, 'mouseover', (function(marker) { //Add info window to each marker
+       /* google.maps.event.addListener(marker, 'mouseover', (function(marker) { //Add info window to each marker
              return function() {
                  infowindow.setContent("User : "+ i.user.first_name+ 
                  "<br/> Created: " + i.created
@@ -162,11 +162,10 @@ export default defineComponent({
                  infowindow.open(map, marker);
                 
              }
-        })(marker));
+        })(marker));*/
     
-       google.maps.event.addDomListener(marker, 'click', function() {// Listener for resolve alert function
+       google.maps.event.addListener(marker, 'click', function() {// Listener for resolve alert function
        //openBar=true;
-       //console.log("Hello")
       document.getElementById("text").innerHTML = i.text;
       //document.getElementById("tags").innerHTML = "Eartquake"+" "+"Landslide";
       document.getElementById("user").innerHTML = i.user.first_name+" "+ i.user.last_name;
@@ -189,9 +188,6 @@ export default defineComponent({
         
       //document.getElementById("testing").innerHTML = "Peace";
         });
-        google.maps.event.addListener(marker, "rightclick", function () { // listner for set active function
-              
-            });
           count++
           a++
         }// end of if statement
@@ -214,7 +210,7 @@ new MarkerClusterer({ markers, map}); //Add marker cluster
 
 
     function unfalsifyAlert(a_id){
-      api.delete( process.env.COMMON_API_URL+"/alert/falsify/"+a_id,
+      api.delete( process.env.ADMIN_API_URL+"/alert/falsify/"+a_id,
                 {
                 headers: {
                   Authorization:'Bearer '+ localStorage.getItem('token'),
@@ -278,7 +274,7 @@ new MarkerClusterer({ markers, map}); //Add marker cluster
   padding: 2em 3em; 
   position: fixed; 
   z-index: 100;
-  top: 10%;
+  top: 13%;
   right: -100%;
   background: #FFFFFF;
   color: #393D3D;

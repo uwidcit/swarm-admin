@@ -2,7 +2,7 @@
   <q-card class="bg-transparent no-shadow no-border">
     <q-card-section class="q-pa-none">
       <div class="row q-col-gutter-sm ">
-        <div v-for="item in items" :key="item.title" class="col-md-4 col-sm-12 col-xs-12">
+        <div v-for="item in items" :key="item.title" class="col-md-6 col-sm-12 col-xs-12">
           <q-item :style="`background-color: ${item.color1}`" class="q-pa-none">
             <q-item-section class=" q-pa-md q-ml-none  text-white">
               <q-item-label class="text-white text-h6 text-weight-bolder">{{ item.value }}</q-item-label>

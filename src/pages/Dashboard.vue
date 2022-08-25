@@ -446,9 +446,9 @@ export default defineComponent({
     })
     .then((response) => { 
       data.value = response.data   
-     // console.log(response.data)
+     
     post=data.value.weekly_post_analytics
-      
+       //console.log(post)
       let data2={
         name: "POST",
             type: "bar",
