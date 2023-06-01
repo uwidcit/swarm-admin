@@ -4,11 +4,23 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/Dashboard.vue'), props: true  },
-      {path: '/Alerts', component: () => import('pages/AlertsMap.vue')},
+      {path:'/Topics', component: () => import('pages/Topics.vue'), props:true},
+      {path:'/Post', component: () => import('pages/Post.vue'), props:true},
+      {path:'/Broadcast', component: () => import('pages/Broadcast.vue'), props:true},
+      {path: '/Active', component: () => import('pages/AlertsMap.vue')},
+      {path: '/Resolve', component: () => import('pages/ResolveAlerts.vue')},
+      {path: '/False', component: () => import('pages/FalseAlerts.vue')},
       {path: '/Map', component: () => import('pages/Map.vue')},
       {path: '/MapMarker', component: () => import('pages/MapMarker.vue')},
-      { path: '/PostAnalytics', component: () => import('components/charts/BarChart.vue') },
-
+      { path: '/PosttAnalytics', component: () => import('components/charts/BarChart.vue') },
+      { path: '/UserAnalytics', component: () => import('components/charts/UsersAnalytics.vue') },
+      { path: '/PostAnalytics', component: () => import('components/charts/PostAnalytics.vue') },
+      { path: '/BroadcastAnalytics', component: () => import('components/charts/BroadcastAnalytics.vue') },
+      { path: '/EmergenciesAnalytics', component: () => import('components/charts/EmergenciesAnalytics.vue') },
+      {path: '/Users/AdminUsers', component: ()=> import('pages/Adminstrators.vue'),props:true},
+      {path:'/Users/ExternalUsers', component: () => import('pages/ExternalUsers.vue'), props:true},
+      {path:'/DisasterReliefCenters', component: () => import('pages/DisasterCenters.vue'), props:true},
+      {path:'/Chat', component: () => import('pages/Chat.vue'), props:true},
     ]
   },
   

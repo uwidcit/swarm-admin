@@ -60,9 +60,9 @@ export default defineComponent({
      const loading = ref([false])
 
     function login(username, password){
-      console.log("enter", username, password)
     
-      let urrl = "https://swarmnet-prod.herokuapp.com/auth"
+    
+      let urrl =  process.env.ADMIN_API_URL+"/login"
       api.post(urrl, {
         "username": username,
         "password": password
@@ -70,6 +70,7 @@ export default defineComponent({
 
         if(response.status == 200){
           localStorage.setItem('token', response.data.access_token)
+          localStorage.setItem('refreshToken', response.data.refresh_token)
           const redirectPath = route.query.redirect || '/home'
           router.push(redirectPath)
 
@@ -86,7 +87,7 @@ export default defineComponent({
   }
   
      function simulateProgress (number,username,password) {
-        console.log("enter", username, password)
+        
       // we set loading state
       loading.value[ number ] = true
 

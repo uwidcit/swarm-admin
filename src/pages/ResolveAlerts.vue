@@ -4,7 +4,6 @@
     <div id="map" style=" height: 92.7vh; width: 100%"></div>
     <div id="over_map">
 
-
 <!-- Slide In box will be hidden until toggled open -->
 <div class="slidein overflow-y: scroll" >
       <h6>Emergency Report</h6>
@@ -21,8 +20,7 @@
       <p id="lat" ></p> 
       <p id="lng"></p> 
       </div>
-       <q-btn id="resolve" class="butn" color="blue" label="Mark as Resolve" @click="r_alert = true"  />
-      <q-btn id="false" class="butn" outline style="color: #2D86BC" label="Mark as False" @click="f_alert = true"/>
+       <q-btn id="unresolve" class="butn" color="blue" label="Unresolve Alert"   />
         <button class="close-btn"> X </button>
     </div>
 
@@ -33,7 +31,11 @@
        
     </div>
   </div>
-    
+
+  
+  
+ 
+
   </q-page>
 </template>
 
@@ -133,15 +135,15 @@ export default defineComponent({
   method: 'GET',
   
   headers: {
-          Authorization:'Bearer '+ localStorage.getItem('token'), 
+          Authorization:'Bearer '+ localStorage.getItem('token'),
           'Access-Control-Allow-Origin': '*'
         }
     })
-    .then((response) => { 
+    .then((response) => {  
         data.value = response.data //alert collected from api
-       // console.log(data.value.alerts)
-        for (let i of data.value.alerts) { 
-          if((i.is_false==false) && (i.is_resolved==false)){
+       // console.log(data.value.resolved)
+        for (let i of data.value.resolved) { 
+          if(i.is_resolved==true){
     
           alerts.value.push(i) //add alert to alert object array
            marker = new google.maps.Marker({
@@ -164,8 +166,7 @@ export default defineComponent({
                  infowindow.setContent("User : "+ i.user.first_name+ 
                  "<br/> Created: " + i.created
                  +"<br/> Alert: "+i.text
-                 +"<br/>"
-                );
+                 );
                              
                  infowindow.open(map, marker);
                 
@@ -183,23 +184,18 @@ export default defineComponent({
        
        let slidein = document.querySelector('.slidein');
        slidein.classList.toggle('open');
-       
-       document.getElementById("resolve")
-      .addEventListener("click", function(){
-        resolveAlert(i.id);
-      });
-      
-      document.getElementById("false")
+
+      document.getElementById("unresolve")
          .addEventListener("click", function(){
-        falseAlert(i.id);
+        unresolveAlert(i.id);
       });
        let closeBtn = document.querySelector('.close-btn');
        closeBtn.addEventListener('click', function() {
         slidein.classList.toggle('open');
       });
-      
+     
         
-       //document.getElementById("testing").innerHTML = "Peace";
+      //document.getElementById("testing").innerHTML = "Peace";
         });
           count++
           a++
@@ -218,63 +214,27 @@ new MarkerClusterer({ markers, map}); //Add marker cluster
         })
       })
     
+    
+ 
 }
 
-
-    function falseAlert(a_id){
-      api.put( process.env.ADMIN_API_URL+"/alert/falsify/"+a_id,
-                {
-                 
-                },
+    function unresolveAlert(a_id){
+      api.delete( process.env.ADMIN_API_URL+"/alert/resolve/"+a_id,
                 {
                 headers: {
                   Authorization:'Bearer '+ localStorage.getItem('token'),
                   'Access-Control-Allow-Origin': '*',
-                  'Content-Type': 'application/json'
-                }
-              })
-                  .then((response) => { 
-                    $q.notify({// alert to show alert change was successful
-                    message: 'Alert has been set to False',
-                    type: 'positive',
-                    position: 'top',
-                    icon: 'check',
-                    color:'orange',
-                    caption: 'Check the False Map',
-                  })       
-                  })
-                  .catch(() => {
-                      $q.notify({
-                      color: 'negative',
-                      position: 'top',
-                      message: 'Loading failed',
-                      icon: 'report_problem'
-                      })
-                  })
-    }
-
-     function resolveAlert(a_id){
-      //console.log(a_id,"Hello there")
-      api.put( process.env.ADMIN_API_URL+"/alert/resolve/"+a_id,
-                {
-                 
-                },
-                {
-                headers: {
-                  Authorization:'Bearer '+ localStorage.getItem('token'),
-                  'Access-Control-Allow-Origin': '*',
-                  'Content-Type': 'application/json'
                 }
               })
                   .then((response) => { 
                      $q.notify({// alert to show alert change was successful
-                    message: 'Alert has been set to Resolve',
+                    message: 'Alert has been set to Active',
                     type: 'positive',
                     position: 'top',
                     icon: 'check',
                     color:'orange',
-                    caption: 'Check the Resolve Map',
-                  })   
+                    caption: 'Check the Active Map',
+                  })          
                   })
                   .catch(() => {
                       $q.notify({
@@ -286,9 +246,9 @@ new MarkerClusterer({ markers, map}); //Add marker cluster
                   })
     }
 
+
     return {
-      mapData: ref(''),initMap,resolve_alerts: ref(false),active_alerts: ref(false),alerts,falseAlert,resolveAlert,r_alert: ref(false),
-      f_alert: ref(false),
+      mapData: ref(''),initMap,alerts,unresolveAlert
     
       
     }
