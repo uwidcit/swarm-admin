@@ -1,3 +1,6 @@
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/uwidcit/swarm-admin)
+
+
 # Quasar Admin Template
 
 [![MadeWithVueJs.com shield](https://madewithvuejs.com/storage/repo-shields/2604-shield.svg)](https://madewithvuejs.com/p/quasar-admin/shield-link)
