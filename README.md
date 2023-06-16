@@ -1,29 +1,16 @@
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/uwidcit/swarm-admin)
 
 
-# Quasar Admin Template
+# SWARNET Admin Frontend
+App created for SWARNET Administrators.
 
-[![MadeWithVueJs.com shield](https://madewithvuejs.com/storage/repo-shields/2604-shield.svg)](https://madewithvuejs.com/p/quasar-admin/shield-link)
-
-Free Quasar Admin Template based on Vue.js and used Quasar Framework.
-
-## Site: [https://next-quasar-admin.netlify.app/](https://next-quasar-admin.netlify.app/)
-
-# Support
-
-If this helped you in any way, you can contribute to this project for long term survival by supporting me:
-
-### [💜 Support my open-source work on GitHub](https://github.com/sponsors/pratik227)
-
-Be sure to check out my sponsor page.
-
-(GitHub currently **doubles your support**! So if you support me with $10/mo, I will get $20 instead! They're alchemists 😉)
-
-Thank you so much!!!
+## Site: [https://swarnet-admin.sundaebytes.com/](https://swarnet-admin.sundaebytes.com/)
 
 ## Install the dependencies
 ```bash
 npm install
+npm install -g @quasar/cli
+npm install -g @quasar/app
 ```
 
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
