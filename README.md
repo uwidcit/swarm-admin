@@ -4,7 +4,7 @@
 # SWARNET Admin Frontend
 An application created using Vue and Quasar for SWARNET Administrators.
 
-## Site: [https://swarnet-admin.sundaebytes.com/](https://swarnet-admin.sundaebytes.com/)
+### Site: [https://swarnet-admin.sundaebytes.com/](https://swarnet-admin.sundaebytes.com/)
 
 ## Install the dependencies
 ```bash
@@ -32,29 +32,6 @@ quasar build
 **Dashboard**
 
 ![Alt text](src/assets/Dashboard.png?raw=true "Screenshot")
-
-[comment]: <> (**CRM Dashboard**)
-
-[comment]: <> (![Alt text]&#40;src/assets/CRMDashboard.png?raw=true "Screenshot"&#41;)
-
-**Mail**
-
-![Alt text](src/assets/Mail.png?raw=true "Screenshot")
-
-**Lock Screen 1**
-
-![Alt text](src/assets/Lock-1.png?raw=true "Screenshot")
-
-
-**Lock Screen 2**
-
-![Alt text](src/assets/Lock-2.png?raw=true "Screenshot")
-
-
-**Pricing**
-
-![Alt text](src/assets/Pricing.png?raw=true "Screenshot")
-
 
 ### Customize the configuration
 See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
