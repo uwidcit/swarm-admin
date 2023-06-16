@@ -2,7 +2,7 @@
 
 
 # SWARNET Admin Frontend
-App created for SWARNET Administrators.
+An application created using Vue and Quasar for SWARNET Administrators.
 
 ## Site: [https://swarnet-admin.sundaebytes.com/](https://swarnet-admin.sundaebytes.com/)
 
