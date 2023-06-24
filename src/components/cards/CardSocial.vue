@@ -44,10 +44,10 @@ export default defineComponent({
     
     function init(){
       
-      let url ="https://swarmnet.sundaebytes.com/api/admin/dashboard"
+      let url =process.env.ADMIN_API_URL+"/dashboard"
        api.get(url,{
-  method: 'GET',
-  headers: {
+      method: 'GET',
+      headers: {
           Authorization:'Bearer '+ localStorage.getItem('token'),
           'Access-Control-Allow-Origin': '*'
         }
@@ -86,7 +86,7 @@ export default defineComponent({
           },
      ])
     
-     console.log(items)
+    //  console.log(items)
     })
     .catch(() => {
         $q.notify({
