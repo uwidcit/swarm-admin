@@ -206,7 +206,7 @@ export default defineComponent({
     }]
 
     function getAdmins(){
-        let url = process.env.ADMIN_API_URL+"/users/administrator"
+        let url = process.env.BASE_URL+"/api/admin/users/administrator"
         api.get(url, {
           method: 'GET',
           headers: {
@@ -230,7 +230,7 @@ export default defineComponent({
 
     function createAdmin(fName,lName,email){
       
-      let url = process.env.ADMIN_API_URL+ "/users/administrator"
+      let url = process.env.BASE_URL+ "/api/admin/users/administrator"
       
       api.post(url, {
         firstname:fName,
@@ -256,7 +256,7 @@ export default defineComponent({
     }
 
     function sendPasswordReset(email){
-      let url = process.env.BASE_API_URL+"/reset-password"
+      let url = process.env.BASE_URL+"/api/reset-password"
       api.post(url, {
         email:email
       }, {
@@ -275,7 +275,7 @@ export default defineComponent({
     }
 
     function deleteAdmin(id){
-      let url = process.env.ADMIN_API_URL+ "/users/administrator/"+id
+      let url = process.env.BASE_URL+ "/api/admin/users/administrator/"+id
       api.delete(url, {
         headers: {
            Authorization:  'Bearer '+ localStorage.getItem('token') ,

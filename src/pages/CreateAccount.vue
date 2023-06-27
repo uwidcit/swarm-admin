@@ -67,7 +67,7 @@ export default defineComponent({
     function signup(fname, lname, username, password){
       console.log("enter", username, password)
     
-      let urrl = process.env.BASE_API_URL+"/regisiter"
+      let urrl = process.env.BASE_URL+"/api/regisiter"
       api.post(urrl, {
         "firstname": fname,
         "lastname": lname,  

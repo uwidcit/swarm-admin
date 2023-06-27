@@ -153,7 +153,7 @@ export default defineComponent({
     }]
 
     function getUsers(){
-        let url = process.env.ADMIN_API_URL+"/users"
+        let url = process.env.BASE_URL+"/api/admin/users"
         api.get(url, {
           method: 'GET',
           headers: {

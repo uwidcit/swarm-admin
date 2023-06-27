@@ -129,8 +129,8 @@ export default defineComponent({
     });
     var infowindow = new google.maps.InfoWindow;
     var marker, i,count=0;
-    let url= process.env.COMMON_API_URL+"/alert"
-    let urll='https://swarmnet-prod.herokuapp.com/alerts'
+    let url= process.env.BASE_URL+"/api/common/alert"
+    let urll=process.env.BASE_URL+'/api/common/alerts'
       api.get(url,{
   method: 'GET',
   
@@ -219,7 +219,7 @@ new MarkerClusterer({ markers, map}); //Add marker cluster
 }
 
     function unresolveAlert(a_id){
-      api.delete( process.env.ADMIN_API_URL+"/alert/resolve/"+a_id,
+      api.delete( process.env.BASE_URL+"/api/admin/alert/resolve/"+a_id,
                 {
                 headers: {
                   Authorization:'Bearer '+ localStorage.getItem('token'),

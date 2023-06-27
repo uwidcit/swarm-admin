@@ -62,10 +62,14 @@ export default defineComponent({
     function login(username, password){
     
     
-      let urrl =  process.env.ADMIN_API_URL+"/login"
+      let urrl =  process.env.BASE_URL+"/api/admin/login"
       api.post(urrl, {
         "username": username,
         "password": password
+      }, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        }
       }).then((response) => {
 
         if(response.status == 200){

@@ -221,8 +221,8 @@ export default defineComponent({
 
     /* gets topics to use for q-dialog */
     function loadData () {
-    
-    api.get('https://swarmnet-prod.herokuapp.com/topics',{
+    // heroku
+    api.get(process.env.BASE_URL+"/api/topics",{
   method: 'GET',
   
   headers: {
@@ -243,7 +243,7 @@ export default defineComponent({
         $q.notify({
           color: 'negative',
           position: 'top',
-          message: 'Loading failed',
+          message: '9Loading failed',
           icon: 'report_problem'
         })
       })
@@ -255,7 +255,7 @@ export default defineComponent({
       if(topic == 0){
       pos.value.splice(0)
       
-      let url = "https://swarmnet-prod.herokuapp.com/posts"
+      let url = process.env.BASE_URL+"/api/admin/posts"
           
             api.get(url,{
             method: 'GET',
@@ -291,7 +291,7 @@ export default defineComponent({
     }
       
       else{
-      let url = "https://swarmnet-prod.herokuapp.com/posts"
+      let url = process.env.BASE_URL+"/api/admin/posts"
       api.get(url,{
       method: 'GET',
       headers: {
@@ -342,7 +342,7 @@ export default defineComponent({
               tag:'flood'
             }
           }])
-          let curl = process.env.ADMIN_API_URL+"/posts"
+          let curl = process.env.BASE_URL+"/api/admin/posts"
             api.get(curl,{
             method: 'GET',
             
@@ -363,12 +363,12 @@ export default defineComponent({
               $q.notify({
                 color: 'negative',
                 position: 'top',
-                message: 'Loading failed',
+                message: '6Loading failed',
                 icon: 'report_problem'
               })
             })
       
-          let url = process.env.ADMIN_API_URL+"/posts"
+          let url = process.env.BASE_URL+"/api/admin/posts"
           
             api.get(url,{
             method: 'GET',
@@ -409,7 +409,7 @@ export default defineComponent({
     /*get all top level post with a partciular tag*/
     function searchByTags(searchTag){
    
-      let url = `https://swarmnet-prod.herokuapp.com/posts/${searchTag}`
+      let url = `${process.env.BASE_URL}/api/admin/posts/${searchTag}`
       //console.log(url)
             api.get(url,{
             method: 'GET',
@@ -452,7 +452,7 @@ export default defineComponent({
       if(ptopid.value == ''){
         ptopid.value = props.tabText
       }
-      let url = "https://swarmnet-prod.herokuapp.com/posts"
+      let url = process.env.BASE_URL+"/api/admin/posts"
           
             api.post(url,{
               topic_id: ptopid.value,  
@@ -489,7 +489,7 @@ export default defineComponent({
   
   /* gets all post tags */
   function getPostTags(){
-    api.get(process.env.COMMON_API_URL+"/tag",{
+    api.get(process.env.BASE_URL+"/api/common/tag",{
         headers: {
           Authorization:  'Bearer '+ localStorage.getItem('token'),
           'Access-Control-Allow-Origin': '*' 
@@ -520,7 +520,7 @@ export default defineComponent({
     if(message.value == 0){
       pos.value.splice(0)
       
-      let url = "https://swarmnet.sundaebytes.com/api/admin/posts"
+      let url = process.env.BASE_URL+"/api/admin/posts"
           
             api.get(url,{
             method: 'GET',
@@ -549,14 +549,14 @@ export default defineComponent({
               $q.notify({
                 color: 'negative',
                 position: 'top',
-                message: 'Loading failed',
+                message: '2 Loading failed',
                 icon: 'report_problem'
               })
             })
     }
     else{
       pos.value.splice(0)
-      let url = "https://swarmnet-prod.herokuapp.com/posts"
+      let url = process.env.BASE_URL+"/api/admin/posts"
       api.get(url,{
       method: 'GET',
       headers: {

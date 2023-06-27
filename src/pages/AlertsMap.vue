@@ -127,8 +127,9 @@ export default defineComponent({
     });
     var infowindow = new google.maps.InfoWindow;
     var marker, i,count=0;
-    let url= process.env.COMMON_API_URL+"/alert"
-    let urll='https://swarmnet-prod.herokuapp.com/alerts'
+    let url= process.env.BASE_URL+"/api/common/alert"
+    // heroku
+    let urll=process.env.BASE_URL+"/api/common/alerts"
       api.get(url,{
   method: 'GET',
   
@@ -222,7 +223,7 @@ new MarkerClusterer({ markers, map}); //Add marker cluster
 
 
     function falseAlert(a_id){
-      api.put( process.env.ADMIN_API_URL+"/alert/falsify/"+a_id,
+      api.put( process.env.BASE_URL+"/api/admin/alert/falsify/"+a_id,
                 {
                  
                 },
@@ -255,7 +256,7 @@ new MarkerClusterer({ markers, map}); //Add marker cluster
 
      function resolveAlert(a_id){
       //console.log(a_id,"Hello there")
-      api.put( process.env.ADMIN_API_URL+"/alert/resolve/"+a_id,
+      api.put( process.env.BASE_URL+"/api/admin/alert/resolve/"+a_id,
                 {
                  
                 },

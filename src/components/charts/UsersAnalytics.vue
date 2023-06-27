@@ -131,7 +131,7 @@ export default defineComponent({
       //var x = localStorage.getItem("username");
       //console.log(x)
 
-      let url =process.env.ADMIN_API_URL+"/dashboard"
+      let url = process.env.BASE_URL+"/api/admin/dashboard"
         api.get(url,{
         method: 'GET',
         headers: {

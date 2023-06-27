@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "swarmnet-admin-c1f25"
-  }
+    "default": "swarmnet-admin",
+    "staging": "swarmnet-admin"
+  },
+  "targets": {},
+  "etags": {}
 }

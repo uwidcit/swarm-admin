@@ -79,8 +79,14 @@
                      <div class="row">
                         <div class= "col-12 text-p q-px-xl textContent"> 
                             <q-input outlined style="max-width : 90%" placeholder="Add topic..." v-model="text" counter maxlength="60" autogrow   :dense="dense" />
-                      </div>
+                            <!-- <div class="col-2 q-pa-sm"> -->
+                                <q-select outlined style="max-width : 70%" v-model="topiclevel" label="Level" :options="levels"/>
+                            <!-- </div> -->
+                        </div>
                      </div>
+                     <!-- <div class="row"> -->
+                        
+                     <!-- </div> -->
                       <template v-slot:after>
                       
                       </template>
@@ -88,7 +94,7 @@
                       
                       <q-card-actions align="right" class="text-primary">
                          <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center"> 
-                               <q-btn class= "btnStyle" flat label="Save" @click="createTopic(text)" v-close-popup />
+                               <q-btn class= "btnStyle" flat label="Save" @click="createTopic(text, topiclevel)" v-close-popup />
                           </div>
 
                           <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center">
@@ -167,13 +173,17 @@ import {defineComponent, ref, onMounted} from 'vue'
 import { formatDistance} from 'date-fns'
 import { api } from 'boot/axios'
 import Quasar from 'quasar'
+import UserProfile from './UserProfile.vue'
+
+
 
 export default defineComponent({
   name: "Topics",
 
   props: ['data'],
-
+  
   setup(props) {
+    
     const value = Date.now()
   
     const text = ref('')
@@ -232,7 +242,7 @@ export default defineComponent({
     }]
 
     function getTopics(){
-        let url = process.env.BASE_API_URL+"/topics"
+        let url = process.env.BASE_URL+"/api/topics"
         api.get(url, {
           method: 'GET',
           headers: {
@@ -255,13 +265,19 @@ export default defineComponent({
     text.value = current_row.topic
   }
 
-    function createTopic(newTopic){
-     // console.log(newTopic)
-      
-      let url = process.env.ADMIN_API_URL+ "/topics"
+    function createTopic(newTopic, topiclevel){
+    //  console.log(topiclevel)
+      if (topiclevel == "Broadcast"){
+        level = int(1)
+      }
+      else if (topiclevel == "Topic"){
+        level = int(2)
+      }
+        
+      let url = process.env.BASE_URL+"/api/admin/topics"
       api.post(url, {
         text:newTopic,
-        level: 1
+        level: level
       }, {
         headers: {
            Authorization:  'Bearer '+ localStorage.getItem('token') ,
@@ -274,19 +290,25 @@ export default defineComponent({
         topics.value.push({
                 id: data.value.id,
                 topic: data.value.text,
-                createdby:'Kwasi Edwards',
-                createddate:'07.22.22',
+                createdby: "User",
+                createddate: Date().toLocaleDateString,
                 seeAllPostByTopic:'100',
         })
       })
     }
 
     function editTopic(newTopic,currentTopic){
-  
-      let url = process.env.ADMIN_API_URL+ "/topics"+currentTopic.id
+      if (topiclevel == "Broadcast"){
+        level = int(1)
+      }
+      else if (topiclevel == "Topic"){
+        level = int(2)
+      }
+
+      let url = process.env.BASE_URL+"/api/admin/topics/1"
       api.put(url, {
         text:newTopic,
-        level: 1
+        level: level
       }, {
         headers: {
            Authorization:  'Bearer '+ localStorage.getItem('token') ,
@@ -301,7 +323,7 @@ export default defineComponent({
     }
 
     function deleteTopic(currentTopic){
-      let url = process.env.ADMIN_API_URL+ "/topics"+currentTopic.id
+      let url = process.env.BASE_URL+"/api/admin/topics/1"
       api.delete(url, {
         headers: {
            Authorization:  'Bearer '+ localStorage.getItem('token') ,
@@ -341,6 +363,7 @@ export default defineComponent({
       columns,
       rows,
       text,
+      levels: ['Topic', 'Broadcast']
     }
   }
 })

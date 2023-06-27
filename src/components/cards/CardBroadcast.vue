@@ -43,7 +43,7 @@ export default defineComponent({
     
     function init(){
       
-      let url ="https://swarmnet.sundaebytes.com/api/admin/dashboard"
+      let url = process.env.BASE_URL+"/api/admin/dashboard"
        api.get(url,{
   method: 'GET',
   headers: {

@@ -54,12 +54,12 @@
           </q-item-section>
         </q-item>
 
-        <q-item to="/Post "  class="menuText"  active-class="q-item-no-link-highlighting v-ripple">
+        <q-item to="/Post"  class="menuText"  active-class="q-item-no-link-highlighting v-ripple">
           <q-item-section avatar>
             <q-icon style = "color:#457B9D" name="fa-solid fa-file-lines"/>
           </q-item-section>
           <q-item-section>
-            <q-item-label >Post</q-item-label>
+            <q-item-label class="menuText">Post</q-item-label>
           </q-item-section>
         </q-item>
 
@@ -249,7 +249,7 @@ export default defineComponent({
       localStorage.clear();
       this.$router.push({ path: '/' })
       //console.log("successful")
-       /*let url =  "https://swarmnet.sundaebytes.com/api/common/logout"
+       /*let url =  process.env.BASE_URL+"/api/common/logout"
 
          api.post(url, {
       }).then((response) => {
@@ -265,7 +265,7 @@ export default defineComponent({
 
      function loadData () {//get Topics from api
        tops.value.splice(0)
-    api.get('https://swarmnet-prod.herokuapp.com/topics',{
+    api.get(process.env.BASE_URL+"/api/topics",{
   method: 'GET',
   
   headers: {
@@ -283,7 +283,7 @@ export default defineComponent({
         $q.notify({
           color: 'negative',
           position: 'top',
-          message: 'Loading failed',
+          message: '20Loading failed',
           icon: 'report_problem'
         })
       })
@@ -291,7 +291,7 @@ export default defineComponent({
      function addTopic(newTopic, topLevel){//add topics 
       // console.log(newTopic , topLevel)
 
-      api.post("https://swarmnet-prod.herokuapp.com/topics",{        
+      api.post(process.env.BASE_URL+"/api/admin/topics",{        
               text: newTopic,
               level: parseInt(topLevel),
               },
@@ -328,7 +328,7 @@ export default defineComponent({
 /*edit a topic on the postboard */
 function editTopic(topicId, text){
   //console.log(topicId , text)
-   api.put(`https://swarmnet-prod.herokuapp.com/topics/${topicId}`,
+   api.put(`${process.env.BASE_URL}/api/admin/topics/1`,
                 {
                   text: text,
                   "level": 1
@@ -361,7 +361,7 @@ function editTopic(topicId, text){
 function deleteTopic(postID){
       // console.log(postID)
 
-       api.delete(`https://swarmnet-prod.herokuapp.com/topics/${postID}`,
+       api.delete(`${process.env.BASE_URL}/api/admin/topics/1`,
               {
                 headers: {
                   Authorization:'JWT '+ localStorage.getItem('token'),

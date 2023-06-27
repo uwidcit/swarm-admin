@@ -62,7 +62,7 @@ export default defineComponent({
     function login(username, password){
       console.log("enter")
     
-      let urrl = "https://swarmnet-prod.herokuapp.com/auth"
+      let urrl = process.env.BASE_URL+"/api/admin/auth"
       api.post(urrl, {
         "username": username,
         "password": password

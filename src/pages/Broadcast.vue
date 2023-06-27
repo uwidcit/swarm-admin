@@ -228,7 +228,7 @@ export default defineComponent({
     }]
 
     function getBroadcast(){
-        let url = process.env.ADMIN_API_URL+ "/broadcast"
+        let url = process.env.BASE_URL+"/api/admin/broadcast"
         api.get(url, {
           method: 'GET',
           headers: {
@@ -253,7 +253,7 @@ export default defineComponent({
     }
 
     function sendBroadcast(title,content){
-       let url = process.env.ADMIN_API_URL+ "/broadcast"
+       let url = process.env.BASE_URL+"/api/admin/broadcast"
       api.post(url,{
         'title':title,
         'text':content

@@ -241,7 +241,7 @@ export default defineComponent({
     }]
 
     function getReliefCenter(){
-        let url = process.env.COMMON_API_URL+'/relief_center'
+        let url = process.env.BASE_URL+"/api/common/relief_center"
         api.get(url, {
           method: 'GET',
           headers: {
@@ -270,7 +270,7 @@ export default defineComponent({
 
     function createCenter(fname, line_1, line_2,city, lat, lon, pNo,email){
       console.log('Hello there')
-      let url = process.env.ADMIN_API_URL+'/users/relief_center'
+      let url = process.env.BASE_URL+"/api/admin//users/relief_center"
       api.post(url, {
         name:fname,
         line_1:line_1,
@@ -304,7 +304,7 @@ export default defineComponent({
     }
 
     function editCenter(id,fname, line_1, line_2,city, lat, lon, pNo,email){
-      let url = process.env.ADMIN_API_URL+'/users/relief_center'+id
+      let url = process.env.BASE_URL+'/api/admin/users/relief_center'+id
       api.put(url, {
        name:fname,
         line_1:line_1,
@@ -328,7 +328,7 @@ export default defineComponent({
     }
 
     function deleteCenter(id){
-      let url = process.env.ADMIN_API_URL+'/users/relief_center'+id
+      let url = process.env.BASE_URL+'/api/admin/users/relief_center'+id
       api.delete(url, {
         headers: {
            Authorization:  'Bearer '+ localStorage.getItem('token') ,
