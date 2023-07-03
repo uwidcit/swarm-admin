@@ -28,7 +28,9 @@
                     <q-td key ="topic" :props="props"> 
                       {{ props.row.topic}}
                     </q-td>
-
+                    <q-td key ="level" :props="props"> 
+                      {{ props.row.level}}
+                    </q-td>
                       <q-td key ="createdby" :props="props"> 
                         {{ props.row.createdby}}
                       </q-td>
@@ -78,15 +80,14 @@
                     </div>
                      <div class="row">
                         <div class= "col-12 text-p q-px-xl textContent"> 
-                            <q-input outlined style="max-width : 90%" placeholder="Add topic..." v-model="text" counter maxlength="60" autogrow   :dense="dense" />
-                            <!-- <div class="col-2 q-pa-sm"> -->
-                                <q-select outlined style="max-width : 70%" v-model="topiclevel" label="Level" :options="levels"/>
-                            <!-- </div> -->
+                            <!-- <q-input outlined style="max-width : 90%" placeholder="Add topic..." v-model="text" counter maxlength="60" autogrow   :dense="dense" />
+                            <q-select outlined style="max-width : 70%" v-model="topiclevel" stack-label label="Level" fill-input :options="levels"/>  -->
+                            <q-select outlined style="max-width : 70%" v-model="topiclevel" stack-label label="Level" fill-input :options="levels"></q-select>
+                            <q-input rounded outline style="max-width : 90%" placeholder="Add topic..." v-model="text" counter maxlength="60" autogrow  :dense="dense"></q-input>
+                                                        
                         </div>
                      </div>
-                     <!-- <div class="row"> -->
-                        
-                     <!-- </div> -->
+                     
                       <template v-slot:after>
                       
                       </template>
@@ -116,15 +117,17 @@
                         <q-btn flat icon="fa-solid fa-x" v-close-popup />
                       </div>
                     </div>
-                      <q-input rounded outline style="padding:5% 15%"  v-model="text" counter maxlength="60" autogrow  :dense="dense" >
+                      <q-input rounded outline style="padding:5% 15%"  v-model="text" counter maxlength="60" autogrow  :dense="dense">
+                      <q-select outlined style="max-width : 70%" v-model="topiclevel" stack-label label="Level" fill-input :options="levels"/>
+                      </q-input>
                       <template v-slot:after>
                       
                       </template>
-                      </q-input>
+                      <!-- </q-input> -->
                       
                       <q-card-actions align="right" class="text-primary">
                          <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center"> 
-                               <q-btn class= "btnStyle" flat label="Save" @click = "editTopic(text, current_row)" v-close-popup />
+                               <q-btn class= "btnStyle" flat label="Save" @click = "editTopic(text, topiclevel, current_row)" v-close-popup />
                           </div>
 
                           <div class="col-6 q-px-xl q-pt-lg q-pb-md items-center">
@@ -185,7 +188,7 @@ export default defineComponent({
   setup(props) {
     
     const value = Date.now()
-  
+    
     const text = ref('')
     const topics = ref([])
     const data = ref(null)
@@ -198,8 +201,14 @@ export default defineComponent({
         sortable:true,
         
     }, {
+        name:'level',
+        label:'Level',
+        field:'level',
+        align: 'left',
+        sortable:true,
+    }, {
         name:'createdby',
-        label:'Created By',
+        label:'Last Edited By',
         field:'createdby',
         align: 'left',
         sortable:true,
@@ -207,7 +216,7 @@ export default defineComponent({
     } ,
        {
         name:'createddate',
-        label:'Created Date',
+        label:'Date Last Edited',
         field:'createddate',
         align: 'left',
         sortable:true,
@@ -254,9 +263,10 @@ export default defineComponent({
             for(let i of data.value){
               topics.value.push({ id: i.id,
                 topic: i.text,
-                createdby:'Kwasi Edwards',
-                createddate:'07.22.22',
-                seeAllPostByTopic:'100',
+                level: i.level,
+                createdby:i.editor,
+                createddate:i.edited,
+                seeAllPostByTopic:i.post_count, //getNumPostsByTopic
             })
         }})
     }
@@ -267,17 +277,15 @@ export default defineComponent({
 
     function createTopic(newTopic, topiclevel){
     //  console.log(topiclevel)
+      var toplevel= 0
       if (topiclevel == "Broadcast"){
-        level = int(1)
+        toplevel= 1
       }
-      else if (topiclevel == "Topic"){
-        level = int(2)
-      }
-        
+      
       let url = process.env.BASE_URL+"/api/admin/topics"
       api.post(url, {
         text:newTopic,
-        level: level
+        level: toplevel
       }, {
         headers: {
            Authorization:  'Bearer '+ localStorage.getItem('token') ,
@@ -290,28 +298,31 @@ export default defineComponent({
         topics.value.push({
                 id: data.value.id,
                 topic: data.value.text,
-                createdby: "User",
-                createddate: Date().toLocaleDateString,
-                seeAllPostByTopic:'100',
+                level: data.value.level,
+                createdby: data.value.editor,
+                createddate: data.value.edited,
+                seeAllPostByTopic:data.value.post_count,
         })
       })
     }
 
-    function editTopic(newTopic,currentTopic){
+    function editTopic(newTopic, topiclevel,currentTopic){
+      var toplevel= 0
       if (topiclevel == "Broadcast"){
-        level = int(1)
-      }
-      else if (topiclevel == "Topic"){
-        level = int(2)
+        toplevel= 1
       }
 
-      let url = process.env.BASE_URL+"/api/admin/topics/1"
-      api.put(url, {
-        text:newTopic,
-        level: level
-      }, {
-        headers: {
-           Authorization:  'Bearer '+ localStorage.getItem('token') ,
+      let url = process.env.BASE_URL+"/api/admin/topics"
+      api.put(url, 
+      {
+        // data: {
+          text: newTopic,
+          level: toplevel,
+          topic_id: currentTopic.id
+        // }
+      }, 
+        {headers: {
+           Authorization:  'Bearer '+ localStorage.getItem('token'),
           'Access-Control-Allow-Origin': '*',
           'Content-Type': 'application/json',
         }
@@ -323,8 +334,13 @@ export default defineComponent({
     }
 
     function deleteTopic(currentTopic){
-      let url = process.env.BASE_URL+"/api/admin/topics/1"
-      api.delete(url, {
+      // console.log(currentTopic.id)
+      let url = process.env.BASE_URL+"/api/admin/topics"
+      api.delete(url, 
+      {
+        data: {
+          topic_id: currentTopic.id
+        },
         headers: {
            Authorization:  'Bearer '+ localStorage.getItem('token') ,
           'Access-Control-Allow-Origin': '*',

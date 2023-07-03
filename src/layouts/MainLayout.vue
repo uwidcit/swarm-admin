@@ -273,7 +273,7 @@ export default defineComponent({
         }
     })
       .then((response) => { 
-        data.value = response.data
+        data.value = response.data.topics
         for (let i of data.value) { 
           tops.value.push(i)
         }
@@ -283,14 +283,14 @@ export default defineComponent({
         $q.notify({
           color: 'negative',
           position: 'top',
-          message: '20Loading failed',
+          message: 'Loading failed',
           icon: 'report_problem'
         })
       })
   }
      function addTopic(newTopic, topLevel){//add topics 
       // console.log(newTopic , topLevel)
-
+      
       api.post(process.env.BASE_URL+"/api/admin/topics",{        
               text: newTopic,
               level: parseInt(topLevel),
