@@ -154,11 +154,15 @@
    
     <div class="row q-col-gutter-lg">
       <div class= "col-lg-10 col-md-8 q-col-gutter-lg">
-        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" v-for="(post) in pos" :key ="post.id">
-          <div>
-            <post-design :data="post"></post-design>
+        <div v-if="loading = true">
+          <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" v-for="(post) in pos" :key ="post.id">
+            <div>
+              <post-design :data="post"></post-design>
+            </div>
           </div>
         </div>
+        <v-progress-circular v-else/>
+
     </div>
 
 
@@ -211,6 +215,7 @@ export default defineComponent({
   },
   
   setup (props) {
+    const loading = true
     const $q = useQuasar()
     const post_data = ref(null)
     const post_tops = ref([])
@@ -250,7 +255,7 @@ export default defineComponent({
           $q.notify({
             color: 'negative',
             position: 'top',
-            message: 'Loading failed',
+            message: 'Loading of topics failed',
             icon: 'report_problem'
           })
         })
@@ -278,12 +283,13 @@ export default defineComponent({
               }
             }
           }
+          loading = false
         })
         .catch(() => {
           $q.notify({
             color: 'negative',
             position: 'top',
-            message: 'Loading failed',
+            message: 'Loading of post failed (1)',
             icon: 'report_problem'
           })
         })
@@ -291,23 +297,23 @@ export default defineComponent({
 
         /* displays all post after user logins in */
     function displayAllPost(){
-          pos.value.unshift([{
+          pos.value.unshift({
             id: -1,
-            title: 'This is a post title',
-            text:'This is my first post on SwarNET',
-            created_date: '2022-10-12T19:35:24Z',
+            title: '',
+            text:'',
+            created_date: '',
             media: [],
             tags:{
-              id:'1',
-              tag:'flood'
+              id:'',
+              tag:''
             },
             user: {
-                email: "jd@doemail.com",
-                first_name: "John",
-                last_name: "Doe",
+                email: "",
+                first_name: "",
+                last_name: "",
                 profile_image: null
             }
-          }])
+          })
         } 
 
   
@@ -318,7 +324,6 @@ export default defineComponent({
       console.log("get details")
       if(topic == 0){
 
-        console.log("if block")
         pos.value.splice(0)
       
         api.get(url,{
@@ -352,7 +357,6 @@ export default defineComponent({
         })
     } 
       else{
-        console.log("Else block")
         api.get(url,{
         method: 'GET',
         headers: {
@@ -513,8 +517,6 @@ export default defineComponent({
   watchEffect(()=>{
     if(message.value == 0){
       pos.value.splice(0)
-
-      console.log("Hi I'm keeping back")
       
       let url = "https://swarmnet.sundaebytes.com/api/admin/posts"
           
@@ -546,7 +548,7 @@ export default defineComponent({
               $q.notify({
                 color: 'negative',
                 position: 'top',
-                message: 'Loading failed',
+                message: 'Loading failed (2)',
                 icon: 'report_problem'
               })
             })
@@ -594,7 +596,7 @@ export default defineComponent({
         $q.notify({
           color: 'negative',
           position: 'top',
-          message: 'Loading failed',
+          message: 'Loading failed (3)',
           icon: 'report_problem'
         })
       })
@@ -607,6 +609,7 @@ export default defineComponent({
     props.tabText; 
   })
     return {
+        loading,
         prompt: ref(false),
         modelMultiple: ref(),
         topicInfo,

@@ -42,19 +42,19 @@
 
       </div>
 
-
-    <comments
-      v-if="showChildren"
-      v-for="(node, index) in nodes" 
-      :key="index"
-      :nodes="node.replies" 
-      :label="node.text"
-      :depth="depth + 1"
-      :id="node.id"
-      :topic="node.topicId" 
-      :date="node.created"
-    >
-    </comments>
+    <div v-if="showChildren">
+      <comments
+        v-for="(node, index) in nodes" 
+        :key="index"
+        :nodes="node.replies" 
+        :label="node.text"
+        :depth="depth + 1"
+        :id="node.id"
+        :topic="node.topicId" 
+        :date="node.created"
+      >
+      </comments>
+    </div>
   </div>
 </template>
 

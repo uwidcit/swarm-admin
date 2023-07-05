@@ -62,7 +62,7 @@ export default defineComponent({
     function login(username, password){
     
     
-      let urrl =  process.env.ADMIN_API_URL+"/login"
+      let urrl = "/login"
       api.post(urrl, {
         "username": username,
         "password": password

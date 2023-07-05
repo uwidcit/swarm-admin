@@ -14,7 +14,7 @@
         </div>
         <div class="col-4 text-p dateStyle">
               <p> {{datePassed()}} </p>
-              <!-- <p>{{ data.user.first_name }}</p> -->
+              <p>{{ full_name }}</p>
         </div>
       </div>
 
@@ -41,7 +41,7 @@
 
   <!-- <div v-if=" hasMedia()"><p>LOADING</p></div> -->
 
-    <div class="row" v-if=" hasMedia()">
+    <div class="row" v-if="data.media.length > 0"> 
       <div class="col">
         <q-carousel animated v-model="slide" arrows navigation infinite >
             <q-carousel-slide v-for="(media) in data.media" :key="getMediaURL(media)" :name="getMediaURL(media)" :img-src="getMediaURL(media)" />
@@ -74,78 +74,189 @@
 
 <!-- COMMENTS -->
 
-  <div v-if="seeComments">
-    <q-separator color="grey"/>
-      <q-card class=" q-pa-md my-card background">
-        <q-card-section square="true" v-for="(reply) in data.replies" :key="getReplyKey(reply)">
-          <div class="row">
-            <div class="col-1">
-              <q-avatar icon="fa-solid fa-circle-user fa-2xl"/>
-            </div>
-            <div class="col-11">
-              <p> {{ reply.first_name }} {{ reply.last_name }} </p>
-              <p>{{ reply.text }} </p>
-            </div>
-          </div>
-             <q-card-actions>
-             <div class="col-4 q-px-xl">
-                <q-icon name="fa-solid fa-message"></q-icon>
-                <q-btn flat @click="toggleComments"> Comments  </q-btn>
-            </div>
-             <div class="col-4 q-px-xl">
-              <q-icon name="fa-solid fa-heart"> </q-icon>
-              <q-btn flat> Likes:  </q-btn>
-            </div>
-             <div class="col-4 q-px-xl">
-              <q-icon name="fa-solid fa-share"></q-icon>
-              <q-btn flat> Share</q-btn>
-            </div>
-          </q-card-actions>
+<!-- <div v-if="seeComments">
+  <q-separator color="grey" />
+  <q-card class="q-pa-md my-card background">
+    <q-card-section square="true">
+      <CommentCard
+        v-for="(nestedReply) in data.replies"
+        :key="getReplyKey(nestedReply, replyDepth + 1)"
+        :reply="nestedReply"
+        :replyDepth="replyDepth + 1"
+      />
+    </q-card-section>
+  </q-card>
+</div> -->
+
+
+    <div v-if="seeComments">
         <q-separator color="grey"/>
-      </q-card-section>    
-</q-card></div>
+          <q-card class=" q-pa-md my-card background">
+            <q-card-section square="true" >
+              <comments
+                :nodes="data.replies" 
+                :label="node.text"
+                :depth="depth + 1"
+                :id="node.id"
+                :topic="node.topicId" 
+                :date="node.created"
+              ></comments>
+              
+              <!-- <div v-if="data.replies.length > 0">
+                <div v-for="reply in data.replies" :reply="reply.replies" :key="getReplyKey(reply)">
+                  <p> {{ reply.first_name }} {{ reply.last_name }} </p>
+                  <p>{{ reply.text }} </p> -->
+                    
+                  <!-- <div v-for="nestedReply in reply.replies" :nestedReply="nestedReply.replies" :key="getReplyKey(nestedReply)">
+                    <p> {{ nestedReply.first_name }} {{ nestedReply.last_name }} </p>
+                    <p>{{ nestedReply.text }} </p>
+                  </div> -->
+
+                  <!-- <nested-comment v-for="nestedReply in reply.replies" :reply="nestedReply.replies" :key="getReplyKey(nestedReply)"></nested-comment>
+                </div> -->
+                
+
+
+                
+
+                <!-- <div class="row">
+                  <div class="col-1">
+                    <q-avatar icon="fa-solid fa-circle-user fa-2xl"/>
+                  </div>
+                  <div class="col-11">
+                    <p> {{ reply.first_name }} {{ reply.last_name }} </p>
+                    <p>{{ reply.text }} </p>
+                  </div>
+                </div> -->
+              <!-- </div> -->
+
+                <q-card-actions>
+                <div class="col-4 q-px-xl">
+                    <q-icon name="fa-solid fa-message"></q-icon>
+                    <q-btn flat @click="toggleComments"> Comments  </q-btn>
+                </div>
+                <div class="col-4 q-px-xl">
+                  <q-icon name="fa-solid fa-heart"> </q-icon>
+                  <q-btn flat> Likes:  </q-btn>
+                </div>
+                <div class="col-4 q-px-xl">
+                  <q-icon name="fa-solid fa-share"></q-icon>
+                  <q-btn flat> Share</q-btn>
+                </div>
+              </q-card-actions>
+            <q-separator color="grey"/>
+          </q-card-section>    
+        </q-card>
+    </div>
+
+    <!-- <div v-if="seeComments">
+      <q-separator color="grey"/>
+        <q-card class=" q-pa-md my-card background">
+          <q-card-section square="true" v-for="(reply) in data.replies" :key="getReplyKey(reply)">
+            <div class="row">
+              <div class="col-1">
+                <q-avatar icon="fa-solid fa-circle-user fa-2xl"/>
+              </div>
+              <div class="col-11">
+                <p> {{ reply.first_name }} {{ reply.last_name }} </p>
+                <p>{{ reply.text }} </p>
+              </div>
+            </div>
+              <q-card-actions>
+              <div class="col-4 q-px-xl">
+                  <q-icon name="fa-solid fa-message"></q-icon>
+                  <q-btn flat @click="toggleComments"> Comments  </q-btn>
+              </div>
+              <div class="col-4 q-px-xl">
+                <q-icon name="fa-solid fa-heart"> </q-icon>
+                <q-btn flat> Likes:  </q-btn>
+              </div>
+              <div class="col-4 q-px-xl">
+                <q-icon name="fa-solid fa-share"></q-icon>
+                <q-btn flat> Share</q-btn>
+              </div>
+            </q-card-actions>
+          <q-separator color="grey"/>
+        </q-card-section>    
+      </q-card>
+    </div> -->
   </q-card>
 </template>
 
 <script>
+
+
+
+// Vue.component('nested-comment', {
+//     props: ['reply'],
+//     template: `
+//     <div>
+//       <div class="row" v-if="reply.replies.length > 0">
+//         <div class="col-1">
+//           <q-avatar icon="fa-solid fa-circle-user fa-2xl"/>
+//         </div>
+//         <div class="col-11">
+//           <p> {{ reply.first_name }} {{ reply.last_name }} </p>
+//           <p>{{ reply.text }} </p>
+//         </div>
+//       </div>
+//       <nested-comment v-for="nestedReply in reply.replies" :reply="nestedReply" :key="getReplyKey(nestedReply)"></nested-comment>
+//     </div>
+//     `
+//   });
+
+
 import {defineComponent, ref} from 'vue'
 import { formatDistance} from 'date-fns'
 
+// const NestedComment = defineComponent({
+//   props: ['reply'],
+//   template: `
+//     <div>
+//       <div class="row" v-if="reply.replies.length > 0">
+//         <div class="col-1">
+//           <q-avatar icon="fa-solid fa-circle-user fa-2xl"/>
+//         </div>
+//         <div class="col-11">
+//           <p> {{ reply.first_name }} {{ reply.last_name }} </p>
+//           <p>{{ reply.text }} </p>
+//         </div>
+//       </div>
+//       <nested-comment v-for="nestedReply in reply.replies" :reply="nestedReply" :key="getReplyKey(nestedReply)"></nested-comment>
+//     </div>
+//     `
+
+// });
+
+
+
 export default defineComponent({
   name: "PostDesign",
-
   props: ['data'],
-
  
   setup(props) {
 
-    // const img = props.data.media && props.data.media.url;
+    console.log(props.data)
 
-    // console.log(props.data)
+
+    function getReplyKey(reply, replyDepth) {
+      return reply && reply.id + '_' + replyDepth
+    }
 
     let full_name = ""
-    function load_name(){
-      try{
-        full_name = props.data.user.first_name +" "+ props.data.user.last_name
+    function load_name() {
+    try {
+      const user = props.data.user;
+      if (user && typeof user.first_name === 'string' && typeof user.last_name === 'string') {
+        full_name = user.first_name + ' ' + user.last_name;
+      } else {
+        full_name = '';
       }
-      catch(err){
-        full_name = ""
-      }
-      
+    } 
+    catch (err) {
+      full_name = '';
     }
-
-    function dataLoaded(){
-      if (Array.isArray(props.data)){
-        if (props.data[0].id !== -1){
-          console.log("waiting")
-          return true
-        } 
-      }
-      else{
-        console.log("done")
-        return false
-      }    
-    }
+}
 
     const value = Date.now()
     const seeComments = ref(false)
@@ -164,55 +275,21 @@ export default defineComponent({
     }
 
     const replies = ref(props.data.replies || [])
-    // const num_replies = 0
+
 
     // Function to get the reply key
     function getReplyKey(reply) {
-      // num_replies = array.length(props.data.replies)
       return reply && reply.id
     }
 
-    function hasMedia(){
-      try{
-        return props.data.media.url
-      }
-      catch (err){
-        console.log (props.data.media)
-        return false
-      }
-      // let arr_len = 0
-      // try{
-      //   arr_len = props.data.media.length()
-      //   console.log (arr_len)
-      // }
-      // catch (err){
-      //   console.log (props.data.media)
-      //   console.log (err)
-      //   console.log(typeof props.data.media)
-      //   return false
-      // }
-      // if (arr_len>0){
-        
-      //   console.log ("returning true")
-      //   return true
-      // }
-      // else{
-      //   return false
-      // }
-    }
-
     function getMediaURL(media){
+      console.log(media.url)
       return media.url
     }
-
-
 
     return{
       getMediaURL,
       full_name,
-      hasMedia,
-      dataLoaded,
-      replies,
       getReplyKey,
       datePassed,
       toggleComments,
