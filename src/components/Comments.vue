@@ -50,8 +50,8 @@
         :label="node.text"
         :depth="depth + 1"
         :id="node.id"
-        :topic="node.topicId" 
-        :date="node.created"
+        :topic="1" 
+        :date="node.created_date"
       >
       </comments>
     </div>
@@ -71,7 +71,7 @@ import { formatDistance} from 'date-fns'
    
     data() {
       return { 
-        showChildren: false,
+        showChildren: ref(false),
         createReply: false
        }
     },
@@ -97,15 +97,15 @@ import { formatDistance} from 'date-fns'
       const $q = useQuasar()
 
       function datePassed(time) {
-      console.log(Date.parse(time))
-      console.log(formatDistance(Date.parse(time), new Date(), { addSuffix: true }))
+      // console.log(Date.parse(time))
+      // console.log(formatDistance(Date.parse(time), new Date(), { addSuffix: true }))
         return formatDistance(Date.parse(time), new Date(), { addSuffix: true })
     }
       
       function createNewComment(message){
         console.log("creating new comment")
         console.log(message)
-        api.post("https://swarmnet-prod.herokuapp.com/replies", {
+        api.post(process.env.BASE_URL+"/replies", {
           "topic_id": props.topic,
           "text": message,
           "replyTo": props.id,
