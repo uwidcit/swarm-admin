@@ -9,7 +9,7 @@
         </div>
         <div class="col-4 text-p dateStyle">
               <p> {{datePassed()}} </p>
-              <p>{{ full_name }}</p>
+              <p>{{ data.user.first_name }} {{ data.user.last_name }}</p>
         </div>
       </div>
 
@@ -19,9 +19,9 @@
         </div> -->
 
 
-                <!-- <span class="tag tag-blue" v-for="(tag) in data.tags" :key="tag">              -->
-                    <!-- {{tag.tag_text}}     -->
-          <!-- </span> -->
+      <span class="tag tag-blue" v-for="(tag) in data.tags" :key="tag">             
+        {{tag.tag_text}}    
+      </span>
 <!-- CONTENT -->
 
     <!-- <post-details :label="data.text" :nodes="data" :depth="0"  :id="data.id" :date="data.created"> </post-details> -->
@@ -125,21 +125,6 @@ export default defineComponent({
       return reply && reply.id + '_' + replyDepth
     }
 
-    let full_name = ""
-    function load_name() {
-    try {
-      const user = props.data.user;
-      if (user && typeof user.first_name === 'string' && typeof user.last_name === 'string') {
-        full_name = user.first_name + ' ' + user.last_name;
-      } else {
-        full_name = '';
-      }
-    } 
-    catch (err) {
-      full_name = '';
-    }
-}
-
     const value = Date.now()
     const seeComments = ref(false)
     const num_replies = 0
@@ -177,7 +162,6 @@ export default defineComponent({
 
     return{
       getMediaURL,
-      full_name,
       getReplyKey,
       datePassed,
       toggleComments,

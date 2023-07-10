@@ -66,9 +66,12 @@
         <q-separator />
 
         <q-card-section style="height: 120px" class="scroll" counter maxlength="260">
+          <q-input placeholder="Enter The Title Here!" type="textarea" v-model="title" counter maxlength="260"  autogrow>
+          </q-input>
           <q-input placeholder="Enter Post Here!" type="textarea" v-model="text" counter maxlength="260"  autogrow>
           </q-input>
         </q-card-section>
+
 
         <q-separator/>
 
@@ -90,7 +93,7 @@
 
         <q-card-actions align="right">
           <q-btn flat label="Discard" color="primary" @click="text = ''" v-close-popup />
-          <q-btn flat label="Post" color="primary" v-close-popup @click="postPost(text, modelMultiple); text = '';"/>
+          <q-btn flat label="Post" color="primary" v-close-popup @click="postPost(title, text, modelMultiple); text = '';"/>
         </q-card-actions>
 
       </q-card>
@@ -410,9 +413,7 @@ export default defineComponent({
     function searchByTags(searchTag){
 
       let search_url = process.env.COMMON_API_URL +`/${searchTag}`
-   
-      // let search_url = url+`/${searchTag}`
-      //console.log(url)
+
             api.get(search_url,{
             method: 'GET',
             headers: {
@@ -450,24 +451,37 @@ export default defineComponent({
     }
     
     /* creates new post using q-dialog*/ 
-    function postPost(text, tags){
+    function postPost(title, text, tags){
+      
       if(ptopid.value == ''){
         ptopid.value = props.tabText
       }
-      // let url = "https://swarmnet-prod.herokuapp.com/posts"
-          
+      if (ptopid.value==''){
+        ptopid.value==1
+      }
+      let tag_labels = []
+
+      for (let tag of tags){  
+        tag_labels.push(tag.label)
+      }
+
+
+
+          let url = process.env.BASE_API_URL + '/user/feed'
+      
             api.post(url,{
-              topic_id: ptopid.value,  
+              title: title,
+              topic_ids: [ptopid.value],  
               text: text,
-              tags: tags,
-              composed: "2022-03-02T14:48:00Z"
+              attachments:[],
+              tags: tag_labels,
+              composed: "2022-11-14 14:32:30"
               },
               {
                 headers: {
-                  Authorization:'JWT '+ localStorage.getItem('token'),
+                  Authorization:'Bearer '+ localStorage.getItem('token'),
                   'Access-Control-Allow-Origin': '*'
-                  
-                }
+                },
               }
               )
             .then((response) => {
@@ -539,7 +553,6 @@ export default defineComponent({
                   }
               })
             .then((response) => {
-              console.log("done")
               data.value = response.data
 
               for (let i of data.value) { 
@@ -564,9 +577,7 @@ export default defineComponent({
             })
     }
     else{
-      console.log("else")
       pos.value.splice(0)
-      // let url = "https://swarmnet-prod.herokuapp.com/posts"
       api.get(url,{
       method: 'GET',
       headers: {
@@ -591,15 +602,11 @@ export default defineComponent({
           }
         }
 
-        //console.log(pos.value)
-
         for(let j of tops.value){
           if(j.id == message.value){
             ptabtext.value = j.text
           }     
         }  
-
-       // console.log(props.tabText);
 
            })
       .catch(() => {
@@ -611,8 +618,6 @@ export default defineComponent({
         })
       })
     }
-     
-      //  subsStatus(props.tabText);
    
   });
   onUpdated(()=> {
