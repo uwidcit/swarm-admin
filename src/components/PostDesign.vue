@@ -41,10 +41,12 @@
     <div class="row" v-if="data.media.length > 0"> 
       <div class="col">
         <q-carousel animated v-model="slide" arrows navigation infinite >
-            <q-carousel-slide v-for="(media) in data.media" :key="getMediaURL(media)" :name="getMediaURL(media)" :img-src="getMediaURL(media)" />
+          <div v-for="(media) in data.media" :key="getMediaURL(media)" >
+            <q-carousel-slide :name="getMediaURL(media)" :img-src="getMediaURL(media)" />
             <!-- <q-carousel-slide :name="2" img-src="https://cdn.quasar.dev/img/parallax1.jpg" />
             <q-carousel-slide :name="3" img-src="https://cdn.quasar.dev/img/parallax2.jpg" />
             <q-carousel-slide :name="4" img-src="https://cdn.quasar.dev/img/quasar.jpg" /> -->
+          </div>
         </q-carousel>
       </div>
     </div>
@@ -78,8 +80,15 @@
               
               
               <div v-if="data.replies.length > 0">
-
-                <comments :label="data.replies[0].text" :nodes="data.replies" :depth="0"  :id="data.replies[0].id" :topic="1" :date="data.replies[0].created_date" ></comments>
+                
+                <comments v-for="(reply, index) in data.replies" 
+                :key="index" 
+                :label="reply.text" 
+                :nodes="reply.replies" 
+                :depth="0"  
+                :id="reply.id" 
+                :topic="1" 
+                :date="reply.created_date" ></comments>
 
               </div>
             <q-separator color="grey"/>

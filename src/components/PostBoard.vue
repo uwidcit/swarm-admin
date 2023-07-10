@@ -1,5 +1,5 @@
 <template>
-   <!--<div class="q-pa-md" >
+   <div class="q-pa-md" >
    <div class="q-gutter-md row">
       <q-input
         v-model="search"
@@ -16,18 +16,18 @@
           <q-btn icon="fas fa-times" flat round @click="search='', getDetails(message)" />
         </template>
       </q-input>
--->
+
       <q-space/>
 
-     <!-- <div class="q-gutter-sm row items-center no-wrap ">
+     <div class="q-gutter-sm row items-center no-wrap ">
     
     <q-btn fab flat round icon="far fa-edit" color="accent" size="xs" fab-mini @click="fixed = true">
       <q-tooltip>
             Create Post
           </q-tooltip>
-    </q-btn> -->
+    </q-btn>
 
-    <!--
+    
       <q-btn icon="event" flat round color="accent">
          <q-tooltip>
             Filter by Date
@@ -43,7 +43,8 @@
     </q-btn>
     
       </div>    
-    </div>-->
+    </div>
+  </div>
 
      <q-dialog v-model="fixed" no-refocus>
       <q-card style="width: 600px; height: 400px; background-color: powderblue;">
@@ -147,6 +148,7 @@
     </div>
     
     </div>--->
+
     <div class="row">
         <div class= "postHeader q-ma-lg" style="color: #4D4D4D;"> All Posts </div>
     </div> 
@@ -161,11 +163,13 @@
             </div>
           </div>
         </div>
-        <v-progress-circular v-else/>
+        <q-spinner
+        color="primary"
+        size="3em"
+        v-else
+      />
 
     </div>
-
-
 
     <div class= "col-lg-2 col-md-4 col-sm-1 col-xs-1  q-col-gutter-lg">
     
@@ -192,7 +196,7 @@ import PostDesign from './PostDesign.vue';
 
 let url = process.env.ADMIN_API_URL + '/posts';
 let post_url = process.env.ADMIN_API_URL + '/posts';
-let topics_url = process.env.ADMIN_API_URL + '/topics'
+// let topics_url = process.env.ADMIN_API_URL + '/topics' 
 
 export default defineComponent({
   components: { PostDesign },
@@ -239,14 +243,15 @@ export default defineComponent({
     /* gets topics to use for q-dialog */
     //LOADING IN TOPICS
     function loadData () {
-      api.get(topics_url, {
+      let url = process.env.BASE_API_URL+'/topics'
+      api.get(url, {
         method: 'GET',
         headers: {
           'Access-Control-Allow-Origin': '*'
         }
       })
         .then((response) => {
-          data.value = response.data    
+          data.value = response.data.topics    
           for (let i of data.value) { 
             tops.value.push(i)  
           }        
@@ -270,20 +275,23 @@ export default defineComponent({
         }
       })
         .then((response) => {
+          pos.value.shift(0)
           post_data.value = response.data.posts
           for (let i of post_data.value) {
-            let o = JSON.parse(JSON.stringify(i))
-            pos.value.unshift(o)
-            posTags.value.unshift(o.tags)
-            for (let j of comments.value) {
-              if (i.id == j.id) {
-                let o = JSON.parse(JSON.stringify(i))
-                pos.value.shift(o)
-                posTags.value.shift(o.tags)
+            if (!i.originalPostId) {
+              let o = JSON.parse(JSON.stringify(i))
+              pos.value.unshift(o)
+              posTags.value.unshift(o.tags)
+              for (let j of comments.value) {
+                if (i.id == j.id) {
+                  let o = JSON.parse(JSON.stringify(i))
+                  pos.value.shift(o)
+                  posTags.value.shift(o.tags)
+                }
               }
             }
           }
-          loading = false
+          
         })
         .catch(() => {
           $q.notify({
@@ -400,8 +408,10 @@ export default defineComponent({
     
     /*get all top level post with a partciular tag*/
     function searchByTags(searchTag){
+
+      let search_url = process.env.COMMON_API_URL +`/${searchTag}`
    
-      let search_url = url+`/${searchTag}`
+      // let search_url = url+`/${searchTag}`
       //console.log(url)
             api.get(search_url,{
             method: 'GET',
@@ -518,7 +528,7 @@ export default defineComponent({
     if(message.value == 0){
       pos.value.splice(0)
       
-      let url = "https://swarmnet.sundaebytes.com/api/admin/posts"
+      let url = process.env.ADMIN_API_URL+"/posts"
           
             api.get(url,{
             method: 'GET',

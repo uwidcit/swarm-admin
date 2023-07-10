@@ -43,17 +43,21 @@
       </div>
 
     <div v-if="showChildren">
-      <comments
-        v-for="(node, index) in nodes" 
-        :key="index"
-        :nodes="node.replies" 
-        :label="node.text"
-        :depth="depth + 1"
-        :id="node.id"
-        :topic="1" 
-        :date="node.created_date"
-      >
-      </comments>
+      <!-- <div v-if="increaseDepth()>0"> -->
+          <comments
+          v-for="(node, index) in nodes" 
+          :key="index"
+          :nodes="node.replies" 
+          :label="node.text"
+          :depth="depth + 1"
+          :id="node.id"
+          :topic="1" 
+          :date="node.created_date"
+        >
+        </comments>
+      
+      <!-- </div> -->
+
     </div>
   </div>
 </template>
@@ -137,8 +141,13 @@ import { formatDistance} from 'date-fns'
             })
           })     
       }
-
+    function increaseDepth(){
+      let depth = this.depth
+      this.depth = this.depth + 1
+      return depth
+    }
     return{
+      increaseDepth,
       createNewComment,
       text,
       datePassed
