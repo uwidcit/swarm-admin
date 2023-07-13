@@ -1,4 +1,5 @@
 <template>
+  <!-- <div v-show="showSimulatedReturnData"> -->
   <q-card class="my-card background">
      <!--<a :href="`/Details/${data.id}`"> </a>-->
 <!-- HEADING -->
@@ -40,13 +41,9 @@
 
     <div class="row" v-if="data.media.length > 0"> 
       <div class="col">
+
         <q-carousel animated v-model="slide" arrows navigation infinite >
-          <div v-for="(media) in data.media" :key="getMediaURL(media)" >
-            <q-carousel-slide :name="getMediaURL(media)" :img-src="getMediaURL(media)" />
-            <!-- <q-carousel-slide :name="2" img-src="https://cdn.quasar.dev/img/parallax1.jpg" />
-            <q-carousel-slide :name="3" img-src="https://cdn.quasar.dev/img/parallax2.jpg" />
-            <q-carousel-slide :name="4" img-src="https://cdn.quasar.dev/img/quasar.jpg" /> -->
-          </div>
+            <q-carousel-slide v-for="(media, index) in data.media" :key="getMediaURL(media)" :name="index+1" :img-src="getMediaURL(media)" />
         </q-carousel>
       </div>
     </div>
@@ -95,8 +92,9 @@
           </q-card-section>    
         </q-card>
     </div>
-
+    <!-- <q-inner-loading :showing="visible" label="Please wait..." label-class="text-teal" label-style="font-size: 1.1em"/> -->
   </q-card>
+<!-- </div> -->
 </template>
 
 <script>
@@ -104,7 +102,6 @@
 import {defineComponent, ref} from 'vue'
 import { formatDistance} from 'date-fns'
 import Comments from './Comments.vue'
-
 
 
 
@@ -117,10 +114,8 @@ export default defineComponent({
   props: ['data'],
  
   setup(props) {
-
     console.log(props.data)
-
-
+  
     function getReplyKey(reply, replyDepth) {
       return reply && reply.id + '_' + replyDepth
     }

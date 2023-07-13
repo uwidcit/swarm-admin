@@ -3,9 +3,9 @@
     <div class="q-mr-sm box_comment" :style="indent" id="rcorners3" >
       <div class="row justify-center">
       <div class="col">
-         <q-avatar >
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png">
-            </q-avatar>
+        <q-avatar>
+              <img src="{{ node.user.profile_image }}">
+        </q-avatar>
        {{ label }}
       </div>
       
