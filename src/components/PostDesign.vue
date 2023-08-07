@@ -57,9 +57,13 @@
                 <q-icon name="fa-solid fa-message"></q-icon>
                 <q-btn flat @click="toggleComments"> Comments </q-btn>
             </div>
-             <div class="col-4 q-px-xl">
-              <q-icon name="fa-solid fa-heart"> </q-icon>
+            <div class="col-4 q-px-xl">
+              <q-icon name="fa-solid fa-thumbs-up"> </q-icon>
               <q-btn flat> Likes: {{ data.likes }} </q-btn>
+            </div>
+            <div class="col-4 q-px-xl">
+              <q-icon name="fa-solid fa-thumbs-down"> </q-icon>
+              <q-btn flat> Dislikes: {{ data.dislikes }} </q-btn>
             </div>
              <!-- <div class="col-4 q-px-xl">
               <q-icon name="fa-solid fa-share"></q-icon>
