@@ -84,7 +84,7 @@ export default defineComponent({
          const posTags = ref([])
        var a= []
        var b
-         api.get('https://swarmnet-prod.herokuapp.com/topics',{
+         api.get(process.env.ADMIN_API_URL+'/topics',{
   method: 'GET',
   
   headers: {
@@ -100,7 +100,7 @@ export default defineComponent({
         }
 var counter =[]
 var a=0
- let url = "https://swarmnet-prod.herokuapp.com/posts"
+ let url = process.env.ADMIN_API_URL+"/posts"
       api.get(url,{
       method: 'GET',
       headers: {

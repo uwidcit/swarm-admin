@@ -1,5 +1,5 @@
 <template>
-   <!--<div class="q-pa-md" >
+   <div class="q-pa-md" >
    <div class="q-gutter-md row">
       <q-input
         v-model="search"
@@ -16,18 +16,18 @@
           <q-btn icon="fas fa-times" flat round @click="search='', getDetails(message)" />
         </template>
       </q-input>
--->
+
       <q-space/>
 
-     <!-- <div class="q-gutter-sm row items-center no-wrap ">
+     <div class="q-gutter-sm row items-center no-wrap ">
     
     <q-btn fab flat round icon="far fa-edit" color="accent" size="xs" fab-mini @click="fixed = true">
       <q-tooltip>
             Create Post
           </q-tooltip>
-    </q-btn> -->
+    </q-btn>
 
-    <!--
+    
       <q-btn icon="event" flat round color="accent">
          <q-tooltip>
             Filter by Date
@@ -43,7 +43,8 @@
     </q-btn>
     
       </div>    
-    </div>-->
+    </div>
+  </div>
 
      <q-dialog v-model="fixed" no-refocus>
       <q-card style="width: 600px; height: 400px; background-color: powderblue;">
@@ -65,9 +66,12 @@
         <q-separator />
 
         <q-card-section style="height: 120px" class="scroll" counter maxlength="260">
+          <q-input placeholder="Enter The Title Here!" type="textarea" v-model="title" counter maxlength="260"  autogrow>
+          </q-input>
           <q-input placeholder="Enter Post Here!" type="textarea" v-model="text" counter maxlength="260"  autogrow>
           </q-input>
         </q-card-section>
+
 
         <q-separator/>
 
@@ -89,7 +93,7 @@
 
         <q-card-actions align="right">
           <q-btn flat label="Discard" color="primary" @click="text = ''" v-close-popup />
-          <q-btn flat label="Post" color="primary" v-close-popup @click="postPost(text, modelMultiple); text = '';"/>
+          <q-btn flat label="Post" color="primary" v-close-popup @click="postPost(title, text, modelMultiple); text = '';"/>
         </q-card-actions>
 
       </q-card>
@@ -147,6 +151,7 @@
     </div>
     
     </div>--->
+
     <div class="row">
         <div class= "postHeader q-ma-lg" style="color: #4D4D4D;"> All Posts </div>
     </div> 
@@ -154,10 +159,21 @@
    
     <div class="row q-col-gutter-lg">
       <div class= "col-lg-10 col-md-8 q-col-gutter-lg">
-         <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" v-for="(post, index) in pos" >
-           <post-design :data="post"></post-design>
+        <div v-if="loading = true">
+          <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" v-for="(post) in pos" :key ="post.id">
+            <div>
+              <post-design :data="post"></post-design>
+            </div>
+          </div>
         </div>
+        <q-spinner
+        color="primary"
+        size="3em"
+        v-else
+      />
+
     </div>
+
     <div class= "col-lg-2 col-md-4 col-sm-1 col-xs-1  q-col-gutter-lg">
     
       <q-select sqaure filled v-model= "selectModel" :options="['Most Recent', 'Oldest', 'Trending']" :display-value="'Most Recent'" ></q-select>
@@ -175,13 +191,16 @@
   </q-page>
 
 </template>
-
 <script>
-
 import {defineComponent, ref, onMounted, onUpdated, watchEffect, inject } from 'vue';
 import { api } from 'boot/axios'
 import { useQuasar } from 'quasar'
 import PostDesign from './PostDesign.vue';
+
+let url = process.env.ADMIN_API_URL + '/posts';
+let post_url = process.env.ADMIN_API_URL + '/posts';
+// let topics_url = process.env.ADMIN_API_URL + '/topics' 
+
 export default defineComponent({
   components: { PostDesign },
   name: 'PostBoard',
@@ -190,7 +209,7 @@ export default defineComponent({
     return {
       isConnected: false,
       socketMessage: ''
-  }
+    }
   },
   sockets: {
     connect() {
@@ -201,8 +220,13 @@ export default defineComponent({
       this.isConnected = false;
     },
   },
+  
   setup (props) {
+    const loading = true
     const $q = useQuasar()
+    const post_data = ref(null)
+    const post_tops = ref([])
+
     const data = ref(null)
     const tops = ref([])
     const pos = ref([])
@@ -220,198 +244,177 @@ export default defineComponent({
     const message = inject('message')
 
     /* gets topics to use for q-dialog */
+    //LOADING IN TOPICS
     function loadData () {
-    
-    api.get('https://swarmnet-prod.herokuapp.com/topics',{
-  method: 'GET',
-  
-  headers: {
+      let url = process.env.BASE_API_URL+'/topics'
+      api.get(url, {
+        method: 'GET',
+        headers: {
           'Access-Control-Allow-Origin': '*'
         }
-    })
-      .then((response) => {
-        data.value = response.data
-        
-        for (let i of data.value) { 
-          tops.value.push(i)  
-        }
-      
-      /* console.log( tops.value[0].text) */
-      // console.log(tops) 
       })
-      .catch(() => {
-        $q.notify({
-          color: 'negative',
-          position: 'top',
-          message: 'Loading failed',
-          icon: 'report_problem'
+        .then((response) => {
+          data.value = response.data.topics    
+          for (let i of data.value) { 
+            tops.value.push(i)  
+          }        
         })
+        .catch(() => {
+          $q.notify({
+            color: 'negative',
+            position: 'top',
+            message: 'Loading of topics failed',
+            icon: 'report_problem'
+          })
+        })
+
+
+      //LOADING IN POSTS
+      api.get(post_url, {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token'),
+          'Access-Control-Allow-Origin': '*'
+        }
       })
+        .then((response) => {
+          pos.value.shift(0)
+          post_data.value = response.data.posts
+          for (let i of post_data.value) {
+            if (!i.originalPostId) {
+              let o = JSON.parse(JSON.stringify(i))
+              pos.value.unshift(o)
+              posTags.value.unshift(o.tags)
+              for (let j of comments.value) {
+                if (i.id == j.id) {
+                  let o = JSON.parse(JSON.stringify(i))
+                  pos.value.shift(o)
+                  posTags.value.shift(o.tags)
+                }
+              }
+            }
+          }
+          
+        })
+        .catch(() => {
+          $q.notify({
+            color: 'negative',
+            position: 'top',
+            message: 'Loading of post failed (1)',
+            icon: 'report_problem'
+          })
+        })
   }
+
+        /* displays all post after user logins in */
+    function displayAllPost(){
+          pos.value.unshift({
+            id: -1,
+            title: '',
+            text:'',
+            created_date: '',
+            media: [],
+            tags:{
+              id:'',
+              tag:''
+            },
+            user: {
+                email: "",
+                first_name: "",
+                last_name: "",
+                profile_image: null
+            }
+          })
+        } 
+
+  
     /* filters post to get only post about the selected topic */
     function getDetails(topic){
       
       pos.value.splice(0)
+      console.log("get details")
       if(topic == 0){
-      pos.value.splice(0)
+
+        pos.value.splice(0)
       
-      let url = "https://swarmnet-prod.herokuapp.com/posts"
-          
-            api.get(url,{
-            method: 'GET',
-            
-            headers: {
-                    'Access-Control-Allow-Origin': '*'
-                  }
-              })
-            .then((response) => {
-              data.value = response.data
-              for (let i of data.value) { 
-               
-            
-                pos.value.unshift(i)
-                posTags.value.unshift(i.tags)
-              for (let j of comments.value){
-              if(i.id == j.id){
-                pos.value.shift()
-                 posTags.value.shift()
+        api.get(url,{
+        method: 'GET',
+        
+        headers: {
+                'Access-Control-Allow-Origin': '*'
               }
-            }
-            }
-            
-            })
-            .catch(() => {
-              $q.notify({
-                color: 'negative',
-                position: 'top',
-                message: 'Loading failed',
-                icon: 'report_problem'
-              })
-            })
-    }
-      
-      else{
-      let url = "https://swarmnet-prod.herokuapp.com/posts"
-      api.get(url,{
-      method: 'GET',
-      headers: {
-              'Access-Control-Allow-Origin': '*'
-            }
-        })
-      .then((response) => {
-        data.value = response.data
-        for (let i of data.value) { 
-          if(i.topicId == parseInt(topic)){
+          })
+        .then((response) => {
+          data.value = response.data
+          for (let i of data.value) { 
             pos.value.unshift(i)
             posTags.value.unshift(i.tags)
-          for(let j of comments.value){ /*remove comments from array with top level post */
-            if(i.id == j.id ){
+            for (let j of comments.value){
+            if(i.id == j.id){
               pos.value.shift()
               posTags.value.shift()
             }
-            }
           }
         }
-       // console.log(pos.value)
-        for(let j of tops.value){
-          if(j.id == parseInt(props.tabText)){
-            ptabtext.value = j.text
-          }     
-        }   
-      
-      })
-      .catch(() => {
-        $q.notify({
-          color: 'negative',
-          position: 'top',
-          message: 'Loading failed',
-          icon: 'report_problem'
+        
         })
-      })
+        .catch(() => {
+          $q.notify({
+            color: 'negative',
+            position: 'top',
+            message: 'Loading failed',
+            icon: 'report_problem'
+          })
+        })
+    } 
+      else{
+        api.get(url,{
+        method: 'GET',
+        headers: {
+                'Access-Control-Allow-Origin': '*'
+              }
+          })
+        .then((response) => {
+          data.value = response.data
+          for (let i of data.value) { 
+            if(i.topicId == parseInt(topic)){
+              pos.value.unshift(i)
+              posTags.value.unshift(i.tags)
+              for(let j of comments.value){ /*remove comments from array with top level post */
+                if(i.id == j.id ){
+                  pos.value.shift()
+                  posTags.value.shift()
+                }
+              }
+            }
+          }
+        
+          for(let j of tops.value){
+            if(j.id == parseInt(props.tabText)){
+              ptabtext.value = j.text
+            }     
+          }   
+        
+        })
+        .catch(() => {
+          $q.notify({
+            color: 'negative',
+            position: 'top',
+            message: 'Loading failed',
+            icon: 'report_problem'
+          })
+        })
       }
       }
     
-    /* displays all post after user logins in */
-    function displayAllPost(){
-          pos.value.unshift([{
-            title: 'This is a post title',
-            text:'This is my first post on SwarNET',
-            created_date: '2022-07-27T23:24:21.125Z',
-            tags:{
-              id:'1',
-              tag:'flood'
-            }
-          }])
-          let curl = process.env.ADMIN_API_URL+"/posts"
-            api.get(curl,{
-            method: 'GET',
-            
-            headers: {
-                     Authorization:  'Bearer '+ localStorage.getItem('token') ,
-                    'Access-Control-Allow-Origin': '*'
-                  }
-              })
-            .then((response) => {
-              data.value = response.data.posts
-        
-            for (let i of data.value) { /*add all replies to an array */
-                let o = JSON.parse(JSON.stringyfy(i))
-                comments.value.push(o)
-              }
-            })
-            .catch(() => {
-              $q.notify({
-                color: 'negative',
-                position: 'top',
-                message: 'Loading failed',
-                icon: 'report_problem'
-              })
-            })
-      
-          let url = process.env.ADMIN_API_URL+"/posts"
-          
-            api.get(url,{
-            method: 'GET',
-            
-            headers: {
-                    Authorization: 'Bearer '+ localStorage.getItem('token'),
-                    'Access-Control-Allow-Origin': '*'
-                  }
-              })
-            .then((response) => {
-              data.value =  response.data.posts/* get all post */
-              
-            for (let i of data.value) {  /* filter post from replies */
-                let o = JSON.parse(JSON.stringify(i))
-                pos.value.unshift(o)  /*the unshift() function adds one or more items to the start of an array*/
-                posTags.value.unshift(o.tags)
-                 
-              for(let j of comments.value){
-                if(i.id == j.id){
-                  let o = JSON.parse(JSON.stringify(i))
-                  pos.value.shift(o)  
-                  posTags.value.shift(o.tags)
-                }  
-              }
-              }
-             
-            })
-            .catch(() => {
-              $q.notify({
-                color: 'negative',
-                position: 'top',
-                message: 'Loading failed',
-                icon: 'report_problem'
-              })
-            })
-        } 
+
     
     /*get all top level post with a partciular tag*/
     function searchByTags(searchTag){
-   
-      let url = `https://swarmnet-prod.herokuapp.com/posts/${searchTag}`
-      //console.log(url)
-            api.get(url,{
+
+      let search_url = process.env.COMMON_API_URL +`/${searchTag}`
+
+            api.get(search_url,{
             method: 'GET',
             headers: {
                     'Access-Control-Allow-Origin': '*',
@@ -448,24 +451,37 @@ export default defineComponent({
     }
     
     /* creates new post using q-dialog*/ 
-    function postPost(text, tags){
+    function postPost(title, text, tags){
+      
       if(ptopid.value == ''){
         ptopid.value = props.tabText
       }
-      let url = "https://swarmnet-prod.herokuapp.com/posts"
-          
+      if (ptopid.value==''){
+        ptopid.value==1
+      }
+      let tag_labels = []
+
+      for (let tag of tags){  
+        tag_labels.push(tag.label)
+      }
+
+
+
+          let url = process.env.BASE_API_URL + '/user/feed'
+      
             api.post(url,{
-              topic_id: ptopid.value,  
+              title: title,
+              topic_ids: [ptopid.value],  
               text: text,
-              tags: tags,
-              composed: "2022-03-02T14:48:00Z"
+              attachments:[],
+              tags: tag_labels,
+              composed: "2022-11-14 14:32:30"
               },
               {
                 headers: {
-                  Authorization:'JWT '+ localStorage.getItem('token'),
+                  Authorization:'Bearer '+ localStorage.getItem('token'),
                   'Access-Control-Allow-Origin': '*'
-                  
-                }
+                },
               }
               )
             .then((response) => {
@@ -515,12 +531,18 @@ export default defineComponent({
               })
             }) 
   }
-  
+
+  onMounted(() => {
+      loadData();
+      displayAllPost();
+      getPostTags();
+    })
+
   watchEffect(()=>{
     if(message.value == 0){
       pos.value.splice(0)
       
-      let url = "https://swarmnet.sundaebytes.com/api/admin/posts"
+      let url = process.env.ADMIN_API_URL+"/posts"
           
             api.get(url,{
             method: 'GET',
@@ -549,14 +571,13 @@ export default defineComponent({
               $q.notify({
                 color: 'negative',
                 position: 'top',
-                message: 'Loading failed',
+                message: 'Loading failed (2)',
                 icon: 'report_problem'
               })
             })
     }
     else{
       pos.value.splice(0)
-      let url = "https://swarmnet-prod.herokuapp.com/posts"
       api.get(url,{
       method: 'GET',
       headers: {
@@ -581,40 +602,29 @@ export default defineComponent({
           }
         }
 
-        //console.log(pos.value)
-
         for(let j of tops.value){
           if(j.id == message.value){
             ptabtext.value = j.text
           }     
         }  
 
-       // console.log(props.tabText);
-
            })
       .catch(() => {
         $q.notify({
           color: 'negative',
           position: 'top',
-          message: 'Loading failed',
+          message: 'Loading failed (3)',
           icon: 'report_problem'
         })
       })
     }
-     
-      //  subsStatus(props.tabText);
    
   });
-  onMounted(() => {
-      loadData();
-      displayAllPost();
-      getPostTags();
-    })
-  
   onUpdated(()=> {
     props.tabText; 
   })
     return {
+        loading,
         prompt: ref(false),
         modelMultiple: ref(),
         topicInfo,
@@ -658,6 +668,7 @@ export default defineComponent({
   }
 })
 </script>
+
 <style lang="sass" scoped>
 .my-card
   width: 100%

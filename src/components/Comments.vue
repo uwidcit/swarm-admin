@@ -3,9 +3,9 @@
     <div class="q-mr-sm box_comment" :style="indent" id="rcorners3" >
       <div class="row justify-center">
       <div class="col">
-         <q-avatar >
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png">
-            </q-avatar>
+        <q-avatar>
+              <img src="{{ node.user.profile_image }}">
+        </q-avatar>
        {{ label }}
       </div>
       
@@ -42,19 +42,23 @@
 
       </div>
 
+    <div v-if="showChildren">
+      <!-- <div v-if="increaseDepth()>0"> -->
+          <comments
+          v-for="(node, index) in nodes" 
+          :key="index"
+          :nodes="node.replies" 
+          :label="node.text"
+          :depth="depth + 1"
+          :id="node.id"
+          :topic="1" 
+          :date="node.created_date"
+        >
+        </comments>
+      
+      <!-- </div> -->
 
-    <comments
-      v-if="showChildren"
-      v-for="(node, index) in nodes" 
-      :key="index"
-      :nodes="node.replies" 
-      :label="node.text"
-      :depth="depth + 1"
-      :id="node.id"
-      :topic="node.topicId" 
-      :date="node.created"
-    >
-    </comments>
+    </div>
   </div>
 </template>
 
@@ -71,7 +75,7 @@ import { formatDistance} from 'date-fns'
    
     data() {
       return { 
-        showChildren: false,
+        showChildren: ref(false),
         createReply: false
        }
     },
@@ -97,15 +101,15 @@ import { formatDistance} from 'date-fns'
       const $q = useQuasar()
 
       function datePassed(time) {
-      console.log(Date.parse(time))
-      console.log(formatDistance(Date.parse(time), new Date(), { addSuffix: true }))
+      // console.log(Date.parse(time))
+      // console.log(formatDistance(Date.parse(time), new Date(), { addSuffix: true }))
         return formatDistance(Date.parse(time), new Date(), { addSuffix: true })
     }
       
       function createNewComment(message){
         console.log("creating new comment")
         console.log(message)
-        api.post("https://swarmnet-prod.herokuapp.com/replies", {
+        api.post(process.env.BASE_URL+"/replies", {
           "topic_id": props.topic,
           "text": message,
           "replyTo": props.id,
@@ -137,8 +141,13 @@ import { formatDistance} from 'date-fns'
             })
           })     
       }
-
+    function increaseDepth(){
+      let depth = this.depth
+      this.depth = this.depth + 1
+      return depth
+    }
     return{
+      increaseDepth,
       createNewComment,
       text,
       datePassed
