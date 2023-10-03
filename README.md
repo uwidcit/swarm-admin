@@ -1,41 +1,16 @@
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/uwidcit/swarm-admin)
+# swarnet_admin_client
 
+A new Flutter project.
 
-# SWARNET Admin Frontend
-An application created using Vue and Quasar for SWARNET Administrators.
+## Getting Started
 
-### Site: [https://swarnet-admin.sundaebytes.com/](https://swarnet-admin.sundaebytes.com/)
+This project is a starting point for a Flutter application.
 
-## Install the dependencies
-```bash
-npm install
-npm install -g @quasar/cli
-npm install -g @quasar/app
-```
+A few resources to get you started if this is your first Flutter project:
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
-```bash
-quasar dev
-```
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-
-### Build the app for production
-```bash
-quasar build
-```
-
-## Screens UI
-**Login**
-
-![Alt text](src/assets/Login.png?raw=true "Screenshot")
-
-**Dashboard**
-
-![Alt text](src/assets/Dashboard.png?raw=true "Screenshot")
-
-### Customize the configuration
-See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
-
-## License
-
-[MIT](http://opensource.org/licenses/MIT)
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
