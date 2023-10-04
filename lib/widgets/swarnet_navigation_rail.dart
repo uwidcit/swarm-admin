@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:swarnet_admin_client/screens/alert/alert_screen.dart';
 import 'package:swarnet_admin_client/screens/dashboard/view.dart';
+import 'package:swarnet_admin_client/screens/post/view.dart';
 import 'package:swarnet_admin_client/widgets/nav_rail_logo.dart';
 
 class SwarnetNavigationRail extends StatefulWidget {
@@ -24,14 +26,14 @@ class SwarnetNavigationRail extends StatefulWidget {
       "path": "/posts",
       "icon": Icons.feed_outlined,
       "label": "Posts",
-      "widget": DashboardPage(),
+      "widget": const PostPage(),
     },
     {
       "index": 2,
       "path": "/alerts",
       "icon": Icons.warning_amber_outlined,
-      "label": "Alerts",
-      "widget": DashboardPage(),
+      "label": "Citizen Alerts",
+      "widget": const AlertScreen(),
     },
     {
       "index": 3,

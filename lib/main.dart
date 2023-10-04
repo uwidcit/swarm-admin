@@ -61,7 +61,7 @@ class _SwarnetAdminFrontendAppState extends State<SwarnetAdminFrontendApp> {
   Widget build(BuildContext context) {
     final swarnetTheme = SwarnetTheme(context);
     return MaterialApp.router(
-      title: 'Swarnet',
+      title: 'Swarnet Admin',
       routerConfig: _router,
       debugShowCheckedModeBanner: false,
       theme: swarnetTheme.toThemeData(),
