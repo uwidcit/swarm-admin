@@ -20,7 +20,7 @@ class _SwarnetAdminFrontendAppState extends State<SwarnetAdminFrontendApp> {
   // Set up the router for the app
 
   final _router = GoRouter(
-    initialLocation: "/dashboard",
+    initialLocation: "/login",
     routes: [
       GoRoute(
         path: LoginPage.routeName,

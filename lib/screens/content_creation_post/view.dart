@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:swarnet_admin_client/widgets/post_media_attachment.dart';
+import 'package:swarnet_admin_client/widgets/swarnet_loading_logo.dart';
 import '../../models/topic.dart';
 import 'bloc.dart';
 import 'event.dart';
@@ -86,9 +87,7 @@ class _ContentCreationPostScreenState extends State<ContentCreationPostScreen> {
 
                 return _buildForm(context, state.topicList);
               }
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const SwarnetLoadingLogo();
             },
           ),
         ),

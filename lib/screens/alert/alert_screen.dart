@@ -88,6 +88,11 @@ class _AlertScreenState extends State<AlertScreen>
                       color: Colors.black12,
                       borderStrokeWidth: 3,
                     ),
+                    onMarkerTap: (Marker? m) {
+                      if (m != null) {
+                        showPostDetails([m], _bloc.alerts);
+                      }
+                    },
                     builder: (BuildContext context, List<Marker> markers) {
                       return FloatingActionButton(
                         child: Text(markers.length.toString()),

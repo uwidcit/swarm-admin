@@ -31,10 +31,10 @@ class Api {
 
   // Calls for Admin App
 
-  Future<List<Post>> getPosts({String topicFilter = ""}) async {
-    final url = topicFilter.isEmpty
+  Future<List<Post>> getPosts({String topicIdFilter = ""}) async {
+    final url = topicIdFilter.isEmpty
         ? "api/admin/posts"
-        : "api/admin/posts?topic=$topicFilter";
+        : "api/admin/posts/topic/$topicIdFilter";
     try {
       Response resp = await jsonGet(url);
       if (resp.statusCode == 200) {
@@ -47,6 +47,16 @@ class Api {
       return [];
     } catch (e) {
       return Future.error(e);
+    }
+  }
+
+  Future<bool> createAdminPost(Map<String, dynamic> adminPost) async {
+    const url = "api/admin/posts";
+    try {
+      Response resp = await jsonPost(url, adminPost);
+      return resp.statusCode == 200;
+    } catch (e) {
+      return false;
     }
   }
 
@@ -102,6 +112,54 @@ class Api {
     final url = '/api/admin/alert/falsify/$alertId';
     try {
       Response resp = await jsonPut(url, {});
+      return resp.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> createPost(Post p) async {
+    const url = 'api/user/feed';
+    try {
+      Response resp = await jsonPost(url, p.toMapForTransmit());
+      return resp.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> createTopic(Topic t) async {
+    const url = 'api/admin/topics';
+    try {
+      Response resp = await jsonPost(url, t.toMap());
+      return resp.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> deleteTopic(Topic t) async {
+    const url = 'api/admin/topics';
+    try {
+      Response resp = await jsonDelete(url, {
+        "topic_id": t.id,
+      });
+      return resp.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> editTopic(
+      int id, String name, String keywords, String simScore) async {
+    const url = 'api/admin/topics';
+    try {
+      Response resp = await jsonPut(url, {
+        "topic_id": id,
+        "text": name,
+        "keywords": keywords,
+        "similarity_threshold": simScore,
+      });
       return resp.statusCode == 200;
     } catch (e) {
       return false;
@@ -193,8 +251,6 @@ class Api {
   // Future<Response> createAlert(Alert a) async =>
   //     jsonPost('api/common/alert', a.toMapForTransmit());
   //
-  // Future<Response> createPost(Post p) async =>
-  //     jsonPost('api/user/feed', p.toMapForTransmit());
 
   Future<Response> likePost(String postId) async =>
       await jsonPost('/api/common/post/like', {"post_id": postId});

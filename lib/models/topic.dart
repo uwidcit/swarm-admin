@@ -5,7 +5,7 @@ class Topic {
   String text = "";
   String keywords = "";
   double similarityThreshold = 0.0;
-
+  int postCount = 0;
   bool shouldSync =
       false; // This here is for when things occur fully offline, we'd know what to sync w/ online
 
@@ -26,6 +26,7 @@ class Topic {
         : true;
     keywords = (map['keywords']);
     similarityThreshold = map['similarity_threshold'];
+    postCount = map['post_count'];
   }
 
   Map<String, dynamic> toMap() {

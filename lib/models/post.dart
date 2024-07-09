@@ -77,14 +77,10 @@ class Post {
     }
     text = valMap['text'];
 
-    isLiked = (valMap['is_liked'] is int)
-        ? valMap['is_liked'] == 1
-        : valMap['is_liked'];
-    isDisliked = (valMap['is_disliked'] is int)
-        ? valMap['is_disliked'] == 1
-        : valMap['is_disliked'];
-    numLikes = valMap['likes'] ?? 0;
-    numDislikes = valMap['dislikes'] ?? 0;
+    isLiked = false;
+    isDisliked = false;
+    numLikes = 0;
+    numDislikes = 0;
   }
 
   Map<String, dynamic> toMap() {
@@ -111,6 +107,21 @@ class Post {
       postMap['latitude'] = location!.latitude;
       postMap['longitude'] = location!.longitude;
     }
+    return postMap;
+  }
+
+  Map<String, dynamic> toMapForTransmit() {
+    Map<String, dynamic> postMap = toMap();
+    postMap['user'] = user.toMap();
+    postMap['tags'] = tags.map((e) => e.toMap()).toList();
+    postMap['replies'] = replies.map((e) => e.toMapForTransmit()).toList();
+    postMap['is_liked'] =
+        0; //resetting because the person receiving doesn't automatically like the post
+    postMap['is_disliked'] =
+        0; //resetting because the person receiving doesn't automatically like the post
+    postMap['media'] = media.map((e) => e.toMapForTransmit()).toList();
+    postMap['replies'] = replies.map((e) => e.toMap()).toList();
+    postMap['topic'] = topic.toMap();
     return postMap;
   }
 }

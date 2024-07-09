@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:swarnet_admin_client/screens/alert/alert_screen.dart';
+import 'package:swarnet_admin_client/screens/broadcast/view.dart';
 import 'package:swarnet_admin_client/screens/dashboard/view.dart';
 import 'package:swarnet_admin_client/screens/post/view.dart';
+import 'package:swarnet_admin_client/screens/topic/view.dart';
 import 'package:swarnet_admin_client/widgets/nav_rail_logo.dart';
 
 class SwarnetNavigationRail extends StatefulWidget {
@@ -19,7 +21,7 @@ class SwarnetNavigationRail extends StatefulWidget {
       "path": "/dashboard",
       "icon": Icons.dashboard_outlined,
       "label": "Dashboard",
-      "widget": DashboardPage(),
+      "widget": const DashboardPage(),
     },
     {
       "index": 1,
@@ -40,14 +42,14 @@ class SwarnetNavigationRail extends StatefulWidget {
       "path": "/topics",
       "icon": Icons.topic_outlined,
       "label": "Topics",
-      "widget": DashboardPage(),
+      "widget": const TopicPage(),
     },
     {
       "index": 4,
       "path": "/broadcast",
       "icon": Icons.broadcast_on_home_outlined,
       "label": "Broadcasts",
-      "widget": DashboardPage(),
+      "widget": const BroadcastPage(),
     },
     {
       "index": 5,
@@ -139,9 +141,8 @@ class _SwarnetNavigationRail extends State<SwarnetNavigationRail> {
     return await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Exit website builder?'),
-        content:
-            const Text('Are you sure you want to exit the website builder?'),
+        title: const Text('Exit Swarnet?'),
+        content: const Text('Are you sure you want to log out of Swarnet?'),
         actions: <Widget>[
           TextButton(
             child: const Text('No, stay'),

@@ -27,4 +27,12 @@ class Attachment {
       "mimetype": mimetype,
     };
   }
+
+  Map<String, dynamic> toMapForTransmit() {
+    return {
+      "id": id,
+      "mimetype": mimetype,
+      "data": base64Encode(File(path).readAsBytesSync())
+    };
+  }
 }

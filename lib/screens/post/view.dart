@@ -25,7 +25,7 @@ class _PostPageState extends State<PostPage> {
   Topic? selectedTopic;
   List<XFile> attachments = [];
   List<String> tags = [];
-  final ImagePicker _picker = ImagePicker();
+  // final ImagePicker _picker = ImagePicker();
   bool includePosition = false;
   RichTextController? _controller;
 
@@ -42,6 +42,7 @@ class _PostPageState extends State<PostPage> {
 
     return Scaffold(
       body: BlocConsumer<PostBloc, PostState>(
+        bloc: bloc,
         listener: (context, state) {
           // TODO: implement listener
         },
@@ -74,6 +75,8 @@ class _PostPageState extends State<PostPage> {
   }
 
   void _showAddPostDialog(BuildContext context, List<Topic> topics) {
+    final bloc = BlocProvider.of<PostBloc>(context);
+
     _controller ??= RichTextController(
       patternMatchMap: {
         RegExp(r"\B#[a-zA-Z0-9]+\b"):
@@ -90,7 +93,7 @@ class _PostPageState extends State<PostPage> {
       builder: (BuildContext context) {
         return Dialog(
           insetPadding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width / 6),
+              horizontal: MediaQuery.of(context).size.width / 4),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -108,7 +111,7 @@ class _PostPageState extends State<PostPage> {
                     children: [
                       Row(
                         children: [
-                          Container(
+                          SizedBox(
                             width: 200,
                             child: DropdownButtonFormField<Topic>(
                               value: selectedTopic,
@@ -127,8 +130,8 @@ class _PostPageState extends State<PostPage> {
                               },
                               items: topics
                                   .map((Topic e) => DropdownMenuItem<Topic>(
-                                        child: Text(e.text),
                                         value: e,
+                                        child: Text(e.text),
                                       ))
                                   .toList(),
                               onChanged: (Topic? value) {
@@ -160,106 +163,105 @@ class _PostPageState extends State<PostPage> {
                           return null;
                         },
                       ),
-                      Row(
-                        children: [
-                          IconButton(
-                            onPressed: () async {
-                              //TODO: Make this content photo+video
-                              final XFile? image = await _picker.pickImage(
-                                source: ImageSource.camera,
-                              );
-                              if (image != null) {
-                                setState(() {
-                                  attachments.add(image);
-                                });
-                              }
-                            },
-                            icon: const Icon(Icons.add_a_photo),
-                          ),
-                          IconButton(
-                            onPressed: () async {
-                              //TODO: Make this content photo+video
-                              final XFile? image = await _picker.pickImage(
-                                source: ImageSource.gallery,
-                              );
-                              if (image != null) {
-                                setState(() {
-                                  attachments.add(image);
-                                });
-                              }
-                            },
-                            icon: const Icon(Icons.attachment),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              if (includePosition) {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text("Remove location?"),
-                                      content: const Text(
-                                          "Would you like to remove your location?"),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              includePosition = false;
-                                            });
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text("Yes, remove"),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text("Cancel"),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              } else {
-                                includePosition = true;
-                              }
-                              setState(() {});
-                            },
-                            icon: Icon(!includePosition
-                                ? Icons.location_off
-                                : Icons.location_on),
-                          ),
-                          Expanded(
-                            child: Text(
-                              !includePosition
-                                  ? "Location currently off"
-                                  : "Location currently on",
-                              style: Theme.of(context).textTheme.bodyText2,
-                              textAlign: TextAlign.end,
-                            ),
-                          ),
-                        ],
-                      ),
-                      if (attachments.isNotEmpty)
-                        SizedBox(
-                          height: 300,
-                          child: ListView.builder(
-                            itemCount: attachments.length,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (BuildContext context, int index) {
-                              XFile file = attachments[index];
-                              return PostMediaAttachment(
-                                mediaInWidth: 2.5,
-                                file: file,
-                                onRemove: () {
-                                  setState(() {
-                                    attachments.removeAt(index);
-                                  });
-                                },
-                              );
-                            },
-                          ),
-                        ),
+                      // Row(
+                      //   children: [
+                      //     IconButton(
+                      //       onPressed: () async {
+                      //         //TODO: Make this content photo+video
+                      //         final XFile? image = await _picker.pickImage(
+                      //           source: ImageSource.camera,
+                      //         );
+                      //         if (image != null) {
+                      //           setState(() {
+                      //             attachments.add(image);
+                      //           });
+                      //         }
+                      //       },
+                      //       icon: const Icon(Icons.add_a_photo),
+                      //     ),
+                      //     IconButton(
+                      //       onPressed: () async {
+                      //         final XFile? image = await _picker.pickImage(
+                      //           source: ImageSource.gallery,
+                      //         );
+                      //         if (image != null) {
+                      //           setState(() {
+                      //             attachments.add(image);
+                      //           });
+                      //         }
+                      //       },
+                      //       icon: const Icon(Icons.attachment),
+                      //     ),
+                      //     IconButton(
+                      //       onPressed: () {
+                      //         if (includePosition) {
+                      //           showDialog(
+                      //             context: context,
+                      //             builder: (BuildContext context) {
+                      //               return AlertDialog(
+                      //                 title: const Text("Remove location?"),
+                      //                 content: const Text(
+                      //                     "Would you like to remove your location?"),
+                      //                 actions: [
+                      //                   TextButton(
+                      //                     onPressed: () {
+                      //                       setState(() {
+                      //                         includePosition = false;
+                      //                       });
+                      //                       Navigator.of(context).pop();
+                      //                     },
+                      //                     child: const Text("Yes, remove"),
+                      //                   ),
+                      //                   TextButton(
+                      //                     onPressed: () {
+                      //                       Navigator.of(context).pop();
+                      //                     },
+                      //                     child: const Text("Cancel"),
+                      //                   ),
+                      //                 ],
+                      //               );
+                      //             },
+                      //           );
+                      //         } else {
+                      //           includePosition = true;
+                      //         }
+                      //         setState(() {});
+                      //       },
+                      //       icon: Icon(!includePosition
+                      //           ? Icons.location_off
+                      //           : Icons.location_on),
+                      //     ),
+                      //     Expanded(
+                      //       child: Text(
+                      //         !includePosition
+                      //             ? "Location currently off"
+                      //             : "Location currently on",
+                      //         style: Theme.of(context).textTheme.bodyText2,
+                      //         textAlign: TextAlign.end,
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
+                      // if (attachments.isNotEmpty)
+                      //   SizedBox(
+                      //     height: 300,
+                      //     child: ListView.builder(
+                      //       itemCount: attachments.length,
+                      //       scrollDirection: Axis.horizontal,
+                      //       itemBuilder: (BuildContext context, int index) {
+                      //         XFile file = attachments[index];
+                      //         return PostMediaAttachment(
+                      //           mediaInWidth: 2.5,
+                      //           file: file,
+                      //           onRemove: () {
+                      //             setState(() {
+                      //               attachments.removeAt(index);
+                      //             });
+                      //           },
+                      //         );
+                      //       },
+                      //     ),
+                      //   ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -267,11 +269,23 @@ class _PostPageState extends State<PostPage> {
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: const Text('CANCEL'),
+                            child: const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Cancel'),
+                            ),
                           ),
-                          ElevatedButton(
-                            onPressed: () {},
-                            child: const Text('ACCEPT'),
+                          TextButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                bloc.add(PostCreateEvent(
+                                    selectedTopic!, _controller!.text));
+                                Navigator.of(context).pop();
+                              }
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Save Post'),
+                            ),
                           ),
                         ],
                       ),

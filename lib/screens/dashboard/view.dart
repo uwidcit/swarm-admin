@@ -5,7 +5,14 @@ import 'bloc.dart';
 import 'event.dart';
 import 'state.dart';
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({super.key});
+
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -20,4 +27,3 @@ class DashboardPage extends StatelessWidget {
     return Container();
   }
 }
-
